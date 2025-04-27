@@ -8,6 +8,7 @@ import HeroModel from '@/components/HeroModel';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import AnimatedCardCounter from './AnimatedCardCounter';
+import Image from 'next/image';
 
 const Hero = () => {
     useGSAP(() => {
