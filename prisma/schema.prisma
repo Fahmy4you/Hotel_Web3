@@ -40,6 +40,7 @@ model User {
   bookings  Booking[] @relation("UserBookings")
   ratings   Rating[]
   hotels    Hotel[]   @relation("UserHotels")
+  ProfilePict    ProfilePict?   @relation("UserProfilePict")
 }
 
 model Role {
@@ -110,4 +111,13 @@ model Rating {
 
   user      User     @relation(fields: [user_id], references: [id])
   hotel     Hotel    @relation(fields: [hotel_id], references: [id])
+}
+
+
+model ProfilePict{
+  id Int @id @default(autoincrement())
+  user_id Int @unique
+  images String
+
+  user      User     @relation("UserProfilePict", fields: [user_id], references: [id])
 }

@@ -7,13 +7,13 @@ const prisma = new PrismaClient();
 /**
  * @swagger
  * tags:
- *   - name: Auth
- *     description: Authentication endpoints
+ *   - name: Me
+ *     description: Get info of the logged-in user endpoints
  * 
- * /auth/me:
+ * /me/profile:
  *   get:
- *     tags: [Auth]
- *     summary: Get profile information of the logged-in user
+ *     tags: [Me]
+ *     summary: information of the logged-in user
  *     security:
  *      - Bearer: []
  *     description: Get the profile based on the JWT token.
