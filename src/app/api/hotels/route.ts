@@ -1,15 +1,22 @@
-import { NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from 'next/server';
+
+const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /api/hotels:
+ * tags:
+ *   - name: Hotels
+ *     description: Hotels management endpoints
+ * 
+ * /hotels:
  *   get:
- *     summary: Get all hotels
- *     description: Retrieve a list of all available hotels
- *     tags: [Hotel]
+ *     tags: [Hotels]
+ *     summary: Retrieve list of hotels
+ *     description: Get the list of all hotels with images and related details.
  *     responses:
  *       200:
- *         description: List of hotels
+ *         description: A list of hotels
  *         content:
  *           application/json:
  *             schema:
@@ -18,51 +25,29 @@ import { NextResponse } from 'next/server';
  *                 type: object
  *                 properties:
  *                   id:
+ *                     type: integer
+ *                   nama_hotel:
  *                     type: string
- *                   name:
+ *                   desk:
  *                     type: string
- *                   location:
+ *                   lokasi:
  *                     type: string
- *                   price:
- *                     type: number
+ *                   images:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                   user_id:
+ *                     type: integer
+ *       500:
+ *         description: Error fetching hotels
  */
+
 export async function GET() {
-  const hotels = [
-    { id: 'hotel-1', name: 'Luxury Hotel', location: 'New York', price: 250 },
-    { id: 'hotel-2', name: 'Budget Inn', location: 'Los Angeles', price: 100 },
-  ];
-
-  return NextResponse.json(hotels);
-}
-
-/**
- * @swagger
- * /api/hotels:
- *   post:
- *     summary: Create a new hotel
- *     description: Add a new hotel to the database
- *     tags: [Hotel]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - name
- *               - location
- *               - price
- *             properties:
- *               name:
- *                 type: string
- *               location:
- *                 type: string
- *               price:
- *                 type: number
- *     responses:
- *       201:
- *         description: Hotel created successfully
- */
-export async function POST(request: Request) {
-  // Implementation...
+  try {
+    const hotels = await prisma.hotel.findMany();
+    return NextResponse.json(hotels);
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ error: 'Error fetching hotels' }, { status: 500 });
+  }
 }

@@ -33,7 +33,14 @@
         ],
         layout: "StandaloneLayout",
         docExpansion: "none",
-        defaultModelsExpandDepth: -1
+        defaultModelsExpandDepth: -1,
+        auth: {
+          bearer: {
+            tokenUrl: "/api/auth/login",
+            authorizationUrl: "/api/auth/login",
+          }
+        },
+        authorize: true
       });
     };
   </script>

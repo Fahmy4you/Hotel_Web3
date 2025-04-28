@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { getSwaggerSpec } from '../../../../swagger';
+import  swaggerSpec  from '../../../../swagger';
 
 export async function GET() {
   try {
-    const spec = getSwaggerSpec();
-    return NextResponse.json(spec);
+    return NextResponse.json(swaggerSpec);
   } catch (error) {
     console.error("Error generating spec:", error);
     return NextResponse.json({ error: "Failed to generate spec" }, { status: 500 });
