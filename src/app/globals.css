@@ -34,6 +34,7 @@ section {
   --color-black-200: #282732;
   --color-blue-50: #839cb5;
   --color-blue-100: #2d2d38;
+  --color-body: rgb(5, 5, 5);
 }
 
 @layer utilities {
@@ -125,7 +126,7 @@ section {
     }
 
     .logo {
-      @apply text-white-50 text-xl md:text-2xl font-semibold transition-transform duration-300 hover:scale-105;
+      @apply text-white-50 text-xl md:text-2xl font-extrabold transition-transform duration-300 hover:scale-105;
     }
 
     nav.desktop {
@@ -250,11 +251,11 @@ section {
   }
 
   .timeline-wrapper {
-    @apply absolute top-0 xl:left-[35.5vw] md:left-10 left-5 h-full flex justify-center;
+    @apply absolute top-0 xl:left-[36vw] md:left-10 left-5 h-full flex justify-center;
   }
 
   .timeline {
-    @apply absolute z-30 h-[110%] -top-10 w-14 md:w-28 bg-black;
+    @apply absolute z-30 h-[110%] -top-10 w-14 md:w-28 bg-body;
   }
 
   .timeline-logo {
@@ -464,6 +465,7 @@ section {
   mask-clip: padding-box, border-box;
   opacity: 0;
   transition: 0.5s ease;
+  pointer-events: none;
 }
 
 .glow {

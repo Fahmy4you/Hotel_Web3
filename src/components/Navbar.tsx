@@ -9,10 +9,12 @@ const Navbar = () => {
             const isScrolled = window.scrollY > 10;
             setScrolled(isScrolled);
         }
+
+        handleScroll();
         
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
-    })
+    }, [])
 
     const navbarLink = [
         {
@@ -28,8 +30,8 @@ const Navbar = () => {
             link: "#alur"
         },
         {
-            name: "Hotel",
-            link: "#hotel"
+            name: "Top Hotel",
+            link: "#tophotel"
         },
         {
             name: "Testimoni",
@@ -57,7 +59,7 @@ const Navbar = () => {
 
             <a href="/login" className="contact-btn group">
                 <div className="inner">
-                    <span>Sign In</span>
+                    <span>Connect Wallet</span>
                 </div>
             </a>
         </div>
