@@ -1,33 +1,35 @@
-import type { Metadata } from "next";
-import { Mona_Sans } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Mona_Sans } from 'next/font/google'
+import './globals.css'
+
+import { ReduxProvider } from '../../libs/provider'
 
 const mona_sans = Mona_Sans({
-  variable: "--font-mona",
-  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
-  subsets: ["latin"],
-});
+  variable: '--font-mona',
+  weight: ['200', '300', '400', '500', '600', '700', '800', '900'],
+  subsets: ['latin'],
+})
 
 export const metadata: Metadata = {
-  title: "FK HOTEL WEB3",
-  description: "HOTEL WEB3 DECENTRALIZED APPLICATION",
+  title: 'FK HOTEL WEB3',
+  description: 'HOTEL WEB3 DECENTRALIZED APPLICATION',
   icons: {
-    icon: '/image/mylogo.svg', 
+    icon: '/image/mylogo.svg',
   },
-};
+}
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${mona_sans.variable} antialiased`}
-      >
-        {children}
+      <body className={`${mona_sans.variable} antialiased`}>
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
       </body>
     </html>
-  );
+  )
 }
