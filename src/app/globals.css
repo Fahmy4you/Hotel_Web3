@@ -483,3 +483,18 @@ section {
 .card:hover::before {
   opacity: 1;
 }
+
+
+.swagger-ui {
+  box-sizing: border-box !important;
+  padding: 1rem !important;        /* ruang di sekeliling */
+  height: calc(100vh - 2rem) !important; /* full viewport minus padding */
+  overflow: auto !important;       /* scroll hanya di situ */
+}
+
+/* (Optional) Sticky topbar supaya header Swagger selalu di atas */
+.swagger-ui .topbar {
+  position: sticky !important;
+  top: 0;
+  z-index: 999;
+}

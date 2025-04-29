@@ -1,0 +1,123 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Booking {
+  id               Int      @id @default(autoincrement())
+  kamar_id         Int
+  hotel_id         Int
+  user_id          Int
+  tanggal_checkin  DateTime
+  tanggal_checkout DateTime
+  price_total      Float
+  createdAt        DateTime @default(now())
+  deletedAt        DateTime?
+  updatedAt        DateTime @updatedAt
+
+  kamar            KamarInHotel @relation(fields: [kamar_id], references: [id], name: "KamarBookings")
+  hotel            Hotel        @relation(fields: [hotel_id], references: [id])
+  user             User         @relation(fields: [user_id], references: [id], name: "UserBookings")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  nama      String
+  no_wa     String
+  email     String   @unique
+  password  String
+  is_active Boolean  @default(true)
+  role_id   Int
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime @updatedAt
+
+  role      Role     @relation(fields: [role_id], references: [id])
+  bookings  Booking[] @relation("UserBookings")
+  ratings   Rating[]
+  hotels    Hotel[]   @relation("UserHotels")
+  ProfilePict    ProfilePict?   @relation("UserProfilePict")
+}
+
+model Role {
+  id   Int    @id @default(autoincrement())
+  role String
+  users User[]
+}
+
+model KategoriKamar {
+  id       Int    @id @default(autoincrement())
+  kategori String
+  kamar    KamarInHotel[]
+}
+
+model Hotel {
+  id        Int      @id @default(autoincrement())
+  nama_hotel String
+  desk      String
+  lokasi    String
+  user_id   Int
+  images    String[]
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation("UserHotels", fields: [user_id], references: [id])
+  bookings  Booking[]
+  ratings   Rating[]
+}
+
+model KamarInHotel {
+  id          Int      @id @default(autoincrement())
+  nama_kamar  String
+  price       Float
+  kategori_id Int
+  kamar_id    Int
+  images      String[]
+  createdAt   DateTime @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime @updatedAt
+
+  kategori    KategoriKamar @relation(fields: [kategori_id], references: [id])
+  bookings    Booking[]     @relation("KamarBookings")
+  fasilitas   Fasilitas[]   @relation("KamarFasilitas")
+}
+
+model Fasilitas {
+  id        Int    @id @default(autoincrement())
+  nama      String
+  desk      String
+  kamar_id  Int
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime @updatedAt
+
+  kamar     KamarInHotel @relation("KamarFasilitas", fields: [kamar_id], references: [id])
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  komentar  String
+  user_id   Int
+  hotel_id  Int
+  bintang   Int
+  createdAt DateTime @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [user_id], references: [id])
+  hotel     Hotel    @relation(fields: [hotel_id], references: [id])
+}
+
+
+model ProfilePict{
+  id Int @id @default(autoincrement())
+  user_id Int @unique
+  images String
+
+  user      User     @relation("UserProfilePict", fields: [user_id], references: [id])
+}

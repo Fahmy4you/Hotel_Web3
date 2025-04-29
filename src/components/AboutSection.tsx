@@ -3,6 +3,7 @@ import { useRef } from "react";
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useGSAP } from "@gsap/react";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -42,7 +43,8 @@ const AboutSection = () => {
           {/* LEFT */}
           <div className="first-project-wrapper" ref={kenapaRef}>
             <div className="image-wrapper">
-              <img src="/image/kenapa.jpeg" alt="Kenapa Harus FK Hotel" />
+              <Image src="/image/kenapa.jpeg" alt="Kenapa Harus FK Hotel" width={500} height={500} className="object-cover" />
+              {/* <img src="/image/kenapa.jpeg" alt="Kenapa Harus FK Hotel" /> */}
             </div>
             <div className="text-content">
               <h2>Kenapa Harus FK Hotel</h2>
@@ -55,6 +57,7 @@ const AboutSection = () => {
           <div className="project-list-wrapper overflow-hidden">
             <div className="project" ref={visiRef}>
               <div className="image-wrapper">
+                {/* <Image src="/image/visi.jpeg" alt="Visi Image" width={500} height={500} className="object-cover" /> */}
                 <img src="/image/visi.jpeg" alt="Visi Image" />
                 <h2>VISI</h2>
                 <p className="text-white-50 md:text-[15px] text-[12px]">
@@ -64,7 +67,8 @@ const AboutSection = () => {
             </div>
             <div className="project" ref={misiRef}>
               <div className="image-wrapper">
-                <img src="/image/misi.jpeg" alt="Misi Image" />
+                <Image src="/image/misi.jpeg" alt="Misi Image" width={500} height={500} className="object-cover" />
+                {/* <img src="/image/misi.jpeg" alt="Misi Image" /> */}
                 <h2>MISI</h2>
                 <p className="text-white-50 md:text-[15px] text-[12px]">
                 Membuka peluang kepemilikan hotel bagi semua orang, menggabungkan dunia real dan virtual hospitality dalam satu ekosistem blockchain yang aman dan transparan.

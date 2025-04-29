@@ -45,7 +45,7 @@ type GLTFResult = GLTF & {
   animations: THREE.AnimationClip[]
 }
 
-export function HotelModel(props: any) {
+export function HotelModel(props: React.ComponentProps<'group'>) {
   const { nodes, materials } = useGLTF('/model/hotelhome.glb') as unknown as GLTFResult
   return (
     <group {...props} dispose={null}>

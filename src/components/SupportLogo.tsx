@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const LogoIcon = ({icon}: {icon: string}) => {
     return (
         <div className="flex-none flex-center marquee-item">
