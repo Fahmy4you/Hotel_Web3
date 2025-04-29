@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
  * /hotels/list/myhotels:
  *   get:
  *     tags: [Hotels]
- *     summary: Retrieve list of hotels of the logged-in user
+ *     summary: Retrieve list of hotels of the logged-in user - Access Role [Pemilik Hotel]
  *     security:
  *      - Bearer: []
  *     description: Get the list of all hotels with images and related details.

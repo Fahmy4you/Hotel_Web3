@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import formidable from 'formidable';
+import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 
@@ -14,82 +15,63 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * tags:
- *   - name: Hotels
- *     description: Hotels management endpoints
- * 
  * /upload/hotels:
  *   post:
  *     tags: [Hotels]
- *     summary: Create a new Hotel data
- *     description: Create a new Hotel with image upload and related information.
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               nama_hotel:
- *                 type: string
- *                 description: Name of the hotel.
- *               desk:
- *                 type: string
- *                 description: Description of the hotel.
- *               lokasi:
- *                 type: string
- *                 description: Location of the hotel.
- *               user_id:
- *                 type: integer
- *                 description: ID of the user associated with the hotel.
- *               file:
- *                 type: string
- *                 format: binary
- *                 description: Image file for the hotel.
- *             required:
- *               - nama_hotel
- *               - desk
- *               - lokasi
- *               - user_id
- *               - file
+ *     summary: Create a new Hotel data - Access Role [Admin, Pemilik Hotel]
+ *     security:
+ *       - Bearer: []
+ *     consumes:
+ *       - multipart/form-data
+ *     parameters:
+ *       - in: formData
+ *         name: nama_hotel
+ *         type: string
+ *         required: true
+ *       - in: formData
+ *         name: desk
+ *         type: string
+ *         required: true
+ *       - in: formData
+ *         name: lokasi
+ *         type: string
+ *         required: true
+ *       - in: formData
+ *         name: user_id
+ *         type: integer
+ *         required: true
+ *       - in: formData
+ *         name: file
+ *         type: file
+ *         required: true
  *     responses:
  *       201:
  *         description: Hotel created successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: 'Hotel created successfully'
- *                 hotel:
- *                   type: object
- *                   properties:
- *                     id:
- *                       type: integer
- *                       example: 1
- *                     nama_hotel:
- *                       type: string
- *                       example: 'Luxury Resort'
- *                     desk:
- *                       type: string
- *                       example: 'A luxurious beach resort.'
- *                     lokasi:
- *                       type: string
- *                       example: 'Bali, Indonesia'
- *                     images:
- *                       type: array
- *                       items:
- *                         type: string
- *                       example: ['uploads/1628232768-image.jpg']
- *       400:
- *         description: Invalid input or no file uploaded
- *       500:
- *         description: Internal server error
+ *       401:
+ *        description: Unauthorized access
+ *       403:
+ *        description: Forbidden access
  */
 
 export async function POST(req: NextRequest) {
+  const token = req.headers.get('Authorization')?.split(' ')[1];
+  if (!token) {
+    return NextResponse.json({ error: 'Token not provided' }, { status: 401 });
+  }
+
+  const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number, role: string };
+  if (!decoded || !decoded.id) {
+    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+  }
+
+  if (!process.env.JWT_ACCSESS_TOKEN) {
+    throw new Error('JWT_ACCSESS_TOKEN is not defined in environment variables');
+  }
+
+  if (Number(decoded.role) !== 2 && Number(decoded.role) !== 1) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  }
+
   const uploadFolder = path.join(process.cwd(), 'public/uploads');
 
   if (!fs.existsSync(uploadFolder)) {
@@ -103,33 +85,43 @@ export async function POST(req: NextRequest) {
     const desk = formData.get('desk') as string;
     const lokasi = formData.get('lokasi') as string;
     const user_id = formData.get('user_id') as string;
-    const file = formData.get('file') as File;
+    const files = formData.getAll('file') as File[];
 
-    if (!file || !nama_hotel || !desk || !lokasi || !user_id) {
-      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    if (!files || files.length === 0 || !nama_hotel || !desk || !lokasi || !user_id) {
+      return NextResponse.json({ error: 'Missing required fields or no files uploaded' }, { status: 400 });
     }
-
-    const newFileName = Date.now() + '-' + file.name;
-    const filePath = path.join(uploadFolder, newFileName);
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    fs.writeFileSync(filePath, buffer);
 
     const hotel = await prisma.hotel.create({
       data: {
-        nama_hotel: nama_hotel,
-        desk: desk,
-        lokasi: lokasi,
+        nama_hotel,
+        desk,
+        lokasi,
         user_id: parseInt(user_id),
-        images: [`uploads/${newFileName}`],
+        images: [],
       },
     });
 
+    const imagePaths: string[] = [];
+    for (const file of files) {
+      const newFileName = `${file.name.split('.')[0]}&${hotel.id}.${file.name.split('.').pop()}`;
+      const filePath = path.join(uploadFolder, newFileName);
+
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      fs.writeFileSync(filePath, buffer);
+
+      imagePaths.push(`uploads/${newFileName}`);
+    }
+
+    await prisma.hotel.update({
+      where: { id: hotel.id },
+      data: { images: imagePaths },
+    });
+
     return NextResponse.json({
-      message: 'Hotel created successfully',
-      hotel,
+      message: 'Hotel created successfully with images',
+      hotel: { ...hotel, images: imagePaths },
     }, { status: 201 });
   } catch (error) {
     console.error('Error processing upload:', error);

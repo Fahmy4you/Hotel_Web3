@@ -16,7 +16,7 @@ const prisma = new PrismaClient();
  *     description: Get the list of all hotels with images and related details.
  *     responses:
  *       200:
- *         description: A list of hotels
+ *         description: A list of hotels - Access Role [Pemilik Hotel, Admin, Tamu]
  *         content:
  *           application/json:
  *             schema:

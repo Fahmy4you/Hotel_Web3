@@ -14,7 +14,7 @@ const prisma = new PrismaClient();
  * /me/edit:
  *   put:
  *     tags: [Me]
- *     summary: Update user profile
+ *     summary: Update user profile - Access Role [Admin, Pemilik Hotel, Tamu]
  *     description: Update authenticated user's profile information (partial update allowed).
  *     security:
  *       - Bearer: []

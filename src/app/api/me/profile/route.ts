@@ -13,7 +13,7 @@ const prisma = new PrismaClient();
  * /me/profile:
  *   get:
  *     tags: [Me]
- *     summary: information of the logged-in user
+ *     summary: information of the logged-in user - Access Role [Tamu, Admin, Pemilik Hotel]
  *     security:
  *      - Bearer: []
  *     description: Get the profile based on the JWT token.

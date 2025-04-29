@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
 
 /**
  * @swagger
@@ -11,10 +10,10 @@ const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
  *   - name: Hotels
  *     description: Hotel management endpoints
  * 
- * /hotels/details/myhotels/{id_hotel}:
- *   get:
+ * /hotels/myhotels/delete/{id_hotel}:
+ *   delete:
  *     tags: [Hotels]
- *     summary: Get hotel by ID - Access Role [Pemilik Hotel]
+ *     summary: Delete a hotel by ID - Access Role [Pemilik Hotel]
  *     security:
  *      - Bearer: []
  *     description: Retrieve hotel information by its ID
@@ -63,48 +62,52 @@ const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
  *         description: Internal server error
  */
 
-export async function GET(request: NextRequest, { params }: { params: { id_hotel: string } }) {
-  const { id_hotel } = params;
-
-  // Validasi token
-  const token = request.headers.get("Authorization")?.split(" ")[1];
-  if (!token) {
-    return NextResponse.json({ error: "Token not provided" }, { status: 401 });
-  }
-
-  if (!JWT_SECRET) {
-    console.error("JWT secret not defined in environment");
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-
-  // Validasi ID
-  const hotelId = Number(id_hotel);
-  if (!id_hotel || isNaN(hotelId)) {
-    return NextResponse.json({ error: "Invalid hotel ID" }, { status: 400 });
-  }
-
-  try {
-    // Verifikasi token
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
-    const userId = Number(decoded.id);
-    const isAdmin = Number(decoded.role) === 1;
-
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+export async function DELETE(req: NextRequest, { params }: { params: { id_hotel: string } }) {
+    const { id_hotel } = await params;
+    const token = req.headers.get("Authorization")?.split(" ")[1];
+    if (!token) {
+        return NextResponse.json({ error: "Token not provided" }, { status: 401 });
     }
 
-    const hotel = await prisma.hotel.findUnique({
-      where: { id: hotelId },
+    if (!id_hotel) {
+        return NextResponse.json({ error: "Hotel ID is required" }, { status: 400 });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_ACCSESS_TOKEN as string) as { id: number, role: string };
+    if (!decoded) {
+        return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    }
+
+    if (isNaN(Number(id_hotel))) {
+        return NextResponse.json({ error: "Invalid hotel ID" }, { status: 400 });
+    }
+
+    if (Number(decoded.role) !== 1 ) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    if (isNaN(Number(decoded.id))) {
+        return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
+    }
+
+    const existsHotel = await prisma.hotel.findFirst({
+        where: { id: Number(id_hotel), deletedAt: null },
     });
 
-    if (!hotel || hotel.user_id !== userId) {
-      return NextResponse.json({ error: "Hotel not found or access denied" }, { status: 404 });
+    if (!existsHotel) {
+        return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
+        
+    }
+    await prisma.hotel.update({
+        where: { id: Number(id_hotel) },
+        data: {
+            deletedAt: new Date(),
+        }
+    });
+    
+    if (existsHotel.user_id !== Number(decoded.id) || !existsHotel) {
+        return NextResponse.json({ error: "Hotel not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ hotel }, { status: 200 });
-
-  } catch (error) {
-    console.error("Error fetching hotel:", error);
-    return NextResponse.json({ error: "Failed to retrieve hotel" }, { status: 500 });
-  }
+    return NextResponse.json({ ...existsHotel, message: "Hotel deleted successfully" }, { status: 200 });
 }

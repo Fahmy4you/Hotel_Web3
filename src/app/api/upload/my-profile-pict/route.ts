@@ -13,15 +13,11 @@ export const config = {
 const prisma = new PrismaClient();
 
 /**
- * @swagger
- * tags:
- *   - name: Me
- *     description: Get info of the logged-in user endpoints
- * 
+ * @swagger 
  * /upload/my-profile-pict:
  *   post:
  *     tags: [Me]
- *     summary: Post a new profile picture
+ *     summary: Post a new profile picture - Access Role [Tamu, Admin, Pemilik Hotel]
  *     security:
  *       - Bearer: []
  *     description: Post a new profile picture base on logged-in user.

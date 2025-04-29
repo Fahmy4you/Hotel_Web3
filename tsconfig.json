@@ -38,7 +38,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-, "swagger.js", "generateKey.js"  ],
+, "swagger.ts", "generateKey.js"  ],
   "exclude": [
     "node_modules"
   ]
