@@ -1,11 +1,14 @@
 import jwt from 'jsonwebtoken';
+import { validateEmailFormat } from '@/utils/validateEmail';
+import { checkEmailUsed } from '@/utils/checkEmailUsed';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { checkRole } from '@/utils/checkRole';
 import { hashPassword } from '@/utils/hashingPassword';
+import { verifyToken } from '@/utils/verifyToken';
+import { validatorID } from '@/utils/validatorId';
 
 const prisma = new PrismaClient();
-const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
-
 /**
  * @swagger
  * tags:
@@ -107,40 +110,47 @@ export async function PUT(request: NextRequest, { params }: { params: { user_id:
         return NextResponse.json({ message: 'Token not provided' }, { status: 401 });
     }
 
-    if (!JWT_SECRET) {
-        console.error('JWT secret not defined in environment');
-        return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
-    }
-
-    let payload;
-    try {
-        payload = jwt.verify(token, JWT_SECRET) as { id: number; role: number };
-    } catch (error) {
-        return NextResponse.json({ message: 'Token expired or invalid' }, { status: 401 });
-    }
-
+    const payload = verifyToken(token);
+    if (payload instanceof NextResponse) return payload;
+    
     // Hanya role admin yang boleh akses
-    if (Number(payload.role) !== 2) {
-        return NextResponse.json({ message: 'Access denied. Admins only.' }, { status: 403 });
-    }
+    const isAdmin = checkRole(payload, 2);
+    if (isAdmin) return isAdmin;
 
-    const userIdToUpdate = await Number(userId.user_id);
-    if (isNaN(userIdToUpdate) || isNaN(userIdToUpdate)) {
-        return NextResponse.json({ message: 'Invalid user_id parameter' }, { status: 400 });
-    }
-
+    // Validasi user_id
+    const isValidUserId = validatorID(userId.user_id);
+    if (isValidUserId instanceof NextResponse) return isValidUserId;
+        
     const existingUser = await prisma.user.findUnique({
-        where: { id: userIdToUpdate },
+        where: { id: isValidUserId },
     });
 
     if (!existingUser) {
         return NextResponse.json({ message: 'User not found' }, { status: 404 });
     }
 
-    const { name, email, password, no_wa, is_active } = await request.json();
+    const { name, email, password, no_wa, is_active, role_id } = await request.json();
 
-    if (!name && !email && !password && !no_wa) {
+    if (![name, email, password, no_wa, is_active, role_id].some(v => v !== undefined)) {
         return NextResponse.json({ message: 'At least one field must be provided' }, { status: 400 });
+    }
+
+    if (is_active !== undefined && typeof is_active !== 'boolean') {
+        return NextResponse.json({ message: 'is_active must be a boolean' }, { status: 400 });
+    }
+
+    if (role_id !== undefined && typeof role_id !== 'number') {
+        return NextResponse.json({ message: 'role_id must be a number' }, { status: 400 });
+    }
+
+    const isValidEmailFormat = validateEmailFormat(email);
+    if (!isValidEmailFormat) {
+        return NextResponse.json({ message: 'Invalid email format' }, { status: 400 });
+    } 
+
+    const isUsedEmail = await checkEmailUsed(email, true, isValidUserId);
+    if (isUsedEmail) {
+        return NextResponse.json({ message: 'Email already exists' }, { status: 400 });
     }
 
     let hashedPassword: string | undefined = undefined;
@@ -155,12 +165,13 @@ export async function PUT(request: NextRequest, { params }: { params: { user_id:
 
     try {
         const updatedUser = await prisma.user.update({
-            where: { id: userIdToUpdate },
+            where: { id: isValidUserId },
             data: {
                 nama: name || undefined,
                 email: email || undefined,
                 password: hashedPassword,
                 no_wa: no_wa || undefined,
+                role_id: role_id || undefined,
                 is_active: is_active,
                 updatedAt: new Date(),
             }
@@ -176,3 +187,4 @@ export async function PUT(request: NextRequest, { params }: { params: { user_id:
         return NextResponse.json({ message: 'Internal server error' }, { status: 500 });
     }
 }
+
