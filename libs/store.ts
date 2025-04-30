@@ -1,18 +1,23 @@
 import { combineReducers } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from './storage';
 import  sidebarReducer  from '../libs/slices/sidebarSlices';
+import  themeReducer  from '../libs/slices/themeSlices';
+import  activeMenuReducer  from '../libs/slices/activeMenuSlice';
 import { configureStore } from '@reduxjs/toolkit';
+
 
 const rootReducer = combineReducers({
     sidebar : sidebarReducer,
+    theme : themeReducer,
+    activeMenu : activeMenuReducer,
 });
 
 
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['sidebar'],
+    whitelist: ['sidebar', 'theme', 'activeMenu'], 
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

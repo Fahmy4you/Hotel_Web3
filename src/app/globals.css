@@ -44,6 +44,12 @@ section {
   .flex-col-center {
     @apply flex flex-col justify-center items-center;
   }
+  .transition-bg{
+    @apply transition-background duration-300 ease-in-out;
+  }
+  .transition-component{
+    @apply transition-colors duration-300 ease-in-out;
+  }
 }
 
 @layer components {

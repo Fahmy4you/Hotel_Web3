@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { setServers } from 'dns';
+
 
 interface SidebarState {
   isColapsed : boolean;
