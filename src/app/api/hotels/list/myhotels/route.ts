@@ -1,6 +1,7 @@
-import jwt from "jsonwebtoken";
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { verifyToken } from "@/utils/verifyToken";
+import { checkRole } from "@/utils/checkRole";
 
 const prisma = new PrismaClient();
 
@@ -55,20 +56,15 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: "Token not provided" }, { status: 401 });
     }
 
-    const secretKey = process.env.JWT_ACCSESS_TOKEN;
-    if (!secretKey) {
-        return NextResponse.json({ error: "JWT_SECRET is not defined in the environment variables." }, { status: 500 });
-    }
+    const payload = verifyToken(token);
+    if (payload instanceof NextResponse) return payload;
 
     try {
-        const decoded = jwt.verify(token, secretKey) as { id: string, role: string };
-        const userId = decoded.id;
-        const roleId = Number(decoded.role);
-        console.log("Result :", roleId, userId);
-
-        if (roleId !== 1) {
-            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-        }
+        const userId = payload.id;
+        const roleId = Number(payload.role);
+       
+        const isPemilikHotel = checkRole(payload, 1);
+        if (isPemilikHotel) return isPemilikHotel;
 
         const hotels = await prisma.hotel.findMany({
             where: {

@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import { validateEmailFormat } from "@/utils/validateEmail";
 import { hashPassword } from "@/utils/hashingPassword";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -60,6 +61,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
     }
 
+    const validateEmail = validateEmailFormat(email);
+    if (!validateEmail) {
+      return NextResponse.json({ message: "Invalid email format" }, { status: 400 });
+    }
     const user = await prisma.user.findUnique({
       where: { email },
     });

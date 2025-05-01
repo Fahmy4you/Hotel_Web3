@@ -1,4 +1,3 @@
-// utils/validateUserId.ts
 import { NextResponse } from 'next/server';
 
 export const validatorID = (idParam: string): number | NextResponse => {

@@ -1,6 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { verifyToken } from '@/utils/verifyToken';
+import { checkIsNumber } from '@/utils/checkIsNumber';
+import { checkRole } from '@/utils/checkRole';
 
 const prisma = new PrismaClient();
 const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
@@ -11,10 +14,10 @@ const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
  *   - name: Hotels
  *     description: Hotel management endpoints
  * 
- * /hotels/details/myhotels/{id_hotel}:
+ * /hotels/details/{id_hotel}:
  *   get:
  *     tags: [Hotels]
- *     summary: Get hotel by ID - Access Role [Pemilik Hotel]
+ *     summary: Get hotel by ID - Access Role [Pemilik Hotel, Admin, Tamu]
  *     security:
  *      - Bearer: []
  *     description: Retrieve hotel information by its ID
@@ -64,7 +67,7 @@ const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN;
  */
 
 export async function GET(request: NextRequest, { params }: { params: { id_hotel: string } }) {
-  const { id_hotel } = params;
+  const { id_hotel } = await params;
 
   // Validasi token
   const token = request.headers.get("Authorization")?.split(" ")[1];
@@ -72,32 +75,23 @@ export async function GET(request: NextRequest, { params }: { params: { id_hotel
     return NextResponse.json({ error: "Token not provided" }, { status: 401 });
   }
 
-  if (!JWT_SECRET) {
-    console.error("JWT secret not defined in environment");
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
-
-  // Validasi ID
-  const hotelId = Number(id_hotel);
-  if (!id_hotel || isNaN(hotelId)) {
-    return NextResponse.json({ error: "Invalid hotel ID" }, { status: 400 });
-  }
-
   try {
     // Verifikasi token
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
-    const userId = Number(decoded.id);
-    const isAdmin = Number(decoded.role) === 1;
+    const decoded = verifyToken(token);
+    if (decoded instanceof NextResponse) return decoded;
 
-    if (!isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const stringIdHotel = id_hotel
+    if (!checkIsNumber(stringIdHotel)) {
+      return NextResponse.json({ error: "Invalid hotel ID" }, { status: 400 });
     }
+
+    const hotelId = Number(stringIdHotel);
 
     const hotel = await prisma.hotel.findUnique({
       where: { id: hotelId },
     });
 
-    if (!hotel || hotel.user_id !== userId) {
+    if (!hotel) {
       return NextResponse.json({ error: "Hotel not found or access denied" }, { status: 404 });
     }
 
