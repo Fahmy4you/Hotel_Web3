@@ -28,7 +28,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="flex h-screen overflow-hidden">
-            <aside className={`${ darkMode ? 'bg-black-100 text-white-50' : 'bg-gray-100 text-gray-900'} p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-all duration-300 ease-in-out`}>
+            <aside className={`${darkMode ? 'bg-black-100 text-white-50' : 'bg-gray-100 text-gray-900'} p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-all duration-300 ease-in-out`}>
                 <div className="flex flex-col h-full">
                     <div className="flex gap-2 justify-between mb-4">
                         <h2 className="text-2xl font-bold"> {isCollapsed ? 'FK HOTEL' : 'FK'}</h2>
@@ -39,7 +39,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                             {isCollapsed ? <TiArrowMinimise /> : <TiArrowMaximise />}
                         </button>
                     </div>
-                    
+
                     <nav className="flex-grow overflow-y-auto">
                         <div className='flex flex-col gap-5'>
                             <MenuSidebar active="dashboard" name="Dashboard" href="/dashboard" iconInActive={RiDashboardHorizontalLine} iconActive={RiDashboardHorizontalFill} />
@@ -57,11 +57,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </aside>
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className={` ${ darkMode ? 'bg-black-100' : 'bg-gray-100'} p-4 transition-bg shadow flex items-center justify-between flex-none`}>
+                <header className={` ${darkMode ? 'bg-black-100' : 'bg-gray-100'} p-4 transition-bg shadow flex items-center justify-between flex-none`}>
+                    <h2 className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} text-medium font-bold transition-component`}>Selamat Datang, Fahmy</h2>
                     <Input
                         isClearable
                         className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} max-w-2/3`}
-                        startContent={<FaMagnifyingGlass className={`${ darkMode ? 'text-white-50' : 'text-gray-900'}`} />}
+                        startContent={<FaMagnifyingGlass className={`${darkMode ? 'text-white-50' : 'text-gray-900'}`} />}
                         placeholder="Search..."
                         size="md"
                         type="text"
@@ -70,10 +71,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         {darkMode ?
                             <FiSun className="text-white-50 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} /> :
                             <LuMoon className="text-gray-900 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} />}
-                        <Avatar isBordered radius="sm" src="https://i.pravatar.cc/150?u=a04258a2462d826712d" />
+                        <Avatar isBordered radius="sm" src="https://i.pravatar.cc/150?u=a04258a2462d826712d" onClick={() => {
+                            window.location.href = "/dashboard/profile";
+                        }} />
                     </div>
                 </header>
-                
+
                 <main className={`flex-1 p-6 ${darkMode ? 'bg-body' : 'bg-white'} transition-bg overflow-y-auto`}>
                     {children}
                 </main>
