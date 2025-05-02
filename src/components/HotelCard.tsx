@@ -1,11 +1,12 @@
 "use client";
 import { useRef } from "react";
+import Link from "next/link";
 
 type TypeCard = {
     data: {
       image: string,
       nama: string,
-      bintang: number,
+      bintang?: number,
       url: string,
       buttonText?: string
     },
@@ -42,16 +43,18 @@ const HotelCard = ({data, index, children}: TypeCard) => {
             <div className="px-5 mt-5">
                 <h3 className="md:text-xl text-lg text-white-50 font-semibold">{data.nama}</h3>
                 {children}
-                <div className="flex items-center gap-1 my-3">
-                    {Array.from({length: data.bintang}, (_, i) => (
-                        <img src="/image/star.png" key={i} alt="Star" className="size-5" />
-                    ))}
-                </div>
+                {(data.bintang && data.bintang != 0) && (
+                    <div className="flex items-center gap-1 my-3">
+                        {Array.from({length: data.bintang}, (_, i) => (
+                            <img src="/image/star.png" key={i} alt="Star" className="size-5" />
+                        ))}
+                    </div>
+                )}
             </div>
             <div className="flex justify-end">
-                <a href={data.url} className="border-1 mb-3 flex justify-center items-center rounded hover:bg-white-50 bg-transparent hover:text-black-50 transition border-white-50 p-2 contact-btn group">
+                <Link href={data.url} className="border-1 mb-3 flex justify-center items-center rounded hover:bg-white-50 bg-transparent hover:text-black-50 transition border-white-50 p-2 contact-btn group">
                     <span>{data.buttonText ? data.buttonText : "Booking Sekarang"}</span>
-                </a>
+                </Link>
             </div>
         </div>
       )

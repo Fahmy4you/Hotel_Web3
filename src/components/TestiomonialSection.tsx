@@ -1,6 +1,6 @@
 import TitleHeader from '@/components/TitleHeader';
 import GlowCard from '@/components//GlowCard';
-const TestiomonialSection = () => {
+const TestiomonialSection = ({title = 'Bagaimana Orang Menilai ?', sub = "Testimonials User Kami 🤩"}: {title?: string, sub?: string}) => {
     const testimonials = [
         {
           name: "Esther Howard",
@@ -55,7 +55,7 @@ const TestiomonialSection = () => {
   return (
     <section id="testimonial" className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
-        <TitleHeader title='Bagaimana Orang Menilai ?' sub='Testimonials User Kami 🤩'/>
+        <TitleHeader title={title} sub={sub}/>
         <div className="lg:columns-3 md:columns-2 columns-1 mt-16">
             {testimonials.map((testimonial, i) => (
                 <GlowCard key={i} card={{review: testimonial.review, bintang:  testimonial.bintang}} index={i}>

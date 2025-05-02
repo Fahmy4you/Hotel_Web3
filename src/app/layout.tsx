@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
 import "./globals.css";
+import { XellarProvider } from './provider/XellarProvider';
 
 const mona_sans = Mona_Sans({
   variable: "--font-mona",
@@ -22,11 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body
         className={`${mona_sans.variable} antialiased`}
       >
-        {children}
+        <XellarProvider>
+          {children}
+        </XellarProvider>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react"
+import ConnectWalletButton from "@/components/ConnectWalletButton";
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -57,11 +58,7 @@ const Navbar = () => {
                 </ul>
             </nav>
 
-            <a href="/login" className="contact-btn group">
-                <div className="inner">
-                    <span>Connect Wallet</span>
-                </div>
-            </a>
+            <ConnectWalletButton/>
         </div>
     </header>
   )
