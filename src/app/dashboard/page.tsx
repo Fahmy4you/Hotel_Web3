@@ -1,9 +1,3 @@
-const Dashboard = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export default function DashboardHome() {
+  return <h2 className="text-xl font-bold">Ini Halaman Beranda Dashboard</h2>;
 }
-
-export default Dashboard

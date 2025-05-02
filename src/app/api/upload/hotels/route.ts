@@ -1,9 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
 import formidable from 'formidable';
-import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
+import { verifyToken } from '@/utils/verifyToken';
+import { checkMultipleRoles } from '@/utils/checkMultiRole';
 
 export const config = {
   api: {
@@ -59,19 +60,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Token not provided' }, { status: 401 });
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { id: number, role: string };
-  if (!decoded || !decoded.id) {
-    return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
-  }
+  const decoded = verifyToken(token);
+  if (decoded instanceof NextResponse) return decoded;
 
-  if (!process.env.JWT_ACCSESS_TOKEN) {
-    throw new Error('JWT_ACCSESS_TOKEN is not defined in environment variables');
-  }
-
-  if (Number(decoded.role) !== 2 && Number(decoded.role) !== 1) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
+  const isAllowedRole = checkMultipleRoles(decoded, [1, 2]);
+  if (!isAllowedRole) return isAllowedRole;
+  
   const uploadFolder = path.join(process.cwd(), 'public/uploads');
 
   if (!fs.existsSync(uploadFolder)) {

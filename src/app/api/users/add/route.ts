@@ -1,7 +1,10 @@
-import jwt from 'jsonwebtoken';
+import { checkRole } from '@/utils/checkRole';
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { verifyToken } from '@/utils/verifyToken';
 import { hashPassword } from '@/utils/hashingPassword';
+import { checkEmailUsed } from '@/utils/checkEmailUsed';
+import { validateEmailFormat } from '@/utils/validateEmail';
 
 const prisma = new PrismaClient();
 
@@ -87,24 +90,27 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: "Token not provided" }, { status: 401 });
     }
 
-    if (!process.env.JWT_ACCSESS_TOKEN) {
-        throw new Error("JWT_ACCSESS_TOKEN is not defined in environment variables");
-      }
-    
-      let payload;
-      try {
-        payload = jwt.verify(token, process.env.JWT_ACCSESS_TOKEN) as { id: number; role: string };
-      } catch (error) {
-        return NextResponse.json({ message: "Token expired or Invalid" }, { status: 401 });
-      }
+      const payload = verifyToken(token);
+      if (payload instanceof NextResponse) return payload;
 
-        const isAdmin = Number(payload.role) === 2;
-
-      if (!isAdmin) {
-        return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-      }
+        const isAdmin = checkRole(payload, 2);
+        if (isAdmin) return isAdmin;
 
       const data = await request.json();
+
+      if (!data.nama || !data.email || !data.no_wa || !data.password || !data.role_id) {
+        return NextResponse.json({ error: "All fields are required" }, { status: 400 });
+      }
+
+      const isEmailValid = validateEmailFormat(data.email);
+      if (!isEmailValid) {
+        return NextResponse.json({ message: 'Invalid email format' }, { status: 400 });
+      }
+      
+      const isUsedEmail = await checkEmailUsed(data.email);
+      if (isUsedEmail) {
+        return NextResponse.json({ message: 'Email already exists' }, { status: 400 });
+      }
 
       try {
         const result = await prisma.user.create({

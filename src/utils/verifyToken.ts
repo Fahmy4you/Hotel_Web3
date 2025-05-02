@@ -1,16 +1,13 @@
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server';
 
-const secretKey = process.env.JWT_ACCSESS_TOKEN
+const JWT_SECRET = process.env.JWT_ACCSESS_TOKEN || '';
 
-export const verifyToken = (token: string) => {
+export const verifyToken = (token: string): { id: number; role: number } | NextResponse => {
     try {
-        if (!secretKey) {
-            throw new Error("JWT_SECRET is not defined in the environment variables.");
-        }
-        return jwt.verify(token, secretKey);
+        const payload = jwt.verify(token, JWT_SECRET) as { id: number; role: number };
+        return payload;
+    } catch (error) {
+        return NextResponse.json({ message: 'Token expired or invalid' }, { status: 401 });
     }
-    catch (error) {
-        console.error("Token verification failed:", error);
-        return null;
-    }
-}
+};

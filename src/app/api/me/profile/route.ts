@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  * tags:
  *   - name: Me
  *     description: Get info of the logged-in user endpoints
- * 
+ *
  * /me/profile:
  *   get:
  *     tags: [Me]
@@ -40,40 +40,42 @@ const prisma = new PrismaClient();
  *         description: Internal server error
  */
 
-
 export async function GET(request: NextRequest) {
-    const token = request.headers.get("Authorization")?.split(" ")[1];
+  const token = request.headers.get("Authorization")?.split(" ")[1];
 
-    if (!token) {
-        return NextResponse.json({ message: "Token not provided" }, { status: 401 });
+  if (!token) {
+    return NextResponse.json(
+      { message: "Token not provided" },
+      { status: 401 }
+    );
+  }
+
+  const decode = verifyToken(token);
+
+  if (decode instanceof NextResponse) return decode;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: Number(decode.id) },
+      select: {
+        id: true,
+        email: true,
+        nama: true,
+        no_wa: true,
+        role_id: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
-    const decode = verifyToken(token);
-
-    if (!decode || typeof decode === "string" || !("id" in decode)) {
-        return NextResponse.json({ message: "Unauthorization" }, { status: 401 });
-    }
-
-    try {
-        const user = await prisma.user.findUnique({
-            where: { id: Number(decode.id) },
-            select: {
-                id: true,
-                email: true,
-                nama: true,
-                no_wa: true,
-                role_id: true,
-            },
-        });
-
-        if (!user) {
-            return NextResponse.json({ message: "User not found" }, { status: 404 });
-        }
-
-        return NextResponse.json(user, { status: 200 });
-    } catch (error) {
-        console.error("Error fetching user:", error);
-        return NextResponse.json({ message: "Internal server error" }, { status: 500 });
-    }
-
+    return NextResponse.json(user, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
+  }
 }

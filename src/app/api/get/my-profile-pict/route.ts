@@ -1,8 +1,9 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import jwt from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+import { verifyToken } from "@/utils/verifyToken";
+import fs from "fs";
+import path from "path";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,7 @@ const prisma = new PrismaClient();
  * tags:
  *   - name: Me
  *     description: Get info of the logged-in user endpoints
- * 
+ *
  * /get/my-profile-pict:
  *   get:
  *     tags: [Me]
@@ -37,75 +38,79 @@ const prisma = new PrismaClient();
 
 export async function GET(req: NextRequest) {
   const token = req.headers.get("Authorization")?.split(" ")[1];
+
   if (!token) {
     return NextResponse.json({ error: "Token not provided" }, { status: 401 });
   }
-  
-  const secretKey = process.env.JWT_ACCSESS_TOKEN;
-  if (!secretKey) {
-    return NextResponse.json({ error: "JWT_SECRET is not defined in the environment variables." }, { status: 500 });
-  }
+  const payload = verifyToken(token);
+  if (payload instanceof NextResponse) return payload;
 
   try {
-    const decoded = jwt.verify(token, secretKey) as { id: string };
-    const userId = Number(decoded.id);
-
-    // Get profile picture from database
     const profilePicture = await prisma.profilePict.findFirst({
       where: {
-        user_id: userId
-      }
+        user_id: payload.id,
+      },
     });
 
     if (!profilePicture) {
-      return NextResponse.json({ error: "Profile picture not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Profile picture not found" },
+        { status: 404 }
+      );
     }
 
     // Get the file path
-    const imagePath = path.join(process.cwd(), 'public/uploads/profile_pict', profilePicture.images);
-    
-    // Check if file exists
+    const imagePath = path.join(
+      process.cwd(),
+      "public/uploads/profile_pict",
+      profilePicture.images
+    );
+
     if (!fs.existsSync(imagePath)) {
-      return NextResponse.json({ error: "Image file not found" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Image file not found" },
+        { status: 404 }
+      );
     }
 
     // Read the file
     const imageBuffer = fs.readFileSync(imagePath);
-    
-    // Determine content type based on file extension
     const fileExtension = path.extname(profilePicture.images).toLowerCase();
-    let contentType = 'image/jpeg'; // Default
-    
+    let contentType = "image/jpeg"; // Default
+
     switch (fileExtension) {
-      case '.png':
-        contentType = 'image/png';
+      case ".png":
+        contentType = "image/png";
         break;
-      case '.gif':
-        contentType = 'image/gif';
+      case ".gif":
+        contentType = "image/gif";
         break;
-      case '.webp':
-        contentType = 'image/webp';
+      case ".webp":
+        contentType = "image/webp";
         break;
-      case '.svg':
-        contentType = 'image/svg+xml';
+      case ".svg":
+        contentType = "image/svg+xml";
         break;
     }
 
     // Create response with appropriate headers
     return new NextResponse(imageBuffer, {
       headers: {
-        'Content-Type': contentType,
-        'Content-Length': imageBuffer.length.toString(),
-        'Cache-Control': 'public, max-age=86400' // Cache for 1 day
-      }
+        "Content-Type": contentType,
+        "Content-Length": imageBuffer.length.toString(),
+        "Cache-Control": "public, max-age=86400", // Cache for 1 day
+      },
     });
   } catch (error) {
-    console.error('Error serving profile image:', error);
-    
+    console.error("Error serving profile image:", error);
+
     if (error instanceof jwt.JsonWebTokenError) {
       return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
-    
-    return NextResponse.json({ error: 'Error serving profile image' }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Error serving profile image" },
+      { status: 500 }
+    );
   }
 }

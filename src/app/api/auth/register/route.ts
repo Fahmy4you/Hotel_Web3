@@ -3,6 +3,8 @@ import { PrismaClient } from "@prisma/client";
 import { hashPassword } from "@/utils/hashingPassword";
 import jwt from "jsonwebtoken";
 import { env } from "process";
+import { checkEmailUsed } from '@/utils/checkEmailUsed';
+import { validateEmailFormat } from '@/utils/validateEmail';
 
 const prisma = new PrismaClient();
 
@@ -76,13 +78,18 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email: data.email },
-    });
-
-    if (existingUser) {
+    const isUsedEmail = await checkEmailUsed(data.email);
+    if (isUsedEmail) {
       return NextResponse.json(
         { message: "Email sudah terdaftar" },
+        { status: 400 }
+      );
+    }
+
+    const isValidEmailFormat = validateEmailFormat(data.email);
+    if (!isValidEmailFormat) {
+      return NextResponse.json(
+        { message: "Invalid emaial format" },
         { status: 400 }
       );
     }

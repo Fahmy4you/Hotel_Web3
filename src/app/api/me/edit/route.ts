@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import jwt from "jsonwebtoken";
+import { validateEmailFormat } from "@/utils/validateEmail";
+import { verifyToken } from "@/utils/verifyToken";
 import { NextRequest, NextResponse } from "next/server";
 import { hashPassword } from "@/utils/hashingPassword";
+import { checkEmailUsed } from "@/utils/checkEmailUsed";
 
 const prisma = new PrismaClient();
 
@@ -71,36 +73,49 @@ const prisma = new PrismaClient();
  *         description: Internal server error
  */
 
-
 export async function PUT(request: NextRequest) {
   const token = request.headers.get("Authorization")?.split(" ")[1];
 
   if (!token) {
-    return NextResponse.json({ message: "Token not provided" }, { status: 401 });
+    return NextResponse.json(
+      { message: "Token not provided" },
+      { status: 401 }
+    );
   }
 
-  if (!process.env.JWT_ACCSESS_TOKEN) {
-    throw new Error("JWT_ACCSESS_TOKEN is not defined in environment variables");
-  }
-
-  let payload;
-  try {
-    payload = jwt.verify(token, process.env.JWT_ACCSESS_TOKEN) as { id: number; email: string };
-  } catch (error) {
-    return NextResponse.json({ message: "Token expired or Invalid" }, { status: 401 });
-  }
+  const payload = verifyToken(token);
+  if (payload instanceof NextResponse) return payload;
 
   const userId = payload.id;
   const { name, email, password, no_wa } = await request.json();
 
   if (!name && !email && !password && !no_wa) {
-    return NextResponse.json({ message: "At least one field must be provided" }, { status: 400 });
+    return NextResponse.json(
+      { message: "At least one field must be provided" },
+      { status: 400 }
+    );
   }
 
   try {
     let hashedPassword: string | undefined = undefined;
     if (password) {
       hashedPassword = await hashPassword(password);
+    }
+
+    const isEmailValid = validateEmailFormat(email);
+    if (!isEmailValid) {
+      return NextResponse.json(
+        { message: "Invalid email format" },
+        { status: 400 }
+      );
+    }
+
+    const isUsedEmail = await checkEmailUsed(email, true, userId);
+    if (isUsedEmail) {
+      return NextResponse.json(
+        { message: "Email already exists" },
+        { status: 400 }
+      );
     }
 
     const user = await prisma.user.update({
@@ -114,19 +129,24 @@ export async function PUT(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({
-      message: "Profile updated successfully",
-      user: {
-        id: user.id,
-        nama: user.nama,
-        email: user.email,
-        no_wa: user.no_wa,
+    return NextResponse.json(
+      {
+        message: "Profile updated successfully",
+        user: {
+          id: user.id,
+          nama: user.nama,
+          email: user.email,
+          no_wa: user.no_wa,
+        },
       },
-    }, { status: 200 });
-
+      { status: 200 }
+    );
   } catch (error) {
     console.error(error);
-    return NextResponse.json({ message: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    );
   } finally {
     await prisma.$disconnect();
   }
