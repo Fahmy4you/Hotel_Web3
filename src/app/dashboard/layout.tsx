@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { BiWallet, BiSolidWallet } from "react-icons/bi";
 import { Avatar } from '@heroui/react';
 import { FiSun } from "react-icons/fi";
 import { RiDashboardHorizontalLine, RiDashboardHorizontalFill } from "react-icons/ri";
@@ -44,10 +45,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <div className='flex flex-col gap-5'>
                             <MenuSidebar active="dashboard" name="Dashboard" href="/dashboard" iconInActive={RiDashboardHorizontalLine} iconActive={RiDashboardHorizontalFill} />
                             <MenuSidebar active="riwayat" name="Riwayat" href="/dashboard" iconInActive={RiHistoryLine} iconActive={RiHistoryFill} />
-                            <MenuSidebar active="menu-user" name="Menu User" href="/dashboard" iconInActive={RiUserSettingsLine} iconActive={RiUserSettingsFill} />
+                            <MenuSidebar active="menu-user" name="Menu User" href="/dashboard/users" iconInActive={RiUserSettingsLine} iconActive={RiUserSettingsFill} />
                             <MenuSidebar active="kategori" name="Kategori" href="/dashboard" iconInActive={LuLayers} iconActive={IoLayers} />
                             <MenuSidebar active="hotels" name="Hotel" href="/dashboard" iconInActive={RiHotelLine} iconActive={RiHotelFill} />
                             <MenuSidebar active="kamar" name="Kamar" href="/dashboard" iconInActive={RiHotelBedLine} iconActive={RiHotelBedFill} />
+                            <MenuSidebar active="top-up" name="Top Up" href="/dashboard/top-up" iconInActive={BiWallet} iconActive={BiSolidWallet} />
                         </div>
                     </nav>
                     <div className="flex-none mt-auto">
@@ -59,14 +61,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 <header className={` ${darkMode ? 'bg-black-100' : 'bg-gray-100'} p-4 transition-bg shadow flex items-center justify-between flex-none`}>
                     <h2 className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} text-medium font-bold transition-component`}>Selamat Datang, Fahmy</h2>
-                    <Input
-                        isClearable
-                        className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} max-w-2/3`}
-                        startContent={<FaMagnifyingGlass className={`${darkMode ? 'text-white-50' : 'text-gray-900'}`} />}
-                        placeholder="Search..."
-                        size="md"
-                        type="text"
-                        variant="bordered" />
                     <div className="flex items-center space-x-4">
                         {darkMode ?
                             <FiSun className="text-white-50 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} /> :

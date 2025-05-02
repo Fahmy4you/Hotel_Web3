@@ -16,8 +16,6 @@ const prisma = new PrismaClient();
  *   get:
  *     tags: [Users]
  *     summary: Retrieve list of all users - Access Role [Admin]
- *     security:
- *       - Bearer: []
  *     description: Get the list of all users, with optional search by name (case-insensitive).
  *     parameters:
  *       - in: query
@@ -62,23 +60,16 @@ const prisma = new PrismaClient();
  */
 
 export async function GET(request: NextRequest) {
-  const token = request.headers.get("Authorization")?.split(" ")[1];
-  if (!token) {
-    return NextResponse.json({ error: "Token not provided" }, { status: 401 });
-  }
-
-  const payload = verifyToken(token);
-  if (payload instanceof NextResponse) return payload;
-
-  // let payload;
-  // try {
-  //   payload = jwt.verify(token, process.env.JWT_ACCSESS_TOKEN) as { id: number; role: string };
-  // } catch (error) {
-  //   return NextResponse.json({ message: "Token expired or Invalid" }, { status: 401 });
+  // const token = request.headers.get("Authorization")?.split(" ")[1];
+  // if (!token) {
+  //   return NextResponse.json({ error: "Token not provided" }, { status: 401 });
   // }
 
-  const isAdmin = checkRole(payload, 2);
-  if (isAdmin) return isAdmin;
+  // const payload = verifyToken(token);
+  // if (payload instanceof NextResponse) return payload;
+
+  // const isAdmin = checkRole(payload, 2);
+  // if (isAdmin) return isAdmin;
 
   const { searchParams } = new URL(request.url);
   const search = searchParams.get('search') || '';
