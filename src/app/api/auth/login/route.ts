@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { validateEmailFormat } from "@/utils/validateEmail";
 import { hashPassword } from "@/utils/hashingPassword";
 import { NextRequest, NextResponse } from "next/server";
+import { Address, isAddress, verifyMessage } from "viem";
+import { generateAccessToken, generateRefreshToken } from "@/utils/jwt";
 
 const prisma = new PrismaClient();
 
@@ -55,41 +57,43 @@ const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json();
+    const { wallet_address, message, signature } = await request.json();
 
-    if (!email || !password) {
-      return NextResponse.json({ message: "Email and password are required" }, { status: 400 });
-    }
+    // if(!message || !wallet_address || !signature) return NextResponse.json({ message: "Missing Require Parameter" }, { status: 400 });
 
-    const validateEmail = validateEmailFormat(email);
-    if (!validateEmail) {
-      return NextResponse.json({ message: "Invalid email format" }, { status: 400 });
-    }
+    if (!wallet_address || !isAddress(wallet_address)) return NextResponse.json({ message: "Address Is Required And Valid Address" }, { status: 400 });
+
     const user = await prisma.user.findUnique({
-      where: { email },
+      where: { wallet_address },
     });
 
-    if (!user) {
-      return NextResponse.json({ message: "Cannot found user data" }, { status: 404 });
-    }
+    if(!user) return NextResponse.json({message: "User Not Found"}, {status: 400});
 
-    const hashedInputPassword = await hashPassword(password);
+    const nonce = await prisma.nonce.findFirst({
+      where: {
+        userId: user.id,
+        expiredAt: {gt: new Date()} // belum expired
+      },
+      orderBy: {createdAt: 'desc'}
+    });
 
-    if (hashedInputPassword !== user.password) {
-      return NextResponse.json({ message: "Invalid email or password" }, { status: 401 });
-    }
+    if(!nonce) return NextResponse.json({message: "Nonce expired or not found"}, {status: 400});
 
-    const accessToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role_id },
-      process.env.JWT_ACCSESS_TOKEN || (() => { throw new Error("JWT_ACCSESS_TOKEN is not defined"); })(),
-      { expiresIn: "15m" }
-    );
+    // const expectedMessage = `Login to MydApp FK HOTEL WEB3 \nNonce : ${nonce.value}`;
 
-    const refreshToken = jwt.sign(
-      { id: user.id, email: user.email, role: user.role_id },
-      process.env.JWT_REFRESH || (() => { throw new Error("JWT_REFRESH is not defined"); })(),
-      { expiresIn: "7d" }
-    );
+    // const isValid = await verifyMessage({
+    //   address: wallet_address as Address,
+    //   message: expectedMessage,
+    //   signature
+    // })
+
+    // if(!isValid) return NextResponse.json({ message: "Invalid signature" }, { status: 401 })
+
+    // Delete nonce supaya ga bisa dipakai ulang
+    await prisma.nonce.delete({ where: { id: nonce.id } })
+
+    const accessToken = await generateAccessToken({id: user.id, wallet_address: user.wallet_address, role: user.role_id});
+    const refreshToken = await generateRefreshToken({id: user.id, wallet_address: user.wallet_address, role: user.role_id});
 
     const response = NextResponse.json({
       message: "Login successful",

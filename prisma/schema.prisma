@@ -12,36 +12,48 @@ model Booking {
   kamar_id         Int
   hotel_id         Int
   user_id          Int
+  user_booking     String
+  wa_booking       String
   tanggal_checkin  DateTime
   tanggal_checkout DateTime
   price_total      Float
   createdAt        DateTime @default(now())
-  deletedAt        DateTime?
   updatedAt        DateTime @updatedAt
 
-  kamar  KamarInHotel @relation(fields: [kamar_id], references: [id], name: "KamarBookings", onDelete: Cascade)
-  hotel  Hotel        @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
-  user   User         @relation(fields: [user_id], references: [id], name: "UserBookings", onDelete: Cascade)
+  kamar KamarInHotel @relation(fields: [kamar_id], references: [id], name: "KamarBookings", onDelete: Cascade)
+  hotel Hotel        @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  user  User         @relation(fields: [user_id], references: [id], name: "UserBookings", onDelete: Cascade)
 }
 
 model User {
-  id           Int          @id @default(autoincrement())
-  nama         String
-  no_wa        String
-  email        String       @unique
-  password     String
-  is_active    Boolean      @default(true)
-  role_id      Int
-  createdAt    DateTime     @default(now())
-  deletedAt    DateTime?
-  updatedAt    DateTime     @updatedAt
+  id             Int      @id @default(autoincrement())
+  nama           String?
+  no_wa          String?
+  wallet_address String   @unique
+  is_active      Boolean  @default(true)
+  role_id        Int      @default(1)
+  pofile         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  role         Role         @relation(fields: [role_id], references: [id])
-  bookings     Booking[]    @relation("UserBookings")
-  ratings      Rating[]
-  hotels       Hotel[]      @relation("UserHotels")
-  ProfilePict  ProfilePict? @relation("UserProfilePict")
+  role        Role         @relation(fields: [role_id], references: [id])
+  bookings    Booking[]    @relation("UserBookings")
+  ratings     Rating[]
+  hotels      Hotel[]      @relation("UserHotels")
+  ProfilePict ProfilePict? @relation("UserProfilePict")
+  nonces Nonce[]
 }
+
+model Nonce {
+  id        String   @id @default(uuid())
+  value     String   @unique
+  userId    Int
+  createdAt DateTime @default(now())
+  expiredAt DateTime
+
+  user      User      @relation(fields: [userId], references: [id])
+}
+
 
 model Role {
   id    Int    @id @default(autoincrement())
@@ -56,50 +68,47 @@ model KategoriKamar {
 }
 
 model Hotel {
-  id         Int             @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   nama_hotel String
   desk       String
   lokasi     String
   user_id    Int
   images     String[]
-  createdAt  DateTime        @default(now())
-  deletedAt  DateTime?
-  updatedAt  DateTime        @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
-  user       User            @relation("UserHotels", fields: [user_id], references: [id], onDelete: Cascade)
-  bookings   Booking[]
-  ratings    Rating[]
-  kamars     KamarInHotel[]
+  user     User           @relation("UserHotels", fields: [user_id], references: [id], onDelete: Cascade)
+  bookings Booking[]
+  ratings  Rating[]
+  kamars   KamarInHotel[]
 }
 
 model KamarInHotel {
-  id          Int            @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   nama_kamar  String
   price       Float
   kategori_id Int
   hotel_id    Int
   features    String[]
   images      String[]
-  createdAt   DateTime       @default(now())
-  deletedAt   DateTime?
-  updatedAt   DateTime       @updatedAt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  kategori    KategoriKamar  @relation(fields: [kategori_id], references: [id], onDelete: Cascade)
-  hotel       Hotel          @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
-  bookings    Booking[]      @relation("KamarBookings")
-  fasilitas   Fasilitas[]    @relation("KamarFasilitas")
+  kategori  KategoriKamar @relation(fields: [kategori_id], references: [id], onDelete: Cascade)
+  hotel     Hotel         @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  bookings  Booking[]     @relation("KamarBookings")
+  fasilitas Fasilitas[]   @relation("KamarFasilitas")
 }
 
 model Fasilitas {
-  id        Int           @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   nama      String
   desk      String
   kamar_id  Int
-  createdAt DateTime      @default(now())
-  deletedAt DateTime?
-  updatedAt DateTime      @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  kamar     KamarInHotel  @relation("KamarFasilitas", fields: [kamar_id], references: [id], onDelete: Cascade)
+  kamar KamarInHotel @relation("KamarFasilitas", fields: [kamar_id], references: [id], onDelete: Cascade)
 }
 
 model Rating {
@@ -109,17 +118,16 @@ model Rating {
   hotel_id  Int
   bintang   Int
   createdAt DateTime @default(now())
-  deletedAt DateTime?
   updatedAt DateTime @updatedAt
 
-  user      User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  hotel     Hotel    @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  hotel Hotel @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
 }
 
 model ProfilePict {
-  id       Int    @id @default(autoincrement())
-  user_id  Int    @unique
-  images   String
+  id      Int    @id @default(autoincrement())
+  user_id Int    @unique
+  images  String
 
-  user     User   @relation("UserProfilePict", fields: [user_id], references: [id], onDelete: Cascade)
+  user User @relation("UserProfilePict", fields: [user_id], references: [id], onDelete: Cascade)
 }
