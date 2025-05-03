@@ -1,31 +1,115 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BiWallet, BiSolidWallet } from "react-icons/bi";
-import { Avatar } from '@heroui/react';
+import LoadingName from '@/components/LoadingName';
+import Avatar from 'react-avatar';
+import { ConnectButton } from "@xellar/kit"
+import { Address, erc20Abi, formatUnits } from "viem"
+import { useAccount, useReadContract } from "wagmi"
 import { FiSun } from "react-icons/fi";
 import { RiDashboardHorizontalLine, RiDashboardHorizontalFill } from "react-icons/ri";
 import { RiUserSettingsLine, RiUserSettingsFill } from "react-icons/ri";
 import { TiArrowMaximise, TiArrowMinimise } from "react-icons/ti";
 import { LuLayers } from "react-icons/lu";
 import { IoLayers } from "react-icons/io5";
-import { BiLogOutCircle } from "react-icons/bi";
 import { RiHotelBedLine, RiHotelBedFill } from "react-icons/ri";
 import { RiHotelLine, RiHotelFill } from "react-icons/ri";
 import { RiHistoryLine, RiHistoryFill } from "react-icons/ri";
 import { LuMoon } from "react-icons/lu";
 import MenuSidebar from '@/components/menuSidebar';
-import { Input } from '@heroui/react';
-import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { toggleSidebar } from '../../../libs/slices/sidebarSlices';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../libs/store';
 import { toggleTheme } from '../../../libs/slices/themeSlices';
-
-
+import { setUser } from '../../../libs/slices/userSlice';
+import ButtonWallet from '@/components/ButtonWallet';
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+    const [loading, setLoading] = React.useState(true);
+    const users = useSelector((state: RootState) => state.users);
     const darkMode = useSelector((state: RootState) => state.theme.darkMode);
     const isCollapsed = useSelector((state: RootState) => state.sidebar.isColapsed);
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getUserLogged = async () => {
+          try {
+            const res = await fetch('/api/me');
+            if (res.status !== 200) {
+                //window.location.href = '/';
+              return;
+            }
+            const user = await res.json();
+            setLoading(false);
+            console.log(user.role_id);
+            dispatch(setUser(user));
+          } catch (err) {
+            console.error(err);
+            //window.location.href = '/';
+          }
+        };
+        getUserLogged();
+      }, [3000]);
+
+      
+      const menuItems = [
+        {
+          active: "dashboard",
+          name: "Dashboard",
+          href: "/dashboard",
+          iconInActive: RiDashboardHorizontalLine,
+          iconActive: RiDashboardHorizontalFill,
+          roles: [1, 2, 3],
+        },
+        {
+          active: "riwayat",
+          name: "Riwayat",
+          href: "/dashboard",
+          iconInActive: RiHistoryLine,
+          iconActive: RiHistoryFill,
+          roles: [1, 2, 3],
+        },
+        {
+          active: "menu-user",
+          name: "Menu User",
+          href: "/dashboard/admin/users",
+          iconInActive: RiUserSettingsLine,
+          iconActive: RiUserSettingsFill,
+          roles: [3],
+        },
+        {
+          active: "kategori",
+          name: "Kategori",
+          href: "/dashboard",
+          iconInActive: LuLayers,
+          iconActive: IoLayers,
+          roles: [2, 3],
+        },
+        {
+          active: "hotels",
+          name: "Hotel",
+          href: "/dashboard",
+          iconInActive: RiHotelLine,
+          iconActive: RiHotelFill,
+          roles: [2, 3],
+        },
+        {
+          active: "kamar",
+          name: "Kamar",
+          href: "/dashboard",
+          iconInActive: RiHotelBedLine,
+          iconActive: RiHotelBedFill,
+          roles: [2, 3],
+        },
+        {
+          active: "top-up",
+          name: "Top Up",
+          href: "/dashboard/top-up",
+          iconInActive: BiWallet,
+          iconActive: BiSolidWallet,
+          roles: [1, 2, 3],
+        },
+      ];
+      
 
     return (
         <div className="flex h-screen overflow-hidden">
@@ -43,31 +127,35 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                     <nav className="flex-grow overflow-y-auto">
                         <div className='flex flex-col gap-5'>
-                            <MenuSidebar active="dashboard" name="Dashboard" href="/dashboard" iconInActive={RiDashboardHorizontalLine} iconActive={RiDashboardHorizontalFill} />
-                            <MenuSidebar active="riwayat" name="Riwayat" href="/dashboard" iconInActive={RiHistoryLine} iconActive={RiHistoryFill} />
-                            <MenuSidebar active="menu-user" name="Menu User" href="/dashboard/users" iconInActive={RiUserSettingsLine} iconActive={RiUserSettingsFill} />
-                            <MenuSidebar active="kategori" name="Kategori" href="/dashboard" iconInActive={LuLayers} iconActive={IoLayers} />
-                            <MenuSidebar active="hotels" name="Hotel" href="/dashboard" iconInActive={RiHotelLine} iconActive={RiHotelFill} />
-                            <MenuSidebar active="kamar" name="Kamar" href="/dashboard" iconInActive={RiHotelBedLine} iconActive={RiHotelBedFill} />
-                            <MenuSidebar active="top-up" name="Top Up" href="/dashboard/top-up" iconInActive={BiWallet} iconActive={BiSolidWallet} />
+                            {users.role_id != null && menuItems.filter((item) => item.roles.includes(Number(users.role_id))).map((item) => (
+                                <MenuSidebar
+                                key={item.active}
+                                active={item.active}
+                                name={item.name}
+                                href={item.href}
+                                iconInActive={item.iconInActive}
+                                iconActive={item.iconActive} />
+                            ))}
                         </div>
                     </nav>
                     <div className="flex-none mt-auto">
-                        <MenuSidebar active="logout" name="Logout" href="/dashboard" iconInActive={BiLogOutCircle} iconActive={BiLogOutCircle} />
+                        <ButtonWallet/>
                     </div>
                 </div>
             </aside>
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 <header className={` ${darkMode ? 'bg-black-100' : 'bg-gray-100'} p-4 transition-bg shadow flex items-center justify-between flex-none`}>
-                    <h2 className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} text-medium font-bold transition-component`}>Selamat Datang, Fahmy</h2>
+                    {loading?  <LoadingName /> :
+                    <h2 className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} text-medium font-bold transition-component`}>Selamat Datang, {users.nama}!</h2>
+                    }
                     <div className="flex items-center space-x-4">
                         {darkMode ?
                             <FiSun className="text-white-50 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} /> :
                             <LuMoon className="text-gray-900 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} />}
-                        <Avatar isBordered radius="sm" src="https://i.pravatar.cc/150?u=a04258a2462d826712d" onClick={() => {
-                            window.location.href = "/dashboard/profile";
-                        }} />
+                            <Avatar  name={`${users.nama}`} size="35" className='cursor-pointer rounded-md' textSizeRatio={1.75} onClick={() => {
+                            window.location.href = '/dashboard/profile';
+                        }}/>
                     </div>
                 </header>
 

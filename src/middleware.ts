@@ -1,20 +1,31 @@
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { verifyAccessToken } from '@/utils/jwt';
+import { NextRequest } from 'next/server';
+import {  verifyRefreshToken } from './utils/jwt';
 
 export async function middleware(request: NextRequest) {
-  const authHeader = request.headers.get('authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+  const getToken = request.cookies.get('refreshToken')?.value;
+  if (!getToken) {
+    return NextResponse.redirect(new URL('/', request.url));
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    await verifyAccessToken(token);
+    const user = await verifyRefreshToken(getToken);
+
+    const isAdminPath = request.nextUrl.pathname.startsWith('/dashboard/admin');
+    const isOwnerPath = request.nextUrl.pathname.startsWith('/dashboard/owner');
+    console.log(user.role);
+    if ((isAdminPath && user.role !== 3) || (isOwnerPath && user.role !== 2)) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
+    console.log(user.role != 3 && isAdminPath);
+    if(user.role !== 3 && isAdminPath) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+
     return NextResponse.next();
   } catch (error) {
-    return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 });
+    return NextResponse.redirect(new URL('/', request.url));
   }
 }
 

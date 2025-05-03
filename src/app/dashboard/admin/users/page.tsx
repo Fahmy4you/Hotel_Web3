@@ -1,11 +1,9 @@
-// 'use client'
 import React from 'react'
-//import TableListUi from '@/components/TableListUi'
-
+import TableUI from '@/components/TableUI'
 const page = () => {
   return (
     <div>
-      {/* <TableListUi/> */}
+        <TableUI />
     </div>
   )
 }

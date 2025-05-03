@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react"
 import ConnectWalletButton from "@/components/ConnectWalletButton";
+import { FaHamburger } from "react-icons/fa";
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -57,9 +58,10 @@ const Navbar = () => {
                     ))}
                 </ul>
             </nav>
-
             <ConnectWalletButton/>
         </div>
+        <a href="/dashboard">
+        Testing</a>
     </header>
   )
 }

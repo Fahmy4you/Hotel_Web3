@@ -15,10 +15,6 @@ export function useAuthApp() {
     setToken(accessToken);
   };
 
-  const logout = () => {
-    localStorage.removeItem('accessToken');
-    setToken(null);
-  };
 
-  return { token, login, logout };
+  return { token, login };
 }
