@@ -3,6 +3,7 @@ import { Mona_Sans } from "next/font/google";
 import "./globals.css";
 import { XellarProvider } from './provider/XellarProvider';
 import { ReduxProvider } from "../../libs/provider";
+import { ThemeInitializer } from "../components/root/ThemeInitializer";
 
 const mona_sans = Mona_Sans({
   variable: '--font-mona',
@@ -24,13 +25,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body
-        className={`${mona_sans.variable} antialiased`}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${mona_sans.variable} antialiased`}>
         <XellarProvider>
           <ReduxProvider>
-            {children}
+            <ThemeInitializer>
+              {children}
+            </ThemeInitializer>
           </ReduxProvider>
         </XellarProvider>
       </body>

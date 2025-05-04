@@ -1,9 +1,12 @@
 "use client";
 import { useEffect, useState } from "react"
+import { useSelector } from "react-redux";
+import { RootState } from "../../libs/store";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 import { FaHamburger } from "react-icons/fa";
 
 const Navbar = () => {
+    const activeMenu = useSelector((state: RootState) => state.activeMenu.activeLink);
     const [scrolled, setScrolled] = useState(false);
 
     useEffect(() => {
@@ -60,7 +63,7 @@ const Navbar = () => {
             </nav>
             <ConnectWalletButton/>
         </div>
-        <a href="/dashboard">
+        <a href={activeMenu}>
         Testing</a>
     </header>
   )

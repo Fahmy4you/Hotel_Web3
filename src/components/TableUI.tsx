@@ -4,15 +4,27 @@ import { ArrowUpDown, MoreHorizontal, Search } from 'lucide-react';
 import { GetAllUser } from '@/app/Server/GetAllUser';
 const RoleBadge = ({ roleId }: { roleId: number }) => {
   const roles: Record<number, { name: string; color: string }> = {
-    1: { name: 'Guest', color: 'bg-blue-100 text-blue-800' },
-    2: { name: 'Owner', color: 'bg-green-100 text-green-800' },
-    3: { name: 'Admin', color: 'bg-yellow-100 text-yellow-800' }
+    1: { 
+      name: 'Guest', 
+      color: 'bg-blue-500/50  text-blue-600 dark:text-white-50' 
+    },
+    2: { 
+      name: 'Owner', 
+      color: 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100' 
+    },
+    3: { 
+      name: 'Admin', 
+      color: 'bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-100' 
+    }
   };
   
-  const role = roles[roleId] || { name: `Role ${roleId}`, color: 'bg-gray-100 text-gray-800' };
+  const role = roles[roleId] || { 
+    name: `Role ${roleId}`, 
+    color: 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100' 
+  };
   
   return (
-    <span className={`px-2 py-1 rounded-full text-xs font-medium ${role.color}`}>
+    <span className={`px-2 py-1 rounded-full text-xs font-medium ${role.color} transition-colors`}>
       {role.name}
     </span>
   );
@@ -32,19 +44,19 @@ const WalletAddress = ({ address }: { address: string }) => {
 // Table header component
 const TableHeader = () => { 
   return (
-    <div className="bg-black-50 p-4 border-b border-gray-800 rounded-t-lg">
+    <div className="dark:bg-black-50 p-4 border-b dark:border-gray-800 transition-component transition-bg bg-gray-100 border-gray-200 rounded-t-lg">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white-50">User Management</h2>
+        <h2 className="text-lg font-semibold dark:text-white-50 transition-component text-gray-900">User Management</h2>
         <div className="flex space-x-2">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <input
               type="text"
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="pl-10 pr-4 py-2 border dark:border-gray-800 transition-component dark:text-gray-100 text-neutral-900 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+          <button className="bg-[#BF00FF] hover:bg-[#301050] text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
             Add User
           </button>
         </div>
@@ -57,12 +69,12 @@ const ModernTableUI = async () => {
   // const darkMode = useSelector((state : RootState) => state.theme.darkMode);
   const data = await GetAllUser();
   return (
-    <div className="w-full bg-black-50 rounded-lg shadow-lg overflow-hidden">
+    <div className="w-full dark:bg-black-50 transition-bg bg-gray-100 rounded-lg shadow-lg overflow-hidden">
       <TableHeader />
       
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-800">
-          <thead className="bg-black-50">
+        <table className="min-w-full divide-y transition-bg dark:divide-gray-800 transition-component divide-gray-400">
+          <thead className="dark:bg-black-50 transition-bg bg-gray-100">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 <div className="flex items-center cursor-pointer hover:text-gray-700">
@@ -93,11 +105,11 @@ const ModernTableUI = async () => {
               </th>
             </tr>
           </thead>
-          <tbody className="bg-neutral-800 divide-y divide-gray-800">
+          <tbody className="dark:bg-neutral-800 transition-bg bg-slate-100 divide-y transition-component dark:divide-gray-800 divide-gray-200">
             {(data ?? []).map((user) => (
-              <tr key={user.id} className="hover:bg-neutral-700 transition-colors">
+              <tr key={user.id} className="dark:hover:bg-neutral-700 hover:bg-slate-200 transition-bg">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-white-50">#{user.id}</div>
+                  <div className="text-sm font-medium dark:text-white-50 transition-component text-gray-900">#{user.id}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <WalletAddress address={user.wallet_address} />
@@ -106,7 +118,7 @@ const ModernTableUI = async () => {
                   <RoleBadge roleId={user.role_id} />
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-white-50">{user.nama}</div>
+                  <div className="text-sm font-medium transition-component dark:text-white-50 text-gray-900">{user.nama}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button className="text-blue-600 hover:text-blue-900 mr-3">Edit</button>
@@ -124,16 +136,16 @@ const ModernTableUI = async () => {
         )}
       </div>
       
-      <div className="bg-black-50 px-6 py-4 border-t border-gray-800">
+      <div className="dark:bg-black-50 bg-gray-100 border-gray-400 px-6 py-4 border-t transition-bg transition-component dark:border-gray-800">
         <div className="flex items-center justify-between">
           <div className="text-sm text-gray-500">
             Showing <span className="font-medium">{data?.length}</span> users
           </div>
           <div className="flex space-x-2">
-            <button className="px-3 py-1 transition-component rounded-md text-sm bg-[#7828C8] hover:bg-[#301050]">
+            <button className="px-3 py-1 transition-component rounded-md text-sm bg-[#BF00FF] hover:bg-[#301050]">
               Previous
             </button>
-            <button className="px-3 py-1 transition-component rounded-md text-sm bg-[#7828C8] hover:bg-[#301050]">
+            <button className="px-3 py-1 transition-component rounded-md text-sm bg-[#BF00FF] hover:bg-[#301050]">
               Next
             </button>
           </div>

@@ -72,7 +72,7 @@ const MenuSidebar = ({ active, href, name, iconActive, iconInActive }: MenuSideb
   };
 
   const handleClick = () => {
-    dispatch(setActiveMenu(active));
+    dispatch(setActiveMenu({ activeMenu: active, activeLink: href }));
     if (menuRef.current) {
       gsap.timeline()
         .to(menuRef.current, { scale: 0.95, duration: 0.1 })

@@ -113,12 +113,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="flex h-screen overflow-hidden">
-            <aside className={`${darkMode ? 'bg-black-100 text-white-50' : 'bg-gray-100 text-gray-900'} p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-all duration-300 ease-in-out`}>
+            <aside className={`bg-gray-100 dark:text-white-50 text-gray-900 dark:bg-black-100 p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-component`}>
                 <div className="flex flex-col h-full">
                     <div className="flex gap-2 justify-between mb-4">
                         <h2 className="text-2xl font-bold"> {isCollapsed ? 'FK HOTEL' : 'FK'}</h2>
                         <button
-                            className={`mb-4 ${darkMode ? 'text-white-50' : 'text-gray-900'} text-2xl transition-component`}
+                            className='mb-4 dark:text-white-50 text-gray-900 text-2xl'
                             onClick={() => dispatch(toggleSidebar())}
                         >
                             {isCollapsed ? <TiArrowMinimise /> : <TiArrowMaximise />}
@@ -145,9 +145,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </aside>
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className={` ${darkMode ? 'bg-black-100' : 'bg-gray-100'} p-4 transition-bg shadow flex items-center justify-between flex-none`}>
+                <header className='dark:bg-black-100 bg-gray-100 p-4 transition-bg shadow flex items-center justify-between flex-none'>
                     {loading?  <LoadingName /> :
-                    <h2 className={` ${darkMode ? 'text-white-50' : 'text-gray-900'} text-medium font-bold transition-component`}>Selamat Datang, {users.nama}!</h2>
+                    <h2 className='dark:text-white-50 text-gray-900 text-medium font-bold transition-component'>Selamat Datang, {users.nama}!</h2>
                     }
                     <div className="flex items-center space-x-4">
                         {darkMode ?
@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     </div>
                 </header>
 
-                <main className={`flex-1 p-6 ${darkMode ? 'bg-body' : 'bg-white'} transition-bg overflow-y-auto`}>
+                <main className='flex-1 p-6 dark:bg-body bg-white transition-bg overflow-y-auto'>
                     {children}
                 </main>
             </div>
