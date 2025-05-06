@@ -13,12 +13,12 @@ export async function middleware(request: NextRequest) {
 
     const isAdminPath = request.nextUrl.pathname.startsWith('/dashboard/admin');
     const isOwnerPath = request.nextUrl.pathname.startsWith('/dashboard/owner');
-    console.log(user.role);
+    // console.log(user.role);
     if ((isAdminPath && user.role !== 3) || (isOwnerPath && user.role !== 2)) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }
 
-    console.log(user.role != 3 && isAdminPath);
+    // console.log(user.role != 3 && isAdminPath);
     if(user.role !== 3 && isAdminPath) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
     }

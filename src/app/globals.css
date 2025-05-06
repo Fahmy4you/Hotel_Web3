@@ -38,6 +38,7 @@ section {
 }
 
 @layer utilities {
+
   .flex-center {
     @apply flex justify-center items-center;
   }
@@ -53,6 +54,7 @@ section {
 }
 
 @layer components {
+  
   .padding-x {
     @apply px-5 md:px-10;
   }
@@ -320,6 +322,7 @@ section {
     }
   }
 }
+
 
 /* Hero text slider starts */
 .slide {
