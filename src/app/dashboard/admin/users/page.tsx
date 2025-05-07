@@ -3,7 +3,7 @@ import TableUI from '@/components/TableUI'
 const page = () => {
   return (
     <div>
-        <TableUI />
+        <TableUI onAddUser={() => {}} onSearch={() => {}} />
     </div>
   )
 }

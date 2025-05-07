@@ -73,6 +73,7 @@ model Hotel {
   desk       String
   lokasi     String
   user_id    Int
+  is_banned  Boolean
   images     String[]
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -87,6 +88,7 @@ model KamarInHotel {
   id          Int      @id @default(autoincrement())
   nama_kamar  String
   price       Float
+  is_banned   Boolean
   kategori_id Int
   hotel_id    Int
   features    String[]

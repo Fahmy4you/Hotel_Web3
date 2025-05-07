@@ -35,7 +35,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           try {
             const res = await fetch('/api/me');
             if (res.status !== 200) {
-                //window.location.href = '/';
+                //window.location.href = '/'; 
               return;
             }
             const user = await res.json();
@@ -87,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {
           active: "hotels",
           name: "Hotel",
-          href: "/dashboard",
+          href: "/dashboard/hotel",
           iconInActive: RiHotelLine,
           iconActive: RiHotelFill,
           roles: [2, 3],

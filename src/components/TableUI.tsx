@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { FaAngleLeft, FaAngleRight, FaTrashAlt } from "react-icons/fa";
 import { RiPencilLine } from "react-icons/ri";
 import { ArrowUpDown } from 'lucide-react';
-import { GetAllUser } from '@/app/Server/GetAllUser';
+import { GetAllUser } from '@/app/Server/Users/GetAllUser';
 import RoleBadge from './TableAtom/RoleBadge';
 import WalletAddress from './TableAtom/WalletAddress';
 import TableHeader from './TableAtom/TableHeader';
 import UiButton from './UiButton';
-import UserModal from './Modals/AddEditModals';
+import UserModal from './Modals/Users/UsersMoadal';
 
 import { UserData } from '../../types/userData';
 import SuccessAlert from './Alert/SuccessAllert';
@@ -16,11 +16,12 @@ import ConfirmModal from './Modals/DeleteModalDialog';
 import { deleteUser } from '@/app/Server/Users/DeleteUser';
 
 interface ModernTableUIProps {
-  // onAddUser?: (userData: UserData) => void;
+  onSearch: (query: string) => void;
+  onAddUser: (userData: UserData) => void;
   onEditUser?: (userData: UserData) => void;
 }
 
-const ModernTableUI: React.FC<ModernTableUIProps> = ({ onEditUser }) => {
+const ModernTableUI: React.FC<ModernTableUIProps> = ({ onEditUser, onAddUser, onSearch }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
@@ -91,7 +92,19 @@ const ModernTableUI: React.FC<ModernTableUIProps> = ({ onEditUser }) => {
   }
   return (
     <div className="w-full dark:bg-black-50 transition-bg bg-gray-100 rounded-lg shadow-lg overflow-hidden">
-      <TableHeader onSearch={setQuery} />
+      <TableHeader<UserData>
+        title="User Management"
+        onSearch={onSearch}
+        addButtonText="Add User"
+        renderModal={({ isOpen, onClose }) => (
+          <UserModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onSubmit={onAddUser}
+            mode="add"
+          />
+        )}
+      />
 
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y transition-bg dark:divide-gray-800 transition-component divide-gray-400">
