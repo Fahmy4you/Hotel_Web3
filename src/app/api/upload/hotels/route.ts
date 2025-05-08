@@ -1,88 +1,46 @@
-import { PrismaClient } from '@prisma/client';
 import { NextRequest, NextResponse } from 'next/server';
-import formidable from 'formidable';
 import fs from 'fs';
 import path from 'path';
-import { verifyToken } from '@/utils/verifyToken';
-import { checkMultipleRoles } from '@/utils/checkMultiRole';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-/**
- * @swagger
- * /upload/hotels:
- *   post:
- *     tags: [Hotels]
- *     summary: Create a new Hotel data - Access Role [Admin, Pemilik Hotel]
- *     security:
- *       - Bearer: []
- *     consumes:
- *       - multipart/form-data
- *     parameters:
- *       - in: formData
- *         name: nama_hotel
- *         type: string
- *         required: true
- *       - in: formData
- *         name: desk
- *         type: string
- *         required: true
- *       - in: formData
- *         name: lokasi
- *         type: string
- *         required: true
- *       - in: formData
- *         name: user_id
- *         type: integer
- *         required: true
- *       - in: formData
- *         name: file
- *         type: file
- *         required: true
- *     responses:
- *       201:
- *         description: Hotel created successfully
- *       401:
- *        description: Unauthorized access
- *       403:
- *        description: Forbidden access
- */
+export const config = {
+  api: {
+    bodyParser: false, 
+    sizeLimit: '10mb'
+  }
+};
 
 export async function POST(req: NextRequest) {
-  const token = req.headers.get('Authorization')?.split(' ')[1];
-  if (!token) {
-    return NextResponse.json({ error: 'Token not provided' }, { status: 401 });
-  }
-
-  const decoded = verifyToken(token);
-  if (decoded instanceof NextResponse) return decoded;
-
-  const isAllowedRole = checkMultipleRoles(decoded, [1, 2]);
-  if (!isAllowedRole) return isAllowedRole;
-  
-  const uploadFolder = path.join(process.cwd(), 'public/uploads');
-
-  if (!fs.existsSync(uploadFolder)) {
-    fs.mkdirSync(uploadFolder, { recursive: true });
-  }
-
-  const formData = await req.formData();
-  
   try {
-    const nama_hotel = formData.get('nama_hotel') as string;
-    const desk = formData.get('desk') as string;
-    const lokasi = formData.get('lokasi') as string;
-    const user_id = formData.get('user_id') as string;
-    const files = formData.getAll('file') as File[];
+    const formData = await req.formData();
 
-    if (!files || files.length === 0 || !nama_hotel || !desk || !lokasi || !user_id) {
-      return NextResponse.json({ error: 'Missing required fields or no files uploaded' }, { status: 400 });
+    const nama_hotel = formData.get('nama_hotel')?.toString().trim();
+    const desk = formData.get('desk')?.toString().trim();
+    const lokasi = formData.get('lokasi')?.toString().trim();
+    const user_id = formData.get('user_id')?.toString().trim();
+    const files = formData.getAll('files') as File[];
+
+    const missingFields = [];
+    if (!nama_hotel) missingFields.push('nama_hotel');
+    if (!desk) missingFields.push('desk');
+    if (!lokasi) missingFields.push('lokasi');
+    if (!user_id) missingFields.push('user_id');
+    if (!files || files.length === 0) missingFields.push('files');
+
+    if (missingFields.length > 0) {
+      console.log('Missing fields:', missingFields);
+      return NextResponse.json(
+        { error: 'Missing fields', missingFields },
+        { status: 400 }
+      );
+    }
+    
+    console.log("Form data received:", { nama_hotel, desk, lokasi, user_id, fileCount: files.length });
+
+    if (!nama_hotel || !desk || !lokasi || !user_id || !files || files.length === 0) {
+      return NextResponse.json({ error: 'Field is missing' }, { status: 400 });
     }
 
     const hotel = await prisma.hotel.create({
@@ -91,34 +49,40 @@ export async function POST(req: NextRequest) {
         desk,
         lokasi,
         user_id: parseInt(user_id),
+        is_banned: false,
         images: [],
       },
     });
 
-    const imagePaths: string[] = [];
-    for (const file of files) {
-      const newFileName = `${file.name.split('.')[0]}&${hotel.id}.${file.name.split('.').pop()}`;
-      const filePath = path.join(uploadFolder, newFileName);
+    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
 
+    const imagePaths: string[] = [];
+
+    for (const file of files) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
+      const ext = file.name.split('.').pop();
+      const newFileName = `${file.name.split('.')[0]}-${hotel.id}.${ext}`;
+      const filePath = path.join(uploadDir, newFileName);
 
       fs.writeFileSync(filePath, buffer);
-
       imagePaths.push(`uploads/${newFileName}`);
     }
 
+    // Update hotel dengan path gambar
     await prisma.hotel.update({
       where: { id: hotel.id },
-      data: { images: imagePaths },
+      data: {
+        images: imagePaths,
+      },
     });
 
-    return NextResponse.json({
-      message: 'Hotel created successfully with images',
-      hotel: { ...hotel, images: imagePaths },
-    }, { status: 201 });
+    return NextResponse.json({ message: 'Hotel created successfully', hotel: { ...hotel, images: imagePaths } });
   } catch (error) {
-    console.error('Error processing upload:', error);
-    return NextResponse.json({ error: 'Error processing upload' }, { status: 500 });
+    console.error('Upload error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

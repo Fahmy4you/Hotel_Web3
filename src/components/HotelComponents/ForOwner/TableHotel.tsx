@@ -1,18 +1,16 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { FaAngleLeft, FaAngleRight, FaTrashAlt } from "react-icons/fa";
+import React, { useState } from 'react';
+import { FaTrashAlt } from "react-icons/fa";
 import { RiPencilLine } from "react-icons/ri";
 import { ArrowUpDown } from 'lucide-react';
 import TableHeader from '@/components/TableAtom/TableHeader';
-import UiButton from '../../UiButton';
+import TableFooter from '@/components/TableAtom/TableFooter';
 import { HotelData } from '../../../../types/hotelData';
-import ConfirmModal from '../../Modals/DeleteModalDialog';
-import { getMyHotels } from '@/app/Server/Hotel/Owner/GettMyHotels';
-import { deleteHotel } from '@/app/Server/Hotel/Owner/DeleteHotel';
 import HotelModal from '@/components/Modals/Hotel/HotelModal';
-import { addHotel } from '@/app/Server/Hotel/Owner/AddHotel';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
+import { useManageHotel } from '@/hooks/useManageHotel';
+import ConfirmDeleteHotelModal from '@/components/Modals/Hotel/ModalConfrimDelete';
 
 interface TableHotelProps {
   onEditHotel?: (hotelData: HotelData) => void;
@@ -20,32 +18,29 @@ interface TableHotelProps {
 }
 
 const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
-  const userID = useSelector((state: RootState) => state.users.id);
+  const userID = useSelector((state: RootState) => state.users.id) || 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [currentHotel, setCurrentHotel] = useState<HotelData | null>(null);
-  const [query, setQuery] = useState('');
-  const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
-  const [data, setData] = useState<HotelData[]>([]);
-  const [deleting, setDeleting] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
 
-  // Fetch data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getMyHotels({ search: query, page: 1 });
-        setData(response?.hotels || []);
-      } catch (error) {
-        console.error("Error fetching hotels:", error);
-      }
-    };
-    fetchData();
-  }, [query]);
+  const {
+    hotels,
+    setQuery,
+    query,
+    deleting,
+    submitHotel,
+    deleteMyHotel
+  } = useManageHotel(userID, onEditHotel, onAddHotel);
 
-  const filteredData = data.filter(hotel =>
+  const filteredData = hotels.filter(hotel =>
     (hotel.nama_hotel || '').toLowerCase().includes(query.toLowerCase())
   );
+
+  const handleAddNewHotel = (formData: HotelData) => {
+    submitHotel(formData, isEditMode, currentHotel, handleCloseModal);
+  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -71,46 +66,10 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDeleteHotel = async (hotelId: number) => {
-    setDeleting(true);
-    try {
-      await deleteHotel(hotelId);
-      const response = await getMyHotels({ search: query, page: 1 });
-      setData(response.hotels);
-    } catch (error) {
-      console.error("Error deleting hotel:", error);
-    } finally {
-      setDeleting(false);
-      setIsDeleteModalOpen(false);
-    }
-  };
-
-  const handleSubmit = async (formData: HotelData) => {
-    try {
-      const hotelData: HotelData = {
-        ...formData,
-        nama_hotel: formData.nama_hotel,
-        desk: formData.desk,
-        lokasi: formData.lokasi || '',
-      };
-
-      const formDataToSend = new FormData();
-      formDataToSend.append('nama_hotel', formData.nama_hotel || '');
-      formDataToSend.append('lokasi', formData.lokasi || '');
-      formDataToSend.append('desk', formData.desk || '');
-      await addHotel(formDataToSend, Number(userID));
-      
-      if (isEditMode && currentHotel?.id) {
-        onEditHotel?.({ ...hotelData, id: currentHotel.id });
-      } else {
-        onAddHotel?.(hotelData);
-      }
-      const response = await getMyHotels({ search: query, page: 1 });
-      setData(response.hotels);
-      handleCloseModal();
-    } catch (error) {
-      console.error("Error submitting hotel:", error);
-    }
+  const confirmDeleteHotel = async () => {
+    if (selectedHotelId === null) return;
+    await deleteMyHotel(selectedHotelId);
+    setIsDeleteModalOpen(false);
   };
 
   const columns = [
@@ -133,21 +92,13 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
           <HotelModal
             isOpen={isModalOpen}
             onClose={handleCloseModal}
-            onSubmit={handleSubmit}
+            onSubmit={handleAddNewHotel}
             mode={isEditMode ? 'edit' : 'add'}
             hotelData={currentHotel}
           />
         )}
       />
 
-<HotelModal
-            isOpen={isModalOpen}
-            onClose={handleCloseModal}
-            onSubmit={handleSubmit}
-            mode={isEditMode ? 'edit' : 'add'}
-            hotelData={currentHotel}
-          />
-          
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-400 dark:divide-gray-800 transition-colors">
           <thead className="bg-gray-100 dark:bg-black-50 transition-colors">
@@ -155,8 +106,7 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
               {columns.map((column) => (
                 <th
                   key={column.key}
-                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.align === 'right' ? 'text-right' : ''
-                    }`}
+                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.align === 'right' ? 'text-right' : ''}`}
                 >
                   <div className={`flex items-center ${column.align !== 'right' ? 'cursor-pointer hover:text-gray-700' : ''}`}>
                     {column.label}
@@ -182,14 +132,8 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
                   <div className="text-sm font-medium text-gray-900 dark:text-white-50">{hotel.lokasi}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                    hotel.is_banned 
-                      ? 'bg-red-900/20 text-red-500 border border-red-500 shadow-[0_0_4px_rgba(239,68,68,0.5)]' 
-                      : 'bg-green-900/20 text-green-400 border border-green-400 shadow-[0_0_4px_rgba(74,222,128,0.5)]'
-                  }`}>
-                    <span className={`w-2 h-2 rounded-full mr-1.5 ${
-                      hotel.is_banned ? 'bg-red-500 animate-pulse' : 'bg-green-400 animate-pulse'
-                    }`}></span>
+                  <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${hotel.is_banned ? 'bg-red-900/20 text-red-500 border border-red-500 shadow-[0_0_4px_rgba(239,68,68,0.5)]' : 'bg-green-900/20 text-green-400 border border-green-400 shadow-[0_0_4px_rgba(74,222,128,0.5)]'}`}>
+                    <span className={`w-2 h-2 rounded-full mr-1.5 ${hotel.is_banned ? 'bg-red-500 animate-pulse' : 'bg-green-400 animate-pulse'}`}></span>
                     {hotel.is_banned ? 'Inactive' : 'Active'}
                   </div>
                 </td>
@@ -228,37 +172,15 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
         onNext={() => { }}
       />
 
-      {/* <ConfirmModal
+      <ConfirmDeleteHotelModal
+        hotelId={selectedHotelId || 0}
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        onConfirm={() => selectedHotelId && confirmDeleteHotel(selectedHotelId)}
+        onConfirm={confirmDeleteHotel}
         isLoading={deleting}
-        title="Confirm Delete"
-        description="Are you sure you want to delete this hotel?"
-        confirmText={deleting ? "Deleting..." : "Yes, Delete"}
-        cancelText="Cancel"
-      /> */}
+      />
     </div>
   );
 };
-
-const TableFooter = ({ itemCount, itemName, onPrev, onNext }: {
-  itemCount: number;
-  itemName: string;
-  onPrev: () => void;
-  onNext: () => void;
-}) => (
-  <div className="dark:bg-black-50 bg-gray-100 px-6 py-4 border-t border-gray-400 dark:border-gray-800 transition-colors">
-    <div className="flex items-center justify-between">
-      <div className="text-sm text-gray-500">
-        Showing <span className="font-medium">{itemCount}</span> {itemName}
-      </div>
-      <div className="flex space-x-2">
-        <UiButton click={onPrev} icon={FaAngleLeft} />
-        <UiButton click={onNext} icon={FaAngleRight} />
-      </div>
-    </div>
-  </div>
-);
 
 export default TableHotel;

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { FaHotel, FaImage, FaMapMarkerAlt, FaTimes } from "react-icons/fa";
+import { FaHotel, FaImage, FaMapMarkerAlt, FaTimes, FaTrash } from "react-icons/fa";
 import { MdDescription } from "react-icons/md";
 import Image from 'next/image';
 import { HotelData } from '../../../../types/hotelData';
@@ -21,8 +21,8 @@ const HotelModal: React.FC<HotelModalProps> = ({
     mode = 'add',
     hotelData = null
 }) => {
-    const [logoFile, setLogoFile] = useState<File | null>(null);
-    const [logoPreview, setLogoPreview] = useState<string | null>(null);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    const [imagePreviews, setImagePreviews] = useState<string[]>([]);
     const [isImageLoading, setIsImageLoading] = useState(false);
     const [imageError, setImageError] = useState(false);
     const [formData, setFormData] = useState<HotelData>({
@@ -34,12 +34,14 @@ const HotelModal: React.FC<HotelModalProps> = ({
     });
     const [isPending, setIsPending] = useState(false);
     
-    // References for GSAP animations
     const modalRef = useRef<HTMLDivElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
     const contentRef = useRef<HTMLDivElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // Initialize form data and preview from hotelData
+    // Maximum number of images allowed
+    const MAX_IMAGES = 3;
+
     useEffect(() => {
         if (hotelData) {
             setFormData({
@@ -52,15 +54,22 @@ const HotelModal: React.FC<HotelModalProps> = ({
             });
             
             if (hotelData.images && hotelData.images.length > 0) {
-                const firstImage = hotelData.images[0];
-
-                if (firstImage instanceof File) {
-                    const reader = new FileReader();
-                    reader.onload = () => setLogoPreview(reader.result as string);
-                    reader.readAsDataURL(firstImage);
-                } else if (typeof firstImage === 'string') {
-                    setLogoPreview(firstImage);
-                }
+                const previews: string[] = [];
+                
+                // Prosess preview gambar
+                hotelData.images.forEach(async (image) => {
+                    if (image instanceof File) {
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                            previews.push(reader.result as string);
+                            setImagePreviews([...previews]);
+                        };
+                        reader.readAsDataURL(image);
+                    } else if (typeof image === 'string') {
+                        previews.push(image);
+                        setImagePreviews([...previews]);
+                    }
+                });
             }
         } else {
             setFormData({
@@ -70,25 +79,22 @@ const HotelModal: React.FC<HotelModalProps> = ({
                 lokasi: '',
                 images: [],
             });
-            setLogoPreview(null);
+            setImagePreviews([]);
+            setImageFiles([]);
         }
     }, [hotelData]);
 
-    // GSAP Animations
     useEffect(() => {
         if (!isOpen || !modalRef.current) return;
         
-        // Create animation timeline
         const tl = gsap.timeline();
         
-        // Animate overlay
         tl.fromTo(
             overlayRef.current,
             { opacity: 0 },
             { opacity: 1, duration: 0.3 }
         );
         
-        // Animate modal content
         tl.fromTo(
             contentRef.current,
             { 
@@ -111,7 +117,6 @@ const HotelModal: React.FC<HotelModalProps> = ({
         };
     }, [isOpen]);
 
-    // Close animation
     const handleCloseWithAnimation = () => {
         if (!modalRef.current) {
             onClose();
@@ -141,23 +146,57 @@ const HotelModal: React.FC<HotelModalProps> = ({
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
+        const files = e.target.files;
+        if (!files || files.length === 0) return;
 
-        setLogoFile(file);
         setImageError(false);
         setIsImageLoading(true);
+        
+        // Calculate how many more files we can add
+        const remainingSlots = MAX_IMAGES - imagePreviews.length;
+        const filesToProcess = Array.from(files).slice(0, remainingSlots);
+        
+        const newImageFiles = [...imageFiles];
+        const newPreviews = [...imagePreviews];
+        
+        const processFile = (index: number) => {
+            if (index >= filesToProcess.length) {
+                setImageFiles(newImageFiles);
+                setImagePreviews(newPreviews);
+                setIsImageLoading(false);
+                return;
+            }
+            
+            const file = filesToProcess[index];
+            newImageFiles.push(file);
+            
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                newPreviews.push(reader.result as string);
+                processFile(index + 1);
+            };
+            reader.onerror = () => {
+                setImageError(true);
+                processFile(index + 1);
+            };
+            reader.readAsDataURL(file);
+        };
+        
+        processFile(0);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
+    };
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setLogoPreview(reader.result as string);
-            setIsImageLoading(false);
-        };
-        reader.onerror = () => {
-            setIsImageLoading(false);
-            setImageError(true);
-        };
-        reader.readAsDataURL(file);
+    const handleRemoveImage = (index: number) => {
+        const newPreviews = [...imagePreviews];
+        const newImageFiles = [...imageFiles];
+        
+        newPreviews.splice(index, 1);
+        newImageFiles.splice(index, 1);
+        
+        setImagePreviews(newPreviews);
+        setImageFiles(newImageFiles);
     };
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -173,36 +212,18 @@ const HotelModal: React.FC<HotelModalProps> = ({
         setIsPending(true);
         
         try {
-            let images: string[] = [];
-            if (logoFile) {
-                const dataUrl = await new Promise<string>((resolve) => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => resolve(reader.result as string);
-                    reader.readAsDataURL(logoFile);
-                });
-                images = [dataUrl];
-            } else if (hotelData?.images) {
-                images = await Promise.all(hotelData.images.map(async (image) => {
-                    if (image instanceof File) {
-                        return new Promise<string>((resolve) => {
-                            const reader = new FileReader();
-                            reader.onloadend = () => resolve(reader.result as string);
-                            reader.readAsDataURL(image);
-                        });
-                    }
-                    return image;
-                }));
-            }
-            
-            onSubmit({
-                ...formData,
-                images
-            });
+          onSubmit({
+            ...formData,
+            images: [
+              ...imageFiles,
+              ...(hotelData?.images?.filter(img => typeof img === 'string') || [])
+            ]
+          });
         } finally {
-            setIsPending(false);
-            handleCloseWithAnimation();
+          setIsPending(false);
+          handleCloseWithAnimation();
         }
-    };
+      };
 
     if (!isOpen) return null;
 
@@ -245,51 +266,83 @@ const HotelModal: React.FC<HotelModalProps> = ({
                 {/* Form */}
                 <form onSubmit={handleSubmitForm}>
                     <div className="px-6 py-5 max-h-[calc(100vh-150px)] overflow-y-auto">
-                        {/* Logo Upload */}
+                        {/* Image Upload */}
                         <div className="mb-6">
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Hotel Logo
+                                Hotel Images <span className="text-xs text-gray-500">(Max 3 Images)</span>
                             </label>
-                            <div className="flex items-center space-x-4">
-                                <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-inner">
-                                    {isImageLoading ? (
-                                        <div className="w-full h-full flex items-center justify-center">
-                                            <div className="w-8 h-8 border-2 border-t-transparent border-blue-500 rounded-full animate-spin" />
-                                        </div>
-                                    ) : imageError || !logoPreview ? (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                            <FaImage className="w-8 h-8" />
-                                        </div>
-                                    ) : (
+                            
+                            {/* Image Previews */}
+                            <div className="flex flex-wrap gap-2 mb-3">
+                                {imagePreviews.map((preview, index) => (
+                                    <div 
+                                        key={index} 
+                                        className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-inner group"
+                                    >
                                         <div className="relative w-full h-full">
-                                            <Image
-                                                src={logoPreview}
-                                                alt="Hotel Logo Preview"
-                                                fill
-                                                className="object-cover"
-                                                onError={() => setImageError(true)}
-                                                priority
-                                            />
+                                        <Image
+                                        src={typeof preview === "string"
+                                            ? (mode === "edit" ? `/${preview}` : preview)
+                                            : URL.createObjectURL(preview)}
+                                        alt={`Hotel Image ${index + 1}`}
+                                        fill
+                                        className="object-cover"
+                                        onError={() => setImageError(true)}
+                                        priority
+                                        />
                                         </div>
-                                    )}
-                                </div>
-                                <label className="flex-1 cursor-pointer">
+                                        <button 
+                                            type="button"
+                                            onClick={() => handleRemoveImage(index)}
+                                            className="absolute right-1 top-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-red-600"
+                                        >
+                                            <FaTrash className="w-3 h-3" />
+                                        </button>
+                                    </div>
+                                ))}
+                                
+                                {/* Upload Button (only if less than MAX_IMAGES) */}
+                                {imagePreviews.length < MAX_IMAGES && (
+                                    <label className="cursor-pointer w-20 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-inner flex items-center justify-center">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleFileChange}
+                                            className="hidden"
+                                            multiple
+                                            disabled={isPending || imagePreviews.length >= MAX_IMAGES}
+                                            ref={fileInputRef}
+                                        />
+                                        {isImageLoading ? (
+                                            <div className="w-6 h-6 border-2 border-t-transparent border-blue-500 rounded-full animate-spin" />
+                                        ) : (
+                                            <FaImage className="w-8 h-8 text-gray-400" />
+                                        )}
+                                    </label>
+                                )}
+                            </div>
+                            
+                            {/* Upload Button (text) */}
+                            {imagePreviews.length < MAX_IMAGES && (
+                                <label className="cursor-pointer">
                                     <input
                                         type="file"
                                         accept="image/*"
                                         onChange={handleFileChange}
                                         className="hidden"
-                                        disabled={isPending}
+                                        multiple
+                                        disabled={isPending || imagePreviews.length >= MAX_IMAGES}
+                                        ref={fileInputRef}
                                     />
                                     <div className={`px-4 py-2 rounded-lg text-center transition-all ${
                                         isPending 
                                             ? 'bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500' 
                                             : 'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30'
-                                    } border border-blue-200 dark:border-blue-800`}>
-                                        {logoPreview ? 'Change Logo' : 'Upload Logo'}
+                                    } border border-blue-200 dark:border-blue-800 w-full`}>
+                                        {imagePreviews.length > 0 ? 'Add More Images' : 'Upload Images'}
                                     </div>
                                 </label>
-                            </div>
+                            )}
                         </div>
 
                         {/* Hotel Name */}

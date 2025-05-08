@@ -79,7 +79,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {
           active: "kategori",
           name: "Kategori",
-          href: "/dashboard",
+          href: "/dashboard/kategori",
           iconInActive: LuLayers,
           iconActive: IoLayers,
           roles: [2, 3],

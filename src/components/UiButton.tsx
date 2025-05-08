@@ -12,6 +12,7 @@ const UiButton = ({ click, text, icon }: UiButtonProps) => {
         <button
             onClick={click}
             className="bg-gradient-to-r
+            w-full sm:w-auto
             from-purple-600 to-purple-800
             text-white rounded-md p-2
             hover:from-purple-700

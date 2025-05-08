@@ -69,7 +69,7 @@ const TableHeader = <T extends unknown>({
       {renderModal && renderModal({
         isOpen: isModalOpen,
         onClose: handleCloseModal,
-        onSubmit: () => {} // This will be handled by the parent component
+        onSubmit: () => {}
       })}
     </>
   );

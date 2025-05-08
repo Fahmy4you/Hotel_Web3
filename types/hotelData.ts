@@ -5,6 +5,6 @@ export interface HotelData {
     user_id? : number;
     lokasi: string;
     is_banned?: boolean;
-    images?: (string | File)[]; 
+    images?: (File | string)[]; 
 }
 
