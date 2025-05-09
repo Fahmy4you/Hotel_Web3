@@ -2,7 +2,6 @@
 import { cookies } from "next/headers";
 import { verifyRefreshToken } from "@/utils/jwt";
 import { prisma } from "@/utils/prisma";
-import { NextResponse } from "next/server";
 
 interface GetAllHotelsParams {
   search?: string;

@@ -5,7 +5,7 @@ import UiButton from '../UiButton';
 
 interface TableHeaderProps<T> {
   title: string;
-
+  placeholder?: string;
   onSearch: (query: string) => void;
   addButtonText?: string;
   onAddButtonClick?: () => void;
@@ -14,7 +14,7 @@ interface TableHeaderProps<T> {
     onClose: () => void;
     onSubmit: (data: T) => void;
   }) => React.ReactNode;
-  initialData?: T; // Add initialData prop for edit scenarios
+  initialData?: T; 
 }
 
 const TableHeader = <T extends unknown>({
@@ -23,6 +23,7 @@ const TableHeader = <T extends unknown>({
   addButtonText = 'Add New', // default text jika tidak diberikan
   renderModal,
   initialData,
+  placeholder = `Search ${title.toLowerCase()}...`,
   onAddButtonClick
 }: TableHeaderProps<T>) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,7 +49,7 @@ const TableHeader = <T extends unknown>({
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               <input
                 type="text"
-                placeholder={`Search ${title.toLowerCase()}...`}
+                placeholder={placeholder}
                 value={searchQuery}
                 onChange={handleSearchChange}
                 className="pl-10 pr-4 py-2 w-full border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 text-neutral-900 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"

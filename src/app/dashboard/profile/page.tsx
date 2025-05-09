@@ -2,7 +2,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { Tooltip, Button, useDisclosure, Input } from '@heroui/react'
-import Modals from '@/components/Modals'
+import Modals from '@/components/Modals/UploadNewProfile'
 import { PencilIcon } from 'lucide-react'
 import { RiMailLine } from "react-icons/ri";
 import { RootState } from '../../../../libs/store'

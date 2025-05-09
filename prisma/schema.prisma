@@ -37,6 +37,7 @@ model User {
   updatedAt      DateTime @updatedAt
 
   role        Role         @relation(fields: [role_id], references: [id])
+  kategori_Kamar    KategoriKamar[]   @relation("UserKategori")
   bookings    Booking[]    @relation("UserBookings")
   ratings     Rating[]
   hotels      Hotel[]      @relation("UserHotels")
@@ -64,6 +65,9 @@ model Role {
 model KategoriKamar {
   id       Int            @id @default(autoincrement())
   kategori String
+  user_id  Int
+  is_banned Boolean
+  user     User           @relation("UserKategori", fields: [user_id], references: [id], onDelete: Cascade)    
   kamar    KamarInHotel[]
 }
 

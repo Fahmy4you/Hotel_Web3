@@ -97,7 +97,7 @@ const MenuSidebar = ({ active, href, name, iconActive, iconInActive }: MenuSideb
 
       <Link
         href={href}
-        className={`flex items-center gap-3 ${isCollapsed ? 'p-3' : 'p-0 justify-center'} font-medium`}
+        className={`flex items-center gap-3 ${isCollapsed ? 'p-3' : 'p-0 justify-center ms-3'} font-medium`}
       >
         <div
           ref={iconRef}
@@ -106,7 +106,6 @@ const MenuSidebar = ({ active, href, name, iconActive, iconInActive }: MenuSideb
           <Icon className="text-xl" />
         </div>
 
-        {/* Text + Tooltip always rendered */}
         <div className="overflow-hidden">
           {isCollapsed ? (
             <span

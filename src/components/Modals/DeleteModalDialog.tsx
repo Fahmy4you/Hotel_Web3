@@ -44,7 +44,7 @@ export default function ConfirmModal({
             onClose();
         }
     };
-
+    
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>

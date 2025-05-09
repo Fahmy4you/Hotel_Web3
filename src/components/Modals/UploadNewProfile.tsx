@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { RootState } from "../../libs/store";
-import Uploader from "./UploaderFile";
+import { RootState } from "../../../libs/store";
+import Uploader from "../UploaderFile";
 import {
     Modal,
     ModalContent,
