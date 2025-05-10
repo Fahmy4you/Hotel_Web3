@@ -7,6 +7,7 @@ import { useEffect } from "react"
 import { Address, erc20Abi, formatUnits } from "viem"
 import { useAccount, useReadContract } from "wagmi"
 import { formatNominal } from '../utils/Helper';
+import { redirect } from "next/navigation"
 
 const ConnectWalletButton = () => {
     const {isConnected, address} = useAccount();
@@ -36,7 +37,7 @@ const ConnectWalletButton = () => {
                 )} 
 
                 return account?.address ? (
-                    <ConnectedButton address={account.address as Address} onClick={openProfileModal} />
+                    <ConnectedButton address={account.address as Address} />
                 ) : null;
                 
             }}
@@ -45,7 +46,7 @@ const ConnectWalletButton = () => {
   )
 }
 
-const ConnectedButton = ({address, onClick}: {address: Address, onClick: () => void}) => {
+const ConnectedButton = ({address}: {address: Address}) => {
     const {data, error, isLoading} = useReadContract({
         address: IDRX_ADDRESS,
         abi: erc20Abi,
@@ -65,7 +66,7 @@ const ConnectedButton = ({address, onClick}: {address: Address, onClick: () => v
     const formatted = Number(formatUnits(data ?? BigInt(0), 2));
 
     return (
-        <button className="contact-btn group" onClick={onClick}>
+        <button className="contact-btn group" onClick={() => redirect('/dashboard')}>
             <div className="inner">
                 <span>
                     {isLoading

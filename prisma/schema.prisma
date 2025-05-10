@@ -29,6 +29,8 @@ model User {
   id             Int      @id @default(autoincrement())
   nama           String?
   no_wa          String?
+  email          String?
+  profile_pict   String?
   wallet_address String   @unique
   is_active      Boolean  @default(true)
   role_id        Int      @default(1)
@@ -41,7 +43,6 @@ model User {
   bookings    Booking[]    @relation("UserBookings")
   ratings     Rating[]
   hotels      Hotel[]      @relation("UserHotels")
-  ProfilePict ProfilePict? @relation("UserProfilePict")
 }
 
 
@@ -81,7 +82,9 @@ model KamarInHotel {
   id          Int      @id @default(autoincrement())
   nama_kamar  String
   price       Float
-  is_banned   Boolean
+  is_active   Boolean
+  status      StatusKamar
+  is_kyc      Boolean   @default(true)
   kategori_id Int
   hotel_id    Int
   features    String[]
@@ -92,19 +95,8 @@ model KamarInHotel {
   kategori  KategoriKamar @relation(fields: [kategori_id], references: [id], onDelete: Cascade)
   hotel     Hotel         @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
   bookings  Booking[]     @relation("KamarBookings")
-  fasilitas Fasilitas[]   @relation("KamarFasilitas")
 }
 
-model Fasilitas {
-  id        Int      @id @default(autoincrement())
-  nama      String
-  desk      String
-  kamar_id  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  kamar KamarInHotel @relation("KamarFasilitas", fields: [kamar_id], references: [id], onDelete: Cascade)
-}
 
 model Rating {
   id        Int      @id @default(autoincrement())
@@ -119,10 +111,9 @@ model Rating {
   hotel Hotel @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
 }
 
-model ProfilePict {
-  id      Int    @id @default(autoincrement())
-  user_id Int    @unique
-  images  String
-
-  user User @relation("UserProfilePict", fields: [user_id], references: [id], onDelete: Cascade)
+enum StatusKamar {
+  TERSEDIA
+  DIPESAN
+  DIBERSIHKAN
+  DIPERBAIKI
 }

@@ -83,7 +83,7 @@ const DetailHotel = () => {
   return (
     <>
         <NavbarPages/>
-        <section className="w-full pt-20">
+        <section className="w-full">
             <HeaderSection>
                 <h1 className="md:text-3xl text-center mb-2 font-bold text-xl">List Kamar Di Hotel HGI Indonesia</h1>
                 <div className="md:text-lg text-[15px] text-center flex gap-3 flex-col md:flex-row">

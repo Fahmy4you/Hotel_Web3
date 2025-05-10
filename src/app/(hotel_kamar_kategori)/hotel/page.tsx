@@ -101,7 +101,7 @@ const ListHotel = () => {
   return (
     <>
         <NavbarPages/>
-        <section className="w-full pt-20">
+        <section className="w-full">
             <HeaderSection>
                 <h1 className="md:text-3xl text-center mb-2 font-bold text-xl">List Hotel Yang Terdaftar</h1>
                 <p className="md:text-lg text-[15px] text-center">Ini Adalah List Hotel Yang Terdaftar Di Platform Kami</p>

@@ -1,12 +1,9 @@
 "use client";
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux";
-import { RootState } from "../../libs/store";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
 import { Sling as Hamburger } from 'hamburger-react';
 
 const Navbar = () => {
-    const activeMenu = useSelector((state: RootState) => state.activeMenu.activeLink);
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -52,6 +49,7 @@ const Navbar = () => {
         <Hamburger toggled={open} toggle={setOpen}/>
 
         <nav className={`menu ${open && 'active'}`}>
+            <div className="w-[100px]"></div>
             <div>
                 {navbarLink.map((item, index) => (
                     <a key={index} href={item.link}>

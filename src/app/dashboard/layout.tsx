@@ -3,9 +3,6 @@ import React, { useEffect } from 'react';
 import { BiWallet, BiSolidWallet } from "react-icons/bi";
 import LoadingName from '@/components/LoadingName';
 import Avatar from 'react-avatar';
-import { ConnectButton } from "@xellar/kit"
-import { Address, erc20Abi, formatUnits } from "viem"
-import { useAccount, useReadContract } from "wagmi"
 import { FiSun } from "react-icons/fi";
 import { RiDashboardHorizontalLine, RiDashboardHorizontalFill } from "react-icons/ri";
 import { RiUserSettingsLine, RiUserSettingsFill } from "react-icons/ri";
@@ -23,6 +20,8 @@ import { RootState } from '../../../libs/store';
 import { toggleTheme } from '../../../libs/slices/themeSlices';
 import { setUser } from '../../../libs/slices/userSlice';
 import ButtonWallet from '@/components/ButtonWallet';
+
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = React.useState(true);
     const users = useSelector((state: RootState) => state.users);
@@ -139,7 +138,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                     </nav>
                     <div className="flex-none mt-auto">
-                        <ButtonWallet/>
+                        <ButtonWallet isCollapsed={isCollapsed}/>
                     </div>
                 </div>
             </aside>

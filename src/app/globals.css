@@ -119,7 +119,7 @@ section {
   }
 
   .navbar {
-    @apply fixed w-full flex justify-between items-center top-0 left-0 px-[20px] py-[15px] transition z-[100] xl:py-[15px] xl:px-[40px];
+    @apply fixed w-full flex justify-between items-center top-0 left-0 px-[20px] py-[15px] transition ease-in-out z-[100] xl:py-[25px] xl:px-[40px];
 
     .hamburger-react {
       @apply block xl:hidden cursor-pointer;
@@ -130,11 +130,11 @@ section {
     }
 
     &.not-scrolled {
-      @apply md:top-3 top-0 bg-transparent;
+      @apply md:top-2 top-0 bg-transparent;
     }
 
     &.active {
-      @apply bg-black;
+      @apply bg-black top-0;
     }
 
     .logo {
@@ -142,7 +142,7 @@ section {
     }
 
     .menu {
-      @apply absolute bg-black space-y-5 top-[3.65rem] flex flex-col h-auto w-full p-[10px] pb-[20px] right-0 justify-center items-center translate-x-[4000px] transition ease-in-out xl:top-0 xl:flex-row xl:bg-transparent xl:px-[25px] xl:py-[10px] xl:right-0 xl:translate-x-0 xl:w-[64%] xl:h-full xl:justify-between xl:items-center xl:space-y-0;
+      @apply absolute bg-black space-y-5 top-[3.65rem] flex flex-col h-auto w-full p-[10px] pb-[20px] right-0 justify-center items-center translate-x-[2000px] transition duration-500 ease-in-out xl:top-0 xl:flex-row xl:bg-transparent xl:px-[25px] xl:py-[10px] xl:right-0 xl:translate-x-0 xl:flex-1 xl:h-full xl:justify-between xl:items-center xl:space-y-0;
 
       &.active {
         @apply translate-x-0;

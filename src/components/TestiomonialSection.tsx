@@ -53,7 +53,7 @@ const TestiomonialSection = ({title = 'Bagaimana Orang Menilai ?', sub = "Testim
       ];
 
   return (
-    <section id="testimonial" className="flex-center section-padding">
+    <section id="testimoni" className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader title={title} sub={sub}/>
         <div className="lg:columns-3 md:columns-2 columns-1 mt-16">
