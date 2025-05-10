@@ -59,7 +59,6 @@ const MyCategoriTable = () => {
     setIsEditMode(true);
     setIsModalOpen(true);
     setCurrentKategori(kategori);
-    // editKategori(kategori);
   }
 
   const handleDeleteHotel = (kategori: KategoriData) => {
@@ -74,7 +73,23 @@ const MyCategoriTable = () => {
     setIsDeleteModalOpen(false);
   };
 
-  const col = ['id', 'kategori'];
+  const col = ['id', 'kategori', 'Jumlah Kamar', 'isBaned'];
+
+  const customRender = {
+    isBaned: (value: boolean) => (
+      <div className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${value ? 'bg-red-900/20 text-red-500 border border-red-500 shadow-[0_0_4px_rgba(239,68,68,0.5)]' : 'bg-green-900/20 text-green-400 border border-green-400 shadow-[0_0_4px_rgba(74,222,128,0.5)]'}`}>
+        <span className={`w-2 h-2 rounded-full mr-1.5 ${value ? 'bg-red-500 animate-pulse' : 'bg-green-400 animate-pulse'}`}></span>
+        {value ? 'Inactive' : 'Active'}
+      </div>
+    ),
+
+    "Jumlah Kamar": (_: any, data: Record<string, any>) => (
+    <span className="text-sm flex  w-1/2 justify-center items-center h-full font-medium text-gray-900 dark:text-white">
+      {(data as KategoriData)._count?.kamar ?? 0}
+    </span>
+    )
+  }
+
   return (
     <WrapperTable>
       <TableHeader title="Kategori"
@@ -104,21 +119,22 @@ const MyCategoriTable = () => {
           </thead>
 
           <tbody className="bg-slate-100 dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-800 transition-colors">
-            {filteredData.map(hotel => (
+            {filteredData.map(kategori => (
               <GenericRow
-                key={hotel.id}
-                data={hotel}
+                key={kategori.id}
+                customRender={customRender}
+                data={kategori}
                 columns={col}
                 actions={
                   <div className='space-x-2'>
                     <button className='inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-yellow-500 bg-yellow-900/10 border border-yellow-500/50 hover:bg-yellow-900/20 hover:shadow-[0_0_5px_rgba(234,179,8,0.5)] transition-all duration-200 text-xs'
-                      onClick={() => handleEditKategori(hotel)}>
+                      onClick={() => handleEditKategori(kategori)}>
                       Edit
                       <RiPencilLine className="h-5 w-5" />
                     </button>
                     <button
                       className='inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-red-500 bg-red-900/10 border border-red-500/50 hover:bg-red-900/20 hover:shadow-[0_0_5px_rgba(239,68,68,0.5)] transition-all duration-200 text-xs'
-                      onClick={() => handleDeleteHotel(hotel)}>
+                      onClick={() => handleDeleteHotel(kategori)}>
                       Hapus
                       <FaTrashAlt className="h-5 w-5" />
                     </button>
