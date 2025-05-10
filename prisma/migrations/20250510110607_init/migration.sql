@@ -31,17 +31,6 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
-CREATE TABLE "Nonce" (
-    "id" TEXT NOT NULL,
-    "value" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "expiredAt" TIMESTAMP(3) NOT NULL,
-
-    CONSTRAINT "Nonce_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Role" (
     "id" SERIAL NOT NULL,
     "role" TEXT NOT NULL,
@@ -53,6 +42,8 @@ CREATE TABLE "Role" (
 CREATE TABLE "KategoriKamar" (
     "id" SERIAL NOT NULL,
     "kategori" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
+    "is_banned" BOOLEAN NOT NULL,
 
     CONSTRAINT "KategoriKamar_pkey" PRIMARY KEY ("id")
 );
@@ -64,6 +55,7 @@ CREATE TABLE "Hotel" (
     "desk" TEXT NOT NULL,
     "lokasi" TEXT NOT NULL,
     "user_id" INTEGER NOT NULL,
+    "is_banned" BOOLEAN NOT NULL,
     "images" TEXT[],
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -76,6 +68,7 @@ CREATE TABLE "KamarInHotel" (
     "id" SERIAL NOT NULL,
     "nama_kamar" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
+    "is_banned" BOOLEAN NOT NULL,
     "kategori_id" INTEGER NOT NULL,
     "hotel_id" INTEGER NOT NULL,
     "features" TEXT[],
@@ -124,9 +117,6 @@ CREATE TABLE "ProfilePict" (
 CREATE UNIQUE INDEX "User_wallet_address_key" ON "User"("wallet_address");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Nonce_value_key" ON "Nonce"("value");
-
--- CreateIndex
 CREATE UNIQUE INDEX "ProfilePict_user_id_key" ON "ProfilePict"("user_id");
 
 -- AddForeignKey
@@ -142,7 +132,7 @@ ALTER TABLE "Booking" ADD CONSTRAINT "Booking_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "User" ADD CONSTRAINT "User_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "Role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Nonce" ADD CONSTRAINT "Nonce_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "KategoriKamar" ADD CONSTRAINT "KategoriKamar_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Hotel" ADD CONSTRAINT "Hotel_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

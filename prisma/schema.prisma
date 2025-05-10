@@ -42,17 +42,6 @@ model User {
   ratings     Rating[]
   hotels      Hotel[]      @relation("UserHotels")
   ProfilePict ProfilePict? @relation("UserProfilePict")
-  nonces Nonce[]
-}
-
-model Nonce {
-  id        String   @id @default(uuid())
-  value     String   @unique
-  userId    Int
-  createdAt DateTime @default(now())
-  expiredAt DateTime
-
-  user      User      @relation(fields: [userId], references: [id])
 }
 
 

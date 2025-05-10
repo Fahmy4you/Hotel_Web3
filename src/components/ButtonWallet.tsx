@@ -2,7 +2,7 @@
 
 import { useWeb3Logout } from "@/hooks/useLogoutApp"
 import { useWeb3Login } from "@/hooks/useWeb3Login"
-import { IDRX_SEPOLIA } from "@/utils/AdressSC"
+import { IDRX_ADDRESS } from "@/utils/constanta"
 import { ConnectButton } from "@xellar/kit"
 import { useEffect } from "react"
 import { Address, erc20Abi, formatUnits } from "viem"
@@ -14,7 +14,7 @@ const ButtonWallet = () => {
 
   // Ambil data balance selalu, tapi hanya aktif kalau isConnected true
   const { data: rawBalance } = useReadContract({
-    address: IDRX_SEPOLIA,
+    address: IDRX_ADDRESS,
     abi: erc20Abi,
     functionName: "balanceOf",
     args: [address as Address],

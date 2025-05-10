@@ -25,6 +25,7 @@
     "formidable": "^3.5.4",
     "framer-motion": "^12.9.1",
     "gsap": "^3.12.7",
+    "hamburger-react": "^2.5.2",
     "jose": "^6.0.10",
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.503.0",

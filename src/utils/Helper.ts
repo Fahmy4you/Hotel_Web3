@@ -17,3 +17,17 @@ export const checkTanggalBooking = (start: string, end: string) => {
 
     return "sukses";
 }
+
+export const formatNominal = (value: number): string => {
+  if (value >= 1_000_000_000_000) {
+    return (value / 1_000_000_000_000).toFixed(0) + 'T';
+  } else if (value >= 1_000_000_000) {
+    return (value / 1_000_000_000).toFixed(0) + 'M';
+  } else if (value >= 1_000_000) {
+    return (value / 1_000_000).toFixed(0) + 'JT';
+  } else if (value >= 100_000) {
+    return (value / 1_000).toFixed(0) + 'K';
+  } else {
+    return value.toString();
+  }
+}

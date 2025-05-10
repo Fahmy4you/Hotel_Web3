@@ -119,7 +119,11 @@ section {
   }
 
   .navbar {
-    @apply fixed w-full left-1/2 py-5 px-5 md:px-20 -translate-x-1/2 z-[100] transition-all duration-300 ease-in-out;
+    @apply fixed w-full flex justify-between items-center top-0 left-0 px-[20px] py-[15px] transition z-[100] xl:py-[15px] xl:px-[40px];
+
+    .hamburger-react {
+      @apply block xl:hidden cursor-pointer;
+    }
 
     &.scrolled {
       @apply top-0 bg-black;
@@ -129,31 +133,26 @@ section {
       @apply md:top-3 top-0 bg-transparent;
     }
 
-    .inner {
-      @apply mx-auto flex items-center justify-between;
+    &.active {
+      @apply bg-black;
     }
 
     .logo {
       @apply text-white-50 text-xl md:text-2xl font-extrabold transition-transform duration-300 hover:scale-105;
     }
 
-    nav.desktop {
-      @apply hidden lg:flex items-center;
+    .menu {
+      @apply absolute bg-black space-y-5 top-[3.65rem] flex flex-col h-auto w-full p-[10px] pb-[20px] right-0 justify-center items-center translate-x-[4000px] transition ease-in-out xl:top-0 xl:flex-row xl:bg-transparent xl:px-[25px] xl:py-[10px] xl:right-0 xl:translate-x-0 xl:w-[64%] xl:h-full xl:justify-between xl:items-center xl:space-y-0;
 
-      ul {
-        @apply flex space-x-8;
+      &.active {
+        @apply translate-x-0;
+      }
 
-        li {
-          @apply text-white-50 relative;
-
-          span {
-            @apply transition-colors duration-300 hover:text-white;
-          }
-
-          .underline {
-            @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full;
-          }
-        }
+      div {
+        @apply space-x-0 flex flex-col space-y-5 justify-center items-center xl:flex-row xl:space-y-0 xl:space-x-3;
+      }
+      div a {
+        @apply no-underline text-white relative before:content-[''] before:w-full before:h-[2px] before:absolute before:bg-white before:bottom-0 before:scale-0 before:transition before:ease-in-out hover:before:scale-100;
       }
     }
 
