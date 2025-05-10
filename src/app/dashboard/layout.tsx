@@ -95,7 +95,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {
           active: "kamar",
           name: "Kamar",
-          href: "/dashboard",
+          href: "/dashboard/kamar",
           iconInActive: RiHotelBedLine,
           iconActive: RiHotelBedFill,
           roles: [2, 3],
@@ -113,10 +113,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="flex h-screen overflow-hidden">
-            <aside className={`bg-gray-100 dark:text-white-50 text-gray-900 dark:bg-black-100 p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-component`}>
+            <aside className={`bg-gray-100 dark:text-white-50 text-gray-900 dark:bg-black-100 p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-all duration-300`}>
                 <div className="flex flex-col h-full">
                     <div className="flex gap-2 justify-between mb-4">
-                        <h2 className="text-2xl font-bold"> {isCollapsed ? 'FK HOTEL' : 'FK'}</h2>
+                        <h2 className="text-2xl transition-all duration-300 font-bold"> {isCollapsed ? 'FK HOTEL' : 'FK'}</h2>
                         <button
                             className='mb-4 dark:text-white-50 text-gray-900 text-2xl'
                             onClick={() => dispatch(toggleSidebar())}

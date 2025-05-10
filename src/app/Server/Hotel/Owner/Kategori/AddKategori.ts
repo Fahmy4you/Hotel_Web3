@@ -7,6 +7,7 @@ export const addKategori = async (kategori : string, userId : string) => {
             data: {
                 user_id : Number(userId),
                 kategori : kategori,
+                is_banned : false, // default status
             }
         })
 

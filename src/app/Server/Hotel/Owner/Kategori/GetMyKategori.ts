@@ -6,6 +6,13 @@ export const getMyKategori = async (userId: string) => {
         const request = await prisma.kategoriKamar.findMany({
             where: {
                 user_id: Number(userId)
+            },
+            include : {
+                _count : {
+                    select : {
+                        kamar : true
+                    }
+                }
             }
         })
         return request;
