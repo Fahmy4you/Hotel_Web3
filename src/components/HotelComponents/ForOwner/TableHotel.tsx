@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { FaTrashAlt } from "react-icons/fa";
 import { RiPencilLine } from "react-icons/ri";
-import { ArrowUpDown } from 'lucide-react';
 import TableHeader from '@/components/TableAtom/TableHeader';
 import TableFooter from '@/components/TableAtom/TableFooter';
 import { HotelData } from '../../../../types/hotelData';
@@ -26,6 +25,7 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
   const [currentHotel, setCurrentHotel] = useState<HotelData | null>(null);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedHotelId, setSelectedHotelId] = useState<number | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string[]>>({});
 
   const {
     hotels,
@@ -40,8 +40,13 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
     (hotel.nama_hotel || '').toLowerCase().includes(query.toLowerCase())
   );
 
-  const handleAddNewHotel = (formData: HotelData) => {
-    submitHotel(formData, isEditMode, currentHotel, handleCloseModal);
+  const handleAddNewHotel = async (formData: HotelData) => {
+    const errors = await submitHotel(formData, isEditMode, currentHotel, handleCloseModal);
+
+    if(errors) {
+      setFormErrors(errors);
+      return;
+    }
   };
 
   const handleCloseModal = () => {
@@ -83,7 +88,7 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
     )
   }
 
-  const col = ['id', 'nama_hotel', 'desk', 'lokasi', 'isBaned'];
+  const col = ['id', 'nama_hotel', 'lokasi', 'isBaned'];
   return (
     <WrapperTable>
       <TableHeader<HotelData>
@@ -99,6 +104,7 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
             onSubmit={handleAddNewHotel}
             mode={isEditMode ? 'edit' : 'add'}
             hotelData={currentHotel}
+            errors={formErrors}
           />
         )}
       />
@@ -114,8 +120,6 @@ const TableHotel: React.FC<TableHotelProps> = ({ onEditHotel, onAddHotel }) => {
                 >
                   {column === 'nama_hotel'
                     ? 'Nama Hotel'
-                    : column === 'desk'
-                      ? 'Deskripsi'
                       : column === 'lokasi'
                         ? 'Lokasi'
                         : column === 'status' || column === 'isBaned'

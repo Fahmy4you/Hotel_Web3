@@ -46,6 +46,6 @@ export async function getMyHotels({ search = '', page = 1}: GetAllHotelsParams) 
     };
   } catch (error) {
     console.error(error);
-    throw new Error("Failed to fetch users");
+    throw new Error("Failed to fetch hotel");
   }
 }

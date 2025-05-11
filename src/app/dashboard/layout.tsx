@@ -72,19 +72,19 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           roles: [3],
         },
         {
-          active: "kategori",
-          name: "Kategori",
-          href: "/dashboard/kategori",
-          iconInActive: LuLayers,
-          iconActive: IoLayers,
-          roles: [2, 3],
-        },
-        {
           active: "hotels",
           name: "Hotel",
           href: "/dashboard/hotel",
           iconInActive: RiHotelLine,
           iconActive: RiHotelFill,
+          roles: [2, 3],
+        },
+        {
+          active: "kategori",
+          name: "Kategori",
+          href: "/dashboard/kategori",
+          iconInActive: LuLayers,
+          iconActive: IoLayers,
           roles: [2, 3],
         },
         {

@@ -47,7 +47,7 @@ CREATE TABLE "Role" (
 CREATE TABLE "KategoriKamar" (
     "id" SERIAL NOT NULL,
     "kategori" TEXT NOT NULL,
-    "user_id" INTEGER NOT NULL,
+    "hotel_id" INTEGER NOT NULL,
     "is_banned" BOOLEAN NOT NULL,
 
     CONSTRAINT "KategoriKamar_pkey" PRIMARY KEY ("id")
@@ -115,7 +115,7 @@ ALTER TABLE "Booking" ADD CONSTRAINT "Booking_user_id_fkey" FOREIGN KEY ("user_i
 ALTER TABLE "User" ADD CONSTRAINT "User_role_id_fkey" FOREIGN KEY ("role_id") REFERENCES "Role"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "KategoriKamar" ADD CONSTRAINT "KategoriKamar_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "KategoriKamar" ADD CONSTRAINT "KategoriKamar_hotel_id_fkey" FOREIGN KEY ("hotel_id") REFERENCES "Hotel"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Hotel" ADD CONSTRAINT "Hotel_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;

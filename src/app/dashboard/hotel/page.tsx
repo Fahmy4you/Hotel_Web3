@@ -1,6 +1,5 @@
 'use client'
 import TableHotel from '@/components/HotelComponents/ForOwner/TableHotel'
-import React,{useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../libs/store'
 

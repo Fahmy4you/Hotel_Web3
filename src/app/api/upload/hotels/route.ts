@@ -17,14 +17,12 @@ export async function POST(req: NextRequest) {
     const formData = await req.formData();
 
     const nama_hotel = formData.get('nama_hotel')?.toString().trim();
-    const desk = formData.get('desk')?.toString().trim();
     const lokasi = formData.get('lokasi')?.toString().trim();
     const user_id = formData.get('user_id')?.toString().trim();
     const files = formData.getAll('files') as File[];
 
     const missingFields = [];
     if (!nama_hotel) missingFields.push('nama_hotel');
-    if (!desk) missingFields.push('desk');
     if (!lokasi) missingFields.push('lokasi');
     if (!user_id) missingFields.push('user_id');
     if (!files || files.length === 0) missingFields.push('files');
@@ -37,16 +35,15 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    console.log("Form data received:", { nama_hotel, desk, lokasi, user_id, fileCount: files.length });
+    console.log("Form data received:", { nama_hotel, lokasi, user_id, fileCount: files.length });
 
-    if (!nama_hotel || !desk || !lokasi || !user_id || !files || files.length === 0) {
+    if (!nama_hotel || !lokasi || !user_id || !files || files.length === 0) {
       return NextResponse.json({ error: 'Field is missing' }, { status: 400 });
     }
 
     const hotel = await prisma.hotel.create({
       data: {
         nama_hotel,
-        desk,
         lokasi,
         user_id: parseInt(user_id),
         is_banned: false,

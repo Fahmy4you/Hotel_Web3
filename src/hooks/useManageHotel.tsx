@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { getMyHotels } from "@/app/Server/Hotel/Owner/GettMyHotels";
 import { deleteHotel } from "@/app/Server/Hotel/Owner/DeleteHotel";
-import { ManageHotelHook } from "../../types/TypesManageHotel";
 import { HotelData } from "../../types/hotelData";
+import { hotelSchema } from "@/utils/zod";
+import { error } from "console";
 
 export const useManageHotel = (
     userID: number,
@@ -52,7 +53,6 @@ export const useManageHotel = (
             const formDataToSend = new FormData();
             formDataToSend.append("nama_hotel", formData.nama_hotel);
             formDataToSend.append("lokasi", formData.lokasi);
-            formDataToSend.append("desk", formData.desk);
             formDataToSend.append("user_id", String(userID));
 
             const existingImages = formData.images?.filter(img => typeof img === 'string') || [];
@@ -66,32 +66,45 @@ export const useManageHotel = (
                 formDataToSend.append("files", file);
             });
 
-            const endpoint = isEditMode && currentData?.id
-                ? `/api/hotel/${currentData.id}`
-                : "/api/upload/hotels";
-
-            const method = isEditMode ? "PUT" : "POST";
-
-            const res = await fetch(endpoint, {
-                method,
-                body: formDataToSend,
+            const totalImages = existingImages.length + newFiles.length;
+            const validated = hotelSchema.safeParse({
+                nama_hotel: formData.nama_hotel,
+                lokasi: formData.lokasi,
+                images: totalImages
             });
 
-            if (!res.ok) {
-                const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.error || "Failed to upload");
+            if(!validated.success) {
+                const errors = validated.error.flatten().fieldErrors;
+                return errors;
             }
 
-            const resData = await res.json();
 
-            if (isEditMode && currentData?.id) {
-                onEditHotel?.({ ...formData, id: currentData.id, images: resData.hotel.images });
-            } else {
-                onAddHotel?.({ ...formData, images: resData.hotel.images });
-            }
+            // const endpoint = isEditMode && currentData?.id
+            //     ? `/api/hotel/${currentData.id}`
+            //     : "/api/upload/hotels";
 
-            await fetchHotels();
-            closeModal();
+            // const method = isEditMode ? "PUT" : "POST";
+
+            // const res = await fetch(endpoint, {
+            //     method,
+            //     body: formDataToSend,
+            // });
+
+            // if (!res.ok) {
+            //     const errorData = await res.json().catch(() => ({}));
+            //     throw new Error(errorData.error || "Failed to upload");
+            // }
+
+            // const resData = await res.json();
+
+            // if (isEditMode && currentData?.id) {
+            //     onEditHotel?.({ ...formData, id: currentData.id, images: resData.hotel.images });
+            // } else {
+            //     onAddHotel?.({ ...formData, images: resData.hotel.images });
+            // }
+
+            // await fetchHotels();
+            // closeModal();
         } catch (error) {
             console.error("Error submitting hotel:", error);
         }

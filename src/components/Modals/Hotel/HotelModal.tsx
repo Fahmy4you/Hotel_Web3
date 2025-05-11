@@ -1,8 +1,6 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaHotel, FaImage, FaMapMarkerAlt, FaTimes, FaTrash } from "react-icons/fa";
-import { MdDescription } from "react-icons/md";
-import Image from 'next/image';
 import { HotelData } from '../../../../types/hotelData';
 import { gsap } from 'gsap';
 
@@ -12,6 +10,7 @@ interface HotelModalProps {
     onSubmit: (data: HotelData) => void;
     mode: 'add' | 'edit';
     hotelData?: HotelData | null;
+    errors: Record<string, string[]>
 }
 
 const HotelModal: React.FC<HotelModalProps> = ({
@@ -19,7 +18,8 @@ const HotelModal: React.FC<HotelModalProps> = ({
     onClose,
     onSubmit,
     mode = 'add',
-    hotelData = null
+    hotelData = null,
+    errors
 }) => {
     const [imageFiles, setImageFiles] = useState<File[]>([]);
     const [imagePreviews, setImagePreviews] = useState<string[]>([]);
@@ -28,7 +28,6 @@ const HotelModal: React.FC<HotelModalProps> = ({
     const [formData, setFormData] = useState<HotelData>({
         user_id: 0,
         nama_hotel: '',
-        desk: '',
         lokasi: '',
         images: [],
     });
@@ -47,7 +46,6 @@ const HotelModal: React.FC<HotelModalProps> = ({
             setFormData({
                 user_id: hotelData.user_id || 0,
                 nama_hotel: hotelData.nama_hotel || '',
-                desk: hotelData.desk || '',
                 lokasi: hotelData.lokasi || '',
                 images: hotelData.images || [],
                 id: hotelData.id
@@ -75,7 +73,6 @@ const HotelModal: React.FC<HotelModalProps> = ({
             setFormData({
                 user_id: 0,
                 nama_hotel: '',
-                desk: '',
                 lokasi: '',
                 images: [],
             });
@@ -280,16 +277,19 @@ const HotelModal: React.FC<HotelModalProps> = ({
                                         className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-inner group"
                                     >
                                         <div className="relative w-full h-full">
-                                        <Image
-                                        src={typeof preview === "string"
-                                            ? (mode === "edit" ? `/${preview}` : preview)
-                                            : URL.createObjectURL(preview)}
-                                        alt={`Hotel Image ${index + 1}`}
-                                        fill
-                                        className="object-cover"
-                                        onError={() => setImageError(true)}
-                                        priority
-                                        />
+                                        <img
+                                            src={
+                                                typeof preview === "string"
+                                                ? preview.startsWith("data:image")
+                                                    ? preview
+                                                    : (mode === "edit" ? `/${preview}` : preview)
+                                                : URL.createObjectURL(preview)
+                                            }
+                                            alt={`Hotel Image ${index + 1}`}
+                                            className="w-full h-full object-cover"
+                                            onError={() => setImageError(true)}
+                                            />
+
                                         </div>
                                         <button 
                                             type="button"
@@ -343,7 +343,11 @@ const HotelModal: React.FC<HotelModalProps> = ({
                                     </div>
                                 </label>
                             )}
+                            {errors.images && (
+                                <p className='text-red-500 text-[12px] mt-1'>{errors.images}</p>
+                            )}
                         </div>
+
 
                         {/* Hotel Name */}
                         <div className="mb-5">
@@ -362,30 +366,11 @@ const HotelModal: React.FC<HotelModalProps> = ({
                                     disabled={isPending}
                                     placeholder="Enter hotel name"
                                     className="pl-10 w-full py-2.5 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    required
                                 />
                             </div>
-                        </div>
-
-                        {/* Description */}
-                        <div className="mb-5">
-                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
-                                Description
-                            </label>
-                            <div className="relative">
-                                <div className="absolute left-3 top-3 text-gray-400">
-                                    <MdDescription className="h-4 w-4" />
-                                </div>
-                                <textarea
-                                    name="desk"
-                                    value={formData.desk}
-                                    onChange={handleInputChange}
-                                    disabled={isPending}
-                                    placeholder="Enter hotel description"
-                                    className="pl-10 w-full py-2.5 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-h-[100px] transition-all"
-                                    required
-                                />
-                            </div>
+                            {errors.nama_hotel && (
+                                <p className='text-red-500 text-[12px] mt-1'>{errors.nama_hotel}</p>
+                            )}
                         </div>
 
                         {/* Location */}
@@ -405,9 +390,11 @@ const HotelModal: React.FC<HotelModalProps> = ({
                                     disabled={isPending}
                                     placeholder="Enter hotel location"
                                     className="pl-10 w-full py-2.5 px-3 border border-gray-200 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                    required
                                 />
                             </div>
+                            {errors.lokasi && (
+                                <p className='text-red-500 text-[12px] mt-1'>{errors.lokasi}</p>
+                            )}
                         </div>
                     </div>
                     
