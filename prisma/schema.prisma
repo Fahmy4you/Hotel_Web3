@@ -64,7 +64,6 @@ model KategoriKamar {
 model Hotel {
   id         Int      @id @default(autoincrement())
   nama_hotel String
-  desk       String
   lokasi     String
   user_id    Int
   is_banned  Boolean
@@ -81,6 +80,7 @@ model Hotel {
 model KamarInHotel {
   id          Int      @id @default(autoincrement())
   nama_kamar  String
+  desk        String
   price       Float
   is_active   Boolean
   status      StatusKamar

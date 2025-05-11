@@ -57,7 +57,6 @@ CREATE TABLE "KategoriKamar" (
 CREATE TABLE "Hotel" (
     "id" SERIAL NOT NULL,
     "nama_hotel" TEXT NOT NULL,
-    "desk" TEXT NOT NULL,
     "lokasi" TEXT NOT NULL,
     "user_id" INTEGER NOT NULL,
     "is_banned" BOOLEAN NOT NULL,
@@ -72,6 +71,7 @@ CREATE TABLE "Hotel" (
 CREATE TABLE "KamarInHotel" (
     "id" SERIAL NOT NULL,
     "nama_kamar" TEXT NOT NULL,
+    "desk" TEXT NOT NULL,
     "price" DOUBLE PRECISION NOT NULL,
     "is_active" BOOLEAN NOT NULL,
     "status" "StatusKamar" NOT NULL,

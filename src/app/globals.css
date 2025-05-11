@@ -151,7 +151,7 @@ section {
     }
 
     .logo {
-      @apply text-black-50 dark:text-white-50 text-xl md:text-2xl font-extrabold transition-transform duration-300 hover:scale-105;
+      @apply cursor-pointer text-black-50 dark:text-white-50 text-xl md:text-2xl font-extrabold transition-transform duration-300 hover:scale-105;
     }
 
     &.scrolled {
@@ -175,7 +175,7 @@ section {
     }
 
     .menu {
-      @apply absolute bg-gray-100 dark:bg-black space-y-5 top-[3.65rem] flex flex-col h-auto w-full p-[10px] pb-[20px] right-0 justify-center items-center translate-x-[2000px] transition duration-500 ease-in-out xl:top-0 xl:flex-row xl:bg-transparent xl:px-[25px] xl:py-[10px] xl:right-0 xl:translate-x-0 xl:flex-1 xl:h-full xl:justify-between xl:items-center xl:space-y-0;
+      @apply absolute bg-gray-100 dark:bg-black space-y-5 top-[3.65rem] flex flex-col h-auto w-full p-[10px] pb-[20px] right-0 justify-center items-center translate-x-[2000px] transition duration-500 ease-in-out xl:top-0 xl:flex-row xl:bg-transparent dark:xl:bg-transparent xl:px-[25px] xl:py-[10px] xl:right-0 xl:translate-x-0 xl:flex-1 xl:h-full xl:justify-between xl:items-center xl:space-y-0;
 
       &.active {
         @apply translate-x-0;
@@ -188,6 +188,11 @@ section {
         @apply no-underline text-black-50 dark:text-white relative before:content-[''] before:w-full before:h-[2px] before:absolute dark:before:bg-white before:bg-gray-900 before:bottom-0 before:scale-0 before:transition before:ease-in-out hover:before:scale-100;
       }
     }
+
+    &.page.not-scrolled .menu div a {
+      @apply text-white-50;
+    }
+
 
     .contact-btn {
       @apply flex cursor-pointer;

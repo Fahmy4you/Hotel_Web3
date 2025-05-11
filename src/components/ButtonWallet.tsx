@@ -43,7 +43,7 @@ const ButtonWallet = ({isCollapsed}: {isCollapsed: boolean}) => {
         if(isConnected) {
             return (
               <button
-                className="bg-[#7828C8] w-full rounded-lg p-2"
+                className="bg-[#7828C8] w-full rounded-lg p-2 cursor-pointer"
                 onClick={openProfileModal}
               >
                 {isLoading ? 
