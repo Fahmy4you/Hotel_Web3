@@ -35,8 +35,8 @@ const FeatureCardSection = () => {
                 <div className="size-20 flex items-center justify-center rounded-full">
                     <img src={feature.path} alt={feature.text} />
                 </div>
-                <h3 className="text-white text-2xl font-semibold mt-2">{feature.text}</h3>
-                <p className="text-white-50 md:text-lg text-[14px]">{feature.desk}</p>
+                <h3 className="text-gray-900 dark:text-white text-2xl font-bold mt-2">{feature.text}</h3>
+                <p className="text-gray-800 dark:text-white-50 md:text-lg text-[14px]">{feature.desk}</p>
             </div>
         ))}
       </div>

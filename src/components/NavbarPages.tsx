@@ -4,7 +4,7 @@ import ConnectWalletButton from '@/components/ConnectWalletButton';
 import { useEffect, useState } from "react";
 import { Sling as Hamburger } from 'hamburger-react';
 
-const NavbarPages = () => {
+const NavbarPages = ({isHeaderSection}: {isHeaderSection?: boolean}) => {
     const [scrolled, setScrolled] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -35,7 +35,7 @@ const NavbarPages = () => {
     ]
 
   return (
-    <header className={`navbar ${scrolled ? 'scrolled' : 'not-scrolled'}  ${open && 'active'}`}>
+    <header className={`navbar ${isHeaderSection && 'page'} ${scrolled ? 'scrolled' : 'not-scrolled'}  ${open && 'active'}`}>
         <a className="logo" href="#hero">FK Hotel | Web3</a>
 
         <Hamburger toggled={open} toggle={setOpen}/>

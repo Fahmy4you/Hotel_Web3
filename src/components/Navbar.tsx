@@ -54,7 +54,6 @@ const Navbar = () => {
                 {navbarLink.map((item, index) => (
                     <a key={index} href={item.link}>
                         <span>{item.name}</span>
-                        <span className="underline"/>
                     </a>
                 ))}
             </div>

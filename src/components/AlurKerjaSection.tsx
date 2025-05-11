@@ -109,7 +109,7 @@ const AlurKerjaSection = () => {
                                       </div>
                                       <div>
                                           <p className='font-bold'>Fahmy Bima Az Zukhruf</p>
-                                          <p className='text-white-50'>Founder FK Hotel</p>
+                                          <p className='text-gray-800 dark:text-white-50'>Founder FK Hotel</p>
                                       </div>
                                   </div>
                                 </GlowCard>
@@ -126,7 +126,7 @@ const AlurKerjaSection = () => {
                                       </div>
                                       <div>
                                         <h1 className='font-semibold text-3xl '>{alur.title}</h1>
-                                        <ul className='list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50'>
+                                        <ul className='list-disc ms-5 mt-5 flex flex-col gap-5 text-gray-800 dark:text-white-50'>
                                           {alur.responsibilities.map((res, i) => (
                                             <li key={i} className='text-lg'>
                                               {res}

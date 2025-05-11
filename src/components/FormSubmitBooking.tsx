@@ -73,7 +73,7 @@ const FormSubmitBooking = () => {
             type="text" 
             placeholder="Masukkan Nama Booking Anda" 
             variant="underlined" 
-            classNames={{inputWrapper: "shadow-[0_1px_0px_0_rgba(255,255,255,0.4)]"}}
+            classNames={{inputWrapper: "shadow-[0_1px_0px_0_rgba(5,5,5,0.4)] dark:shadow-[0_1px_0px_0_rgba(255,255,255,0.4)]"}}
             errorMessage={errors.nama}/>
         <Input 
             label="No. Whatsapp" 
@@ -82,7 +82,7 @@ const FormSubmitBooking = () => {
             placeholder="Nomor Telepon Cadangan Anda" 
             variant="underlined" 
             id="wa"
-            classNames={{inputWrapper: "shadow-[0_1px_0px_0_rgba(255,255,255,0.4)]"}}
+            classNames={{inputWrapper: "shadow-[0_1px_0px_0_rgba(5,5,5,0.4)] dark:shadow-[0_1px_0px_0_rgba(255,255,255,0.4)]"}}
             errorMessage={errors.wa}/>
         <DateRangePicker 
             label="Tanggal Checkin - Checkout"
@@ -93,7 +93,7 @@ const FormSubmitBooking = () => {
             description="Pilih rentang tanggal yang benar maka tombol booking akan muncul"
             variant="underlined" 
             id="daterange"
-            classNames={{inputWrapper: "shadow-[0_1px_0px_0_rgba(255,255,255,0.4)]"}}/>
+            classNames={{inputWrapper: "shadow-[0_1px_0px_0_rgba(5,5,5,0.4)] dark:shadow-[0_1px_0px_0_rgba(255,255,255,0.4)]"}}/>
         
         {buttonVisible && (
             <Button type='submit' variant='bordered' className='w-full mt-2'>Booking Sekarang</Button>

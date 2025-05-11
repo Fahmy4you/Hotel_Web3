@@ -23,7 +23,7 @@ const Hero = () => {
             ease: 'power2.inOut'
         })
     })
-    const classNameIcon = "xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-white-50 text-gray-900";
+    const classNameIcon = "xl:size-12 md:size-10 size-7 md:p-2 p-1 rounded-full bg-gray-800 text-gray-300 dark:bg-white-50 dark:text-gray-900";
     const words = [
         {'text' : "Decentralize", 'icon' : <HiOutlineGlobeAlt className={classNameIcon}/>},
         {'text' : "Transparan", 'icon' : <TbEyeCheck className={classNameIcon}/>},
@@ -60,7 +60,7 @@ const Hero = () => {
                         <h1>Booking Mudah</h1>
                         <h1>Pembayaran IDRX</h1>
                     </div>
-                    <p className='text-white-50 md:text-[15px] text-[10px] relative z-10 pointer-events-none pr-2 md:pr-0'><span className='font-semibold'>FK HOTEL </span> Adalah Sebuah Platform Untuk Menyediakan Hotel Terdesentralisasi Di Indonesia</p>
+                    <p className='text-gray-900 dark:text-white-50 md:text-[15px] text-[10px] relative z-10 pointer-events-none pr-2 md:pr-0'><span className='font-semibold'>FK HOTEL </span> Adalah Sebuah Platform Untuk Menyediakan Hotel Terdesentralisasi Di Indonesia</p>
                     <MyButton className="md:w-80 md:h-16 w-60 h-12" id="counter" text="Reservasi" icon={IoArrowBackCircle}/>
                 </div>
             </header>

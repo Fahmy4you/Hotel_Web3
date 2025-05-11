@@ -46,11 +46,14 @@ const ButtonWallet = ({isCollapsed}: {isCollapsed: boolean}) => {
                 className="bg-[#7828C8] w-full rounded-lg p-2"
                 onClick={openProfileModal}
               >
+                {isLoading ? 
+                <span>Loading...</span> : 
                 <span>
                     {isCollapsed
                       ? `${formatNominal(Number(formatted))} IDRX` 
                       : `${formatNominal(Number(formatted)).slice(0, 1)}`} 
-                </span>
+                </span>}
+                
               </button>
             )
         }

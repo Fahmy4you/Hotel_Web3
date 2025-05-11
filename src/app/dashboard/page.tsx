@@ -3,13 +3,9 @@ import { useState } from 'react';
 import { formatRupiah } from '@/utils/RupiahFormater';
 import { FaBed } from 'react-icons/fa6';
 import {
-  BarChart,
-  LineChart,
-  Activity,
   Users,
   Calendar,
   DollarSign,
-  Plus,
   Bell,
   Home,
   Bed,

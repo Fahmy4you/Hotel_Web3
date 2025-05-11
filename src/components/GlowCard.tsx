@@ -36,13 +36,13 @@ const GlowCard = ({card, children, index}: TypeCard) => {
       <div className="flex items-center gap-1 mb-5">
         {(card.bintang && (
           Array.from({length: card.bintang}, (_, i) => (
-              <img src="/image/star.png" key={i} alt="Star" className="size-5" />
+            <img src="/image/star.png" key={i} alt="Star" className="size-5 filter brightness-40 dark:brightness-100" />
           ))
         ))}
       </div>
 
       <div className="mb-5">
-        <p className="text-white-50 text-lg">{card.review}</p>
+        <p className="text-gray-800 dark:text-white-50 text-lg">{card.review}</p>
       </div>
         {children}
     </div>

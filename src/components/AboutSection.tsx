@@ -48,7 +48,7 @@ const AboutSection = () => {
             </div>
             <div className="text-content">
               <h2>Kenapa Harus FK Hotel</h2>
-              <p className="text-white-50 md:text-[15px] text-[12px]">
+              <p className="text-gray-800 dark:text-white-50 md:text-[15px] text-[12px]">
                 FK Hotel hadir bukan sekadar hotel biasa. Di era Web3, kami menawarkan konsep hotel digital terdesentralisasi pertama, di mana setiap orang bisa jadi bagian dari kepemilikan, pengembangan, hingga pembagian hasilnya. Lewat teknologi blockchain, semua transaksi, booking, dan reward komunitas terekam transparan tanpa perantara. Dan untuk para orang dari luar negri dengan mata uang berbeda, mereka tidak harus ke money changer. Dikarenakan kita menyediakan pembayaran menggunakan token IDRX Stable Coin Indonesia, bisa exchange dengan Cryptomu seperti BTC, ETH, SOL, Dan lain sebagainya
               </p>
             </div>
@@ -60,7 +60,7 @@ const AboutSection = () => {
                 {/* <Image src="/image/visi.jpeg" alt="Visi Image" width={500} height={500} className="object-cover" /> */}
                 <img src="/image/visi.jpeg" alt="Visi Image" />
                 <h2>VISI</h2>
-                <p className="text-white-50 md:text-[15px] text-[12px]">
+                <p className="text-gray-800 dark:text-white-50 md:text-[15px] text-[12px]">
                   Mewujudkan ekosistem hotel digital global berbasis Web3 yang transparan, adil, dan memberdayakan komunitas.
                 </p>
               </div>
@@ -70,7 +70,7 @@ const AboutSection = () => {
                 <Image src="/image/misi.jpeg" alt="Misi Image" width={500} height={500} className="object-cover" />
                 {/* <img src="/image/misi.jpeg" alt="Misi Image" /> */}
                 <h2>MISI</h2>
-                <p className="text-white-50 md:text-[15px] text-[12px]">
+                <p className="text-gray-800 dark:text-white-50 md:text-[15px] text-[12px]">
                 Membuka peluang kepemilikan hotel bagi semua orang, menggabungkan dunia real dan virtual hospitality dalam satu ekosistem blockchain yang aman dan transparan.
                 </p>
               </div>

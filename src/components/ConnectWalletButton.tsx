@@ -26,7 +26,7 @@ const ConnectWalletButton = () => {
   return (
     <>
         <ConnectButton.Custom>
-            {({openConnectModal, isConnected, openProfileModal, account}) => {
+            {({openConnectModal, isConnected, account}) => {
                 if(!isConnected) {
                     return (
                     <button className="contact-btn group" onClick={openConnectModal}>

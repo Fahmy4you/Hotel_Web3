@@ -66,11 +66,11 @@ const FooterSection = () => {
     ]
 
   return (
-    <footer className='section-padding pt-5 md:pt-10 w-full bg-black-100'>
+    <footer className='section-padding pt-5 md:pt-10 w-full bg-gray-200 dark:bg-black-100'>
         <div className="grid-4-cols">
             <div>
                 <a href="/" className='text-xl md:text-2xl font-bold hover:text-gray-400 transition'>FK Hotel | Web3</a>
-                <p className='md:text-[15px] text-white-50 text-[12px] mt-5'>FK Hotel adalah platform booking hotel secara semi desentralise dan pembayaran nya menggunakan stable coin indonesia yaitu IDRX</p>
+                <p className='md:text-[15px] text-gray-800 dark:text-white-50 text-[12px] mt-5'>FK Hotel adalah platform booking hotel secara semi desentralise dan pembayaran nya menggunakan stable coin indonesia yaitu IDRX</p>
             </div>
             <div>
                 <h3 className='text-lg font-semibold'>Hotel</h3>
@@ -96,14 +96,14 @@ const FooterSection = () => {
                 <h3 className='text-lg font-semibold'>Sosial Media</h3>
                 <div className='flex gap-5 mt-3'>
                     {socialMedia.map((media, i) => (
-                        <a key={i} href={media.link} className="size-10 border-1 flex justify-center items-center rounded-full hover:bg-white-50 bg-transparent hover:text-black-50 transition border-white-50 p-2 contact-btn group">
+                        <a key={i} href={media.link} className="size-10 border-1 flex justify-center items-center rounded-full hover:bg-gray-800 dark:hover:bg-white-50 bg-transparent hover:text-gray-200 dark:hover:text-black-50 transition border-gray-800 dark:border-white-50 p-2 contact-btn group">
                             <span>{media.icon}</span>
                         </a>
                     ))}
                 </div>
             </div>
         </div>
-        <div className="flex items-center justify-center md:text-[14px] text-[12px] mt-5 border-t border-white-50 py-5 md:py-3">&copy; Copyright FK Hotel | Web3 2025</div>
+        <div className="flex items-center justify-center md:text-[14px] text-[12px] mt-5 border-t border-gray-700 dark:border-white-50 py-5 md:py-3">&copy; Copyright FK Hotel | Web3 2025</div>
     </footer>
   )
 }
