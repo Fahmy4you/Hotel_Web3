@@ -1,7 +1,13 @@
 'use client';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { openModals,closeModals } from '../../../libs/slices/modalSlice';
+import DetailKamarModals from '../Modals/Kamar/DetailKamarModals';
 import { Star, Info, Edit2, Trash2 } from 'lucide-react';
 import BadgeUI from '@/components/BadgeUI';
+import { RootState } from '../../../libs/store';
+import { KamarData } from '../../../types/kamarData';
 
 // Contoh data statis untuk ditampilkan
 const hotelRoom = {
@@ -17,27 +23,11 @@ const hotelRoom = {
   kategori: "Premium"
 };
 
-// Fungsi untuk mendapatkan warna badge berdasarkan kategori
-const getCategoryColor = (kategori: string) => {
-  switch (kategori) {
-    case "Basic":
-      return "bg-gray-200 text-gray-800";
-    case "Standard":
-      return "bg-blue-200 text-blue-800";
-    case "Premium":
-      return "bg-purple-200 text-purple-800";
-    case "Luxury":
-      return "bg-yellow-200 text-yellow-800";
-    case "Presidential":
-      return "bg-red-200 text-red-800";
-    default:
-      return "bg-gray-200 text-gray-800";
-  }
-};
-
-// Komponen Card Hotel yang sudah direfactor
 export default function HotelRoomCard() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentDataKamar, setCurrentDataKamar] = useState<KamarData | null>(null);
+  const dp = useDispatch(); // dp as Dispatch
+  const modals = useSelector((state : RootState) => state.modals);
   
   // Format harga ke format Rupiah
   const formatPrice = (price: number) => {
@@ -76,10 +66,8 @@ export default function HotelRoomCard() {
           </div>
           
           {/* Badge Kategori */}
-          <div>
-            <span className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium ${getCategoryColor(hotelRoom.kategori)}`}>
-              {hotelRoom.kategori}
-            </span>
+          <div className="flex items-center gap-2 mb-3">
+            <BadgeUI variant="primary" size="md" active={true}>{hotelRoom.kategori}</BadgeUI>
           </div>
           
           {/* Features Badges */}
@@ -99,7 +87,8 @@ export default function HotelRoomCard() {
           
           {/* Tombol Action berbentuk badge dengan efek glow */}
           <div className="flex space-x-2">
-            <button className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-md text-xs shadow-md
+            <button onClick={() => dp(openModals('detail'))}
+             className="flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-md text-xs shadow-md
               transition-all duration-200 hover:shadow-blue-400/50 dark:hover:shadow-blue-400/30 hover:shadow-lg">
               <Info className="h-3 w-3 mr-1" />
               Detail
@@ -118,6 +107,8 @@ export default function HotelRoomCard() {
             </button>
           </div>
         </div>
+
+        <DetailKamarModals isOpen={modals.detail} onClose={() => dp(closeModals('detail'))} title="Detail Kamar" />
       </div>
     </div>
   );
