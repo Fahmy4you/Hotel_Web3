@@ -82,14 +82,14 @@ const DetailHotel = () => {
 
   return (
     <>
-        <NavbarPages/>
-        <section className="w-full pt-20">
+        <NavbarPages isHeaderSection/>
+        <section className="w-full">
             <HeaderSection>
-                <h1 className="md:text-3xl text-center mb-2 font-bold text-xl">List Kamar Di Hotel HGI Indonesia</h1>
-                <div className="md:text-lg text-[15px] text-center flex gap-3 flex-col md:flex-row">
-                    <p className="flex items-center gap-1"><IoLocationOutline/> Jakarta, Pik, Jln Gajah Mada No.12</p>
-                    <p className="flex items-center gap-1"><IoBed/> 12 Kamar</p>
-                    <p className="flex items-center gap-1"><IoStar/> 4,5</p>
+                <h1 className="md:text-3xl text-gray-300 text-center mb-2 font-bold text-xl">List Kamar Di Hotel HGI Indonesia</h1>
+                <div className="md:text-lg text-gray-300 text-[15px] text-center flex gap-3 flex-col md:flex-row">
+                    <p className="flex text-gray-300 items-center gap-1"><IoLocationOutline/> Jakarta, Pik, Jln Gajah Mada No.12</p>
+                    <p className="flex text-gray-300 items-center gap-1"><IoBed/> 12 Kamar</p>
+                    <p className="flex text-gray-300 items-center gap-1"><IoStar/> 4,5</p>
                 </div>
                 <MySearchHeader onChange={handleSearch} placeholder="Cari Nama Kamar Atau Kategori..."/>
             </HeaderSection>
@@ -98,8 +98,8 @@ const DetailHotel = () => {
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 md:gap-x-5">
                     {topHotels.map((hotel, i) => (
                         <HotelCard key={i} data={{image: "/" + hotel.image,nama: hotel.nama_kamar, url: "/kamar/" + hotel.id}} index={i}>
-                            <p className="text-gray-400 text-[15px] mt-1 flex items-center gap-1"><Link href="/" className="flex justify-center items-center gap-1 hover:text-blue-500 transition"><IoFileTrayStacked/>Kamar Luxury</Link></p>
-                            <p className="text-gray-400 text-[15px] mt-1 flex items-center gap-1"><IoFastFood/> 12 Fitur Didalamnya</p>
+                            <p className="text-gray-700 dark:text-gray-400 text-[15px] mt-1 flex items-center gap-1"><Link href="/" className="flex justify-center items-center gap-1 hover:text-blue-500 transition"><IoFileTrayStacked/>Kamar Luxury</Link></p>
+                            <p className="text-gray-700 dark:text-gray-400 text-[15px] mt-1 flex items-center gap-1 mb-4"><IoFastFood/> 12 Fitur Didalamnya</p>
                         </HotelCard>
                     ))}
                 </div>

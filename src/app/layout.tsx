@@ -6,6 +6,7 @@ import { XellarProvider } from './provider/XellarProvider';
 import { ReduxProvider } from "../../libs/provider";
 import { ThemeInitializer } from "../components/root/ThemeInitializer";
 import ChartJSInitializer from "@/components/root/ChartInitializer";
+import SwitchThemeButton from '../components/SwitchThemeButton';
 
 //Agar ChartJS bisa di render di client side
 registerChartJS();
@@ -37,6 +38,7 @@ export default function RootLayout({
             <ThemeInitializer>
               <ChartJSInitializer />
               {children}
+              <SwitchThemeButton/>
             </ThemeInitializer>
           </ReduxProvider>
         </XellarProvider>

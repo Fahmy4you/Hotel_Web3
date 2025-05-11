@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useState } from "react"
-import { useSelector } from "react-redux";
-import { RootState } from "../../libs/store";
 import ConnectWalletButton from "@/components/ConnectWalletButton";
-import { FaHamburger } from "react-icons/fa";
+import { Sling as Hamburger } from 'hamburger-react';
 
 const Navbar = () => {
-    const activeMenu = useSelector((state: RootState) => state.activeMenu.activeLink);
     const [scrolled, setScrolled] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -45,26 +43,22 @@ const Navbar = () => {
     ]
 
   return (
-    <header className={`navbar ${scrolled ? 'scrolled' : 'not-scrolled'}`}>
-        <div className="inner">
-            <a className="logo" href="#hero">FK Hotel | Web3</a>
+    <header className={`navbar ${scrolled ? 'scrolled' : 'not-scrolled'}  ${open && 'active'}`}>
+        <a className="logo" href="#hero">FK Hotel | Web3</a>
 
-            <nav className="desktop">
-                <ul>
-                    {navbarLink.map((item, index) => (
-                        <li key={index} className="group">
-                            <a href={item.link}>
-                                <span>{item.name}</span>
-                                <span className="underline"/>
-                            </a>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
+        <Hamburger toggled={open} toggle={setOpen}/>
+
+        <nav className={`menu ${open && 'active'}`}>
+            <div className="w-[100px]"></div>
+            <div>
+                {navbarLink.map((item, index) => (
+                    <a key={index} href={item.link}>
+                        <span>{item.name}</span>
+                    </a>
+                ))}
+            </div>
             <ConnectWalletButton/>
-        </div>
-        <a href={activeMenu}>
-        Testing</a>
+        </nav>
     </header>
   )
 }

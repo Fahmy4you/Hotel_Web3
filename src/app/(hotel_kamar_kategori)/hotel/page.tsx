@@ -100,11 +100,11 @@ const ListHotel = () => {
 
   return (
     <>
-        <NavbarPages/>
-        <section className="w-full pt-20">
+        <NavbarPages isHeaderSection/>
+        <section className="w-full">
             <HeaderSection>
-                <h1 className="md:text-3xl text-center mb-2 font-bold text-xl">List Hotel Yang Terdaftar</h1>
-                <p className="md:text-lg text-[15px] text-center">Ini Adalah List Hotel Yang Terdaftar Di Platform Kami</p>
+                <h1 className="md:text-3xl text-gray-300 text-center mb-2 font-bold text-xl">List Hotel Yang Terdaftar</h1>
+                <p className="md:text-lg text-gray-300 text-[15px] text-center">Ini Adalah List Hotel Yang Terdaftar Di Platform Kami</p>
                 <MySearchHeader onChange={handleSearch}/>
             </HeaderSection>
 
@@ -112,8 +112,8 @@ const ListHotel = () => {
                 <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 md:gap-x-5">
                     {topHotels.map((hotel, i) => (
                         <HotelCard key={i} data={{image: hotel.image,nama: hotel.nama_hotel, bintang:  hotel.bintang, url: "/hotel/" + hotel.id, buttonText: "Lihat Kamar"}} index={i}>
-                            <p className="text-gray-400 text-[15px] mt-1 flex items-center gap-1"><IoLocationOutline/> {hotel.lokasi}</p>
-                            <p className="text-gray-400 text-[15px] mt-1 flex items-center gap-1"><IoBed/> 12 Kamar</p>
+                            <p className="text-gray-700 dark:text-gray-400 text-[15px] mt-1 flex items-center gap-1"><IoLocationOutline/> {hotel.lokasi}</p>
+                            <p className="text-gray-700 dark:text-gray-400 text-[15px] mt-1 flex items-center gap-1"><IoBed/> 12 Kamar</p>
                         </HotelCard>
                     ))}
                 </div>

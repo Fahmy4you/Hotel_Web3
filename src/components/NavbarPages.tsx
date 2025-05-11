@@ -1,7 +1,24 @@
+"use client"
 import Link from "next/link"
 import ConnectWalletButton from '@/components/ConnectWalletButton';
+import { useEffect, useState } from "react";
+import { Sling as Hamburger } from 'hamburger-react';
 
-const NavbarPages = () => {
+const NavbarPages = ({isHeaderSection}: {isHeaderSection?: boolean}) => {
+    const [scrolled, setScrolled] = useState(false);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 10;
+            setScrolled(isScrolled);
+        }
+
+        handleScroll();
+        
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, [])
     const navbarLink = [
         {
             name: "Home",
@@ -18,25 +35,23 @@ const NavbarPages = () => {
     ]
 
   return (
-    <header className={`navbar scrolled`}>
-        <div className="inner">
-            <a className="logo" href="#hero">FK Hotel | Web3</a>
+    <header className={`navbar ${isHeaderSection && 'page'} ${scrolled ? 'scrolled' : 'not-scrolled'}  ${open && 'active'}`}>
+        <a className="logo" href="#hero">FK Hotel | Web3</a>
 
-            <nav className="desktop">
-                <ul>
-                    {navbarLink.map((item, index) => (
-                        <li key={index} className="group">
-                            <Link href={item.link}>
-                                <span>{item.name}</span>
-                                <span className="underline"/>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
-            </nav>
+        <Hamburger toggled={open} toggle={setOpen}/>
 
+        <nav className={`menu ${open && 'active'}`}>
+            <div className="w-[100px]"></div>
+            <div>
+                {navbarLink.map((item, index) => (
+                    <Link key={index} href={item.link}>
+                        <span>{item.name}</span>
+                        <span className="underline"/>
+                    </Link>
+                ))}
+            </div>
             <ConnectWalletButton/>
-        </div>
+        </nav>
     </header>
   )
 }

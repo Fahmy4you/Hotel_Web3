@@ -28,7 +28,6 @@ const MyButton: React.FC<MyButtonProps> = ({ text, className = "", id = "" }) =>
         <div className="bg-circle"/>
         <p className="text">{text}</p>
         <div className="arrow-wrapper">
-          {/* <Image src="." alt="" className="arrow-up" /> */}
           <img src="image/arrow-down.svg" alt="" />
         </div>
       </div>

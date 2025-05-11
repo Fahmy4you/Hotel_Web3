@@ -3,7 +3,7 @@ import Image from "next/image";
 const LogoIcon = ({icon}: {icon: string}) => {
     return (
         <div className="flex-none flex-center marquee-item">
-            <img src={icon} alt={icon} className="grayscale brightness-75 hover:brightness-100 transition" />
+            <img src={icon} alt={icon} className="grayscale brightness-50 dark:brightness-75 hover:brightness-20 dark:hover:brightness-100 transition" />
         </div>
     )
 }

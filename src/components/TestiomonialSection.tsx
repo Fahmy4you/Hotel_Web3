@@ -1,5 +1,5 @@
 import TitleHeader from '@/components/TitleHeader';
-import GlowCard from '@/components//GlowCard';
+import GlowCard from '@/components/GlowCard';
 const TestiomonialSection = ({title = 'Bagaimana Orang Menilai ?', sub = "Testimonials User Kami 🤩"}: {title?: string, sub?: string}) => {
     const testimonials = [
         {
@@ -53,7 +53,7 @@ const TestiomonialSection = ({title = 'Bagaimana Orang Menilai ?', sub = "Testim
       ];
 
   return (
-    <section id="testimonial" className="flex-center section-padding">
+    <section id="testimoni" className="flex-center section-padding">
       <div className="w-full h-full md:px-10 px-5">
         <TitleHeader title={title} sub={sub}/>
         <div className="lg:columns-3 md:columns-2 columns-1 mt-16">
@@ -65,7 +65,7 @@ const TestiomonialSection = ({title = 'Bagaimana Orang Menilai ?', sub = "Testim
                         </div>
                         <div>
                             <p className='font-bold'>{testimonial.name}</p>
-                            <p className='text-white-50'>{testimonial.mentions}</p>
+                            <p className='text-gray-800 dark:text-white-50'>{testimonial.mentions}</p>
                         </div>
                     </div>
                 </GlowCard>

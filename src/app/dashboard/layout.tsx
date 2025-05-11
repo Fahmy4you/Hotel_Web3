@@ -3,10 +3,6 @@ import React, { useEffect } from 'react';
 import { BiWallet, BiSolidWallet } from "react-icons/bi";
 import LoadingName from '@/components/LoadingName';
 import Avatar from 'react-avatar';
-import { ConnectButton } from "@xellar/kit"
-import { Address, erc20Abi, formatUnits } from "viem"
-import { useAccount, useReadContract } from "wagmi"
-import { FiSun } from "react-icons/fi";
 import { RiDashboardHorizontalLine, RiDashboardHorizontalFill } from "react-icons/ri";
 import { RiUserSettingsLine, RiUserSettingsFill } from "react-icons/ri";
 import { TiArrowMaximise, TiArrowMinimise } from "react-icons/ti";
@@ -15,18 +11,17 @@ import { IoLayers } from "react-icons/io5";
 import { RiHotelBedLine, RiHotelBedFill } from "react-icons/ri";
 import { RiHotelLine, RiHotelFill } from "react-icons/ri";
 import { RiHistoryLine, RiHistoryFill } from "react-icons/ri";
-import { LuMoon } from "react-icons/lu";
 import MenuSidebar from '@/components/menuSidebar';
 import { toggleSidebar } from '../../../libs/slices/sidebarSlices';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../libs/store';
-import { toggleTheme } from '../../../libs/slices/themeSlices';
 import { setUser } from '../../../libs/slices/userSlice';
 import ButtonWallet from '@/components/ButtonWallet';
+
+
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = React.useState(true);
     const users = useSelector((state: RootState) => state.users);
-    const darkMode = useSelector((state: RootState) => state.theme.darkMode);
     const isCollapsed = useSelector((state: RootState) => state.sidebar.isColapsed);
     const dispatch = useDispatch();
 
@@ -138,7 +133,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         </div>
                     </nav>
                     <div className="flex-none mt-auto">
-                        <ButtonWallet/>
+                        <ButtonWallet isCollapsed={isCollapsed}/>
                     </div>
                 </div>
             </aside>
@@ -149,9 +144,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     <h2 className='dark:text-white-50 text-gray-900 text-medium font-bold transition-component'>Selamat Datang, {users.nama}!</h2>
                     }
                     <div className="flex items-center space-x-4">
-                        {darkMode ?
-                            <FiSun className="text-white-50 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} /> :
-                            <LuMoon className="text-gray-900 text-xl transition-component cursor-pointer" onClick={() => dispatch(toggleTheme())} />}
                             <Avatar  name={`${users.nama}`} size="35" className='cursor-pointer rounded-md' textSizeRatio={1.75} onClick={() => {
                             window.location.href = '/dashboard/profile';
                         }}/>

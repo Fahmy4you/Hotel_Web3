@@ -41,18 +41,18 @@ const HotelCard = ({data, index, children}: TypeCard) => {
                 <img src={data.image} alt={data.image} className="object-cover w-full h-full rounded" />
             </div>
             <div className="px-5 mt-5">
-                <h3 className="md:text-xl text-lg text-white-50 font-semibold">{data.nama}</h3>
+                <h3 className="md:text-xl text-lg text-gray-900 dark:text-white-50 font-bold">{data.nama}</h3>
                 {children}
                 {(data.bintang && data.bintang != 0) && (
                     <div className="flex items-center gap-1 my-3">
                         {Array.from({length: data.bintang}, (_, i) => (
-                            <img src="/image/star.png" key={i} alt="Star" className="size-5" />
+                            <img src="/image/star.png" key={i} alt="Star" className="size-5 filter brightness-40 dark:brightness-100" />
                         ))}
                     </div>
                 )}
             </div>
             <div className="flex justify-end">
-                <Link href={data.url} className="border-1 mb-3 flex justify-center items-center rounded hover:bg-white-50 bg-transparent hover:text-black-50 transition border-white-50 p-2 contact-btn group">
+                <Link href={data.url} className="border-1 mb-3 flex justify-center items-center rounded hover:bg-gray-500 dark:hover:bg-white-50 bg-transparent hover:text-white-50 dark:hover:text-black-50 transition ease-in-out border-gray-500 dark:border-white-50 p-2 contact-btn group">
                     <span>{data.buttonText ? data.buttonText : "Booking Sekarang"}</span>
                 </Link>
             </div>
