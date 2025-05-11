@@ -41,7 +41,7 @@ const InputUI: React.FC<InputUIProps> = ({
     if (Icon) {
       return (
         <Icon 
-          className={darkMode ? "text-gray-300 text-xl" : "text-gray-700 text-xl"} 
+          className={darkMode ? "text-gray-300 text-md" : "text-gray-700 text-md"} 
         />
       );
     }
@@ -63,7 +63,7 @@ const InputUI: React.FC<InputUIProps> = ({
           base: "w-full",
           inputWrapper: `${darkMode 
             ? '!bg-neutral-900 hover:!bg-neutral-800 focus:!bg-neutral-800' 
-            : '!bg-white hover:bg-gray-50 focus:bg-gray-50'} transition-colors`,
+            : '!bg-slate-100 hover:bg-gray-50 focus:bg-gray-50'} transition-colors`,
           input: `${darkMode 
             ? '!text-white' 
             : 'text-black'}`,

@@ -2,6 +2,7 @@ import { combineReducers } from "redux";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "./storage";
 import sidebarReducer from "../libs/slices/sidebarSlices";
+import modalsReducer from "../libs/slices/modalSlice";
 import themeReducer from "../libs/slices/themeSlices";
 import usersReducer from "../libs/slices/userSlice";
 import activeMenuReducer from "../libs/slices/activeMenuSlice";
@@ -11,7 +12,8 @@ const rootReducer = combineReducers({
   sidebar: sidebarReducer,
   theme: themeReducer,
   activeMenu: activeMenuReducer,
-  users : usersReducer
+  users : usersReducer,
+  modals : modalsReducer
 });
 
 const persistConfig = {
@@ -24,6 +26,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
+
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,

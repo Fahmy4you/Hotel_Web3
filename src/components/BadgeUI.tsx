@@ -15,11 +15,11 @@ export default function BadgeUI({ children, variant = "primary", active = true, 
       dot: "bg-blue-800 dark:bg-blue-400"
     },
     primary: {
-      bg: "bg-purple-900/20",
-      text: "text-purple-400",
-      border: "border-purple-400",
-      shadow: "shadow-[0_0_8px_rgba(192,132,252,0.5)]",
-      dot: "bg-purple-400"
+      bg: "bg-purple-600/20 dark:bg-purple-900/20",
+      text: "dark:text-purple-400 text-purple-600",
+      border: "dark:border-purple-400 border-purple-600",
+      shadow: "dark:shadow-[0_0_8px_rgba(192,132,252,0.5)] shadow-[0_0_8px_rgba(192,132,252,0.8)]",
+      dot: "dark:bg-purple-400 bg-purple-600"
     },
     error: {
       bg: "bg-red-900/20",

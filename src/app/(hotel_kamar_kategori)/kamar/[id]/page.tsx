@@ -1,9 +1,9 @@
-import FooterSection from '@/components/FooterSection';
+import FooterSection from '@/components/Section/FooterSection';
 import { IoFastFood, IoFileTrayStacked, IoCashOutline } from 'react-icons/io5';
 import { FaHotel } from 'react-icons/fa6'
 import Link from 'next/link';
 import NavbarPages from '@/components/NavbarPages';
-import FormSubmitBooking from '@/components/FormSubmitBooking';
+import FormSubmitBooking from '@/components/Form/FormSubmitBooking';
 
 
 const BookingKamar = ({params}: {params?: {id?: string}}) => {

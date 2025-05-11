@@ -51,7 +51,7 @@ export default function ConfirmModal({
                 <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
                 <ModalBody>
                     <p>{description}</p>
-                    {userId && <p className="text-sm text-gray-500">ID Pengguna: {userId}</p>}
+                    {userId && <p className="text-sm text-gray-500">ID : {userId}</p>}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="danger" variant="light" onPress={onClose} disabled={isLoading}>

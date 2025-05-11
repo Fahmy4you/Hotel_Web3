@@ -1,6 +1,6 @@
 "use client"
-import FooterSection from "@/components/FooterSection";
-import HeaderSection from "@/components/HeaderSection";
+import FooterSection from "@/components/Section/FooterSection";
+import HeaderSection from "@/components/Section/HeaderSection";
 import HotelCard from "@/components/HotelCard";
 import { IoLocationOutline, IoBed } from "react-icons/io5";
 import MySearchHeader from '@/components/MySearchHeader';

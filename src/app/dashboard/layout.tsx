@@ -39,7 +39,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             dispatch(setUser(user));
           } catch (err) {
             console.error(err);
-            //window.location.href = '/';
           }
         };
         getUserLogged();
