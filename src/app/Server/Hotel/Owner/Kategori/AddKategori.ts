@@ -5,7 +5,7 @@ export const addKategori = async (kategori : string, userId : string) => {
     try {
         const request = await prisma.kategoriKamar.create({
             data: {
-                user_id : Number(userId),
+                hotel_id : Number(userId),
                 kategori : kategori,
                 is_banned : false, // default status
             }
