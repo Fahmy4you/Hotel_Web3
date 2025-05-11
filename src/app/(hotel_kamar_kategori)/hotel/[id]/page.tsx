@@ -1,13 +1,13 @@
 'use client';
-import FooterSection from "@/components/FooterSection";
-import HeaderSection from "@/components/HeaderSection";
+import FooterSection from "@/components/Section/FooterSection";
+import HeaderSection from "@/components/Section/HeaderSection";
 import HotelCard from "@/components/HotelCard";
 import { IoBed, IoFastFood, IoFileTrayStacked, IoLocationOutline, IoStar } from "react-icons/io5";
 import MySearchHeader from '@/components/MySearchHeader';
 import Link from "next/link";
 import NavbarPages from '@/components/NavbarPages';
 import { useParams } from "next/navigation";
-import TestiomonialSection from '@/components/TestiomonialSection';
+import TestiomonialSection from '@/components/Section/TestiomonialSection';
 
 const DetailHotel = () => {
     const params = useParams();

@@ -5,13 +5,13 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  RadioGroup
+  RadioGroup,
+  select
 } from '@heroui/react';
 import { useManageHotel } from '@/hooks/useManageHotel';
 import React, { useState } from 'react';
 import RadioCard from './RadioCard';
 import { useSelector } from 'react-redux';
-import { roomOptions } from '@/app/Dumy/DumyDataForTesting';
 import { RootState } from '../../../libs/store';
 import { HotelData } from '../../../types/hotelData';
 
@@ -19,21 +19,29 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onAction?: () => void;
-  onSelectHotel?: (hotelData: HotelData) => void;
+  onSelectHotel?: (hotelData: HotelData | null) => void;
 }
 
 const FilterModals: React.FC<Props> = ({ isOpen, onClose, onAction, onSelectHotel }) => {
-    const user_id = useSelector((state: RootState) => state.users.id) || 0;
-  const [roomType, setRoomType] = useState<HotelData | null>(null);
+  const user_id = useSelector((state: RootState) => state.users.id) || 0;
+  const [valueFilter, setValueFilter] = useState<HotelData | null>(null);
   const {hotels} = useManageHotel(user_id);
+
 
   const handleValueChange = (value: string) => {
     const selectedHotel = hotels.find(hotel => hotel.nama_hotel === value) || null;
-    setRoomType(selectedHotel);
+    setValueFilter(selectedHotel);
     if (onSelectHotel && selectedHotel) {
       onSelectHotel(selectedHotel);
     }
   };
+
+  const handleClearFilter = () => {
+    setValueFilter(null);
+    if (onSelectHotel) {
+      onSelectHotel(null);
+    }
+  }
 
   return (
     <Modal
@@ -52,25 +60,31 @@ const FilterModals: React.FC<Props> = ({ isOpen, onClose, onAction, onSelectHote
               <RadioGroup
                 label="Pilih Hotel"
                 orientation="vertical"
-                value={roomType?.nama_hotel}
+                value={valueFilter?.nama_hotel ?? ''}
                 onValueChange={handleValueChange}
                 className="flex flex-col gap-3"
               >
+                {hotels.length === 0 && <div>Tidak ada hotel, Silahkan Tambahkan Hotel Terlebih dahulu</div>}
                 {hotels.map((option) => (
                   <RadioCard
                     key={option.id}
                     value={option.nama_hotel}
                     title={option.nama_hotel}
                     description={option.desk}
-                    isSelected={roomType === option}
+                    isSelected={valueFilter === option}
                   />
                 ))}
               </RadioGroup>
             </ModalBody>
             <ModalFooter>
-              <Button color="danger" variant="light" onPress={onClose}>
+              {valueFilter ?  <Button color="danger" variant="flat" onPress={handleClearFilter}>
+                Hapus Filter
+              </Button> :  <Button color="danger" variant="light" onPress={onClose}>
                 Close
-              </Button>
+              </Button>}
+              {/* <Button color="danger" variant="light" onPress={onClose}>
+                Close
+              </Button> */}
               <Button color="primary" onPress={onAction || onClose}>
                 Action
               </Button>

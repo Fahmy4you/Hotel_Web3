@@ -8,7 +8,6 @@ const page = () => {
     <div className='flex flex-col gap-4'>
         <HeaderListKamar/>
         <ListKamar/>
-        <CarrouselUI/>
     </div>
   )
 }
