@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Search } from 'lucide-react';
-import UiButton from '../UiButton';
+import UiButton from '../Button/UiButton';
 
 
 interface TableHeaderProps<T> {

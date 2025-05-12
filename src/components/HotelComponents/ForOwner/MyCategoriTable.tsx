@@ -12,7 +12,7 @@ import GenericRow from '@/components/TableAtom/GenericRow';
 import TableHeader from '@/components/TableAtom/TableHeader';
 import TableFooter from '@/components/TableAtom/TableFooter';
 import WrapperTable from '@/components/root/WrapperTable';
-import BadgeUI from '@/components/BadgeUI';
+import BadgeUI from '@/components/AtomsComponent/BadgeUI';
 
 const MyCategoriTable = () => {
   const dispatch = useDispatch();

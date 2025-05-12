@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react"
-import ConnectWalletButton from "@/components/ConnectWalletButton";
+import ConnectWalletButton from "@/components/Button/ConnectWalletButton";
 import { Sling as Hamburger } from 'hamburger-react';
 
 const Navbar = () => {

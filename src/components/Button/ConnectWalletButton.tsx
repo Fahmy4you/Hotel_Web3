@@ -6,7 +6,7 @@ import { ConnectButton } from "@xellar/kit"
 import { useEffect } from "react"
 import { Address, erc20Abi, formatUnits } from "viem"
 import { useAccount, useReadContract } from "wagmi"
-import { formatNominal } from '../utils/Helper';
+import { formatNominal } from '@/utils/Helper';
 import { redirect } from "next/navigation"
 
 const ConnectWalletButton = () => {

@@ -1,5 +1,5 @@
 import TitleHeader from "@/components/TitleHeader"
-import HotelCard from "@/components/HotelCard"
+import HotelCard from "@/components/Card/HotelCard"
 import { IoLocationOutline, IoBed } from "react-icons/io5"
 import Link from "next/link"
 

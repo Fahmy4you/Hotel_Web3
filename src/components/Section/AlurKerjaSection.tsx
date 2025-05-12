@@ -1,6 +1,6 @@
 "use client";
 import TitleHeader from '@/components/TitleHeader';
-import GlowCard from '@/components/GlowCard';
+import GlowCard from '@/components/Card/GlowCard';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import ScrollTrigger from 'gsap/ScrollTrigger';

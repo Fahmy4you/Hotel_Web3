@@ -1,4 +1,3 @@
-import CarrouselUI from '@/components/CarrouselUI'
 import HeaderListKamar from '@/components/HotelComponents/ForOwner/HeaderListKamar'
 import ListKamar from '@/components/HotelComponents/ForOwner/ListKamar'
 import React from 'react'

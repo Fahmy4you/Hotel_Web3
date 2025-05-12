@@ -6,7 +6,7 @@ import { XellarProvider } from './provider/XellarProvider';
 import { ReduxProvider } from "../../libs/provider";
 import { ThemeInitializer } from "../components/root/ThemeInitializer";
 import ChartJSInitializer from "@/components/root/ChartInitializer";
-import SwitchThemeButton from '../components/SwitchThemeButton';
+import SwitchThemeButton from '../components/Button/SwitchThemeButton';
 import Providers from "./provider/ToastProvider";
 
 //Agar ChartJS bisa di render di client side

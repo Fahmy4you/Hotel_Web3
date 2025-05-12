@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import HotelRoomCard from '../CardKamar'
+import HotelRoomCard from '../../Card/CardKamar'
 import { useManageKamar } from '@/hooks/useManageKamar'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../../../libs/store'

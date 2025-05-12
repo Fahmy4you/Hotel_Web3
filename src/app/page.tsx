@@ -1,4 +1,4 @@
-import Hero from '@/components/Hero';
+import Hero from '@/components/Section/Hero';
 import AboutSection from '@/components/Section/AboutSection';
 import Navbar from '@/components/Navbar';
 import SupportLogo from '@/components/Section/SupportLogo';

@@ -12,7 +12,7 @@ import { RootState } from '../../../../libs/store';
 import { useManageHotel } from '@/hooks/useManageHotel';
 import ConfirmDeleteHotelModal from '@/components/Modals/Hotel/ModalConfrimDelete';
 import WrapperTable from '@/components/root/WrapperTable';
-import BadgeUI from '@/components/BadgeUI';
+import BadgeUI from '@/components/AtomsComponent/BadgeUI';
 import { addToast } from '@heroui/react';
 import { openModals, closeModals } from '../../../../libs/slices/modalSlice';
 

@@ -3,8 +3,8 @@ import React, { useRef, useEffect } from 'react';
 import { IconType } from 'react-icons';
 import { Tooltip } from '@heroui/react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '../../libs/store';
-import { setActiveMenu } from '../../libs/slices/activeMenuSlice';
+import { RootState } from '../../../libs/store';
+import { setActiveMenu } from '../../../libs/slices/activeMenuSlice';
 import gsap from 'gsap';
 
 interface MenuSidebarProps {

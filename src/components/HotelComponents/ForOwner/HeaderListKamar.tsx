@@ -2,9 +2,9 @@
 import { useState } from 'react';
 import { HotelData } from '../../../../types/hotelData';
 import { LuFilter } from "react-icons/lu";
-import FilterModals from '../FilterModals';
+import FilterModals from '@/components/Modals/Kamar/FilterModals';
 import AddKamarModals from '@/components/Modals/Kamar/AddKamarModals';
-import InputUI from '@/components/InputUI';
+import InputUI from '@/components/AtomsComponent/InputUI';
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';

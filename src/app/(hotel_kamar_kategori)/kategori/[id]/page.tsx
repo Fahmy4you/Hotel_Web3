@@ -1,7 +1,7 @@
 'use client';
 import FooterSection from "@/components/Section/FooterSection";
 import HeaderSection from "@/components/Section/HeaderSection";
-import HotelCard from "@/components/HotelCard";
+import HotelCard from "@/components/Card/HotelCard";
 import { IoHomeOutline, IoFastFood, IoFileTrayStacked, IoLocationOutline, IoStar } from "react-icons/io5";
 import MySearchHeader from '@/components/MySearchHeader';
 import Link from "next/link";

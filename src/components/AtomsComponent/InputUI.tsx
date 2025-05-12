@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from '@heroui/react';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../libs/store';
+import { RootState } from '../../../libs/store';
 import { IconType } from 'react-icons';
 
 interface InputUIProps {

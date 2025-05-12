@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link"
-import ConnectWalletButton from '@/components/ConnectWalletButton';
+import ConnectWalletButton from '@/components/Button/ConnectWalletButton';
 import { useEffect, useState } from "react";
 import { Sling as Hamburger } from 'hamburger-react';
 

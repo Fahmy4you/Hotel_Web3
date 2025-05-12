@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
-import UiButton from './UiButton';
+
 
 const CarouselUI = () => {
     const [index, setIndex] = useState(0);
@@ -61,8 +61,6 @@ const CarouselUI = () => {
                     </div>
                 ))}
             </div>
-            
-            <UiButton text="Prev" click={handlePrev} />
             <button 
                 className="absolute top-1/2 left-2 -translate-y-1/2 bg-amber-500 hover:bg-amber-600 text-black font-bold py-2 px-4 rounded-full opacity-80 hover:opacity-100 transition-opacity"
                 onClick={handlePrev}

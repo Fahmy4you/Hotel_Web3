@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../../libs/store";
+import { RootState } from "../../../libs/store";
 import { GrCloudUpload } from "react-icons/gr";
 
 

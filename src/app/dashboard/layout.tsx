@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect } from 'react';
 import { BiWallet, BiSolidWallet } from "react-icons/bi";
-import LoadingName from '@/components/LoadingName';
+import LoadingName from '@/components/AtomsComponent/LoadingName';
 import Avatar from 'react-avatar';
 import { RiDashboardHorizontalLine, RiDashboardHorizontalFill } from "react-icons/ri";
 import { RiUserSettingsLine, RiUserSettingsFill } from "react-icons/ri";
@@ -11,12 +11,12 @@ import { IoLayers } from "react-icons/io5";
 import { RiHotelBedLine, RiHotelBedFill } from "react-icons/ri";
 import { RiHotelLine, RiHotelFill } from "react-icons/ri";
 import { RiHistoryLine, RiHistoryFill } from "react-icons/ri";
-import MenuSidebar from '@/components/menuSidebar';
+import MenuSidebar from '@/components/AtomsComponent/menuSidebar';
 import { toggleSidebar } from '../../../libs/slices/sidebarSlices';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../libs/store';
 import { setUser } from '../../../libs/slices/userSlice';
-import ButtonWallet from '@/components/ButtonWallet';
+import ButtonWallet from '@/components/Button/ButtonWallet';
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

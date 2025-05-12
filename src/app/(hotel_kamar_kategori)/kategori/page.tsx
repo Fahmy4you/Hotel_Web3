@@ -1,7 +1,7 @@
 'use client';
 import FooterSection from "@/components/Section/FooterSection";
 import HeaderSection from "@/components/Section/HeaderSection";
-import HotelCard from "@/components/HotelCard";
+import HotelCard from "@/components/Card/HotelCard";
 import MySearchHeader from '@/components/MySearchHeader';
 import NavbarPages from '@/components/NavbarPages';
 import { useParams } from "next/navigation";

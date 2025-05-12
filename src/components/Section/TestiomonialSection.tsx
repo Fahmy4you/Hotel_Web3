@@ -1,5 +1,5 @@
 import TitleHeader from '@/components/TitleHeader';
-import GlowCard from '@/components/GlowCard';
+import GlowCard from '@/components/Card/GlowCard';
 const TestiomonialSection = ({title = 'Bagaimana Orang Menilai ?', sub = "Testimonials User Kami 🤩"}: {title?: string, sub?: string}) => {
     const testimonials = [
         {

@@ -10,10 +10,10 @@ import {
 } from '@heroui/react';
 import { useManageHotel } from '@/hooks/useManageHotel';
 import React, { useState } from 'react';
-import RadioCard from './RadioCard';
+import RadioCard from '@/components/Card/RadioCard';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../libs/store';
-import { HotelData } from '../../../types/hotelData';
+import { RootState } from '../../../../libs/store';
+import { HotelData } from '../../../../types/hotelData';
 
 interface Props {
   isOpen: boolean;
@@ -70,7 +70,7 @@ const FilterModals: React.FC<Props> = ({ isOpen, onClose, onAction, onSelectHote
                     key={option.id}
                     value={option.nama_hotel}
                     title={option.nama_hotel}
-                    description={option.desk}
+                    description={option.lokasi}
                     isSelected={valueFilter === option}
                   />
                 ))}

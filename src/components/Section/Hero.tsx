@@ -3,11 +3,11 @@ import { HiOutlineGlobeAlt } from 'react-icons/hi'
 import { RiSecurePaymentFill } from 'react-icons/ri'
 import { TbEyeCheck } from 'react-icons/tb'
 import {IoArrowBackCircle} from "react-icons/io5"
-import MyButton from '@/components/MyButton';
-import HeroModel from '@/components/HeroModel';
+import MyButton from '@/components/Button/MyButton';
+import HeroModel from '@/components/Component3D/HeroModel';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
-import AnimatedCardCounter from './AnimatedCardCounter';
+import AnimatedCardCounter from '../Card/AnimatedCardCounter';
 import Image from 'next/image';
 
 const Hero = () => {
