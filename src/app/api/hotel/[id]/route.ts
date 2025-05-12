@@ -6,7 +6,7 @@ import { prisma } from "@/utils/prisma";
 export const config = {
   api: {
     bodyParser: false,
-    sizeLimit: "10mb",
+    sizeLimit: "5mb",
   },
 };
 
@@ -74,11 +74,30 @@ export async function PUT(
     // Gabungkan existing + new
     const allImages = [...existingImages, ...newImagePaths];
 
+    const existingHotel = await prisma.hotel.findFirst({
+      where: {
+        nama_hotel: {
+          equals: nama_hotel,
+          mode: "insensitive",
+        },
+        ...(ParsedhotelId && { NOT: { id: ParsedhotelId } }),
+      },
+      select: { id: true },
+    });
+
+    if (existingHotel) {
+      return NextResponse.json(
+        {
+          message: "Hotel dengan nama tersebut sudah terdaftar",
+        },
+        { status: 409 }
+      );
+    }
+
     const updatedHotel = await prisma.hotel.update({
       where: { id: ParsedhotelId },
       data: {
         nama_hotel,
-        desk,
         lokasi,
         user_id: parseUserId,
         images: allImages,

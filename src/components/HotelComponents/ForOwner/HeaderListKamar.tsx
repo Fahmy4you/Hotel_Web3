@@ -16,16 +16,15 @@ export default function HotelRoomFilterPage() {
 
   const [selectedHotel, setSelectedHotel] = useState<HotelData | null>(null);
   const [query, setQuey] = useState('');
-  const [selectedHotelId, setSelectedHotelId] = useState(null);
   const handleHotelSelect = (hotel: HotelData | null) => {
     setSelectedHotel(hotel);
   };
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl transition-color dark:text-white-50 text-black-50 font-bold">Daftar Kamar {selectedHotel?.nama_hotel}</h1>
-        <div className="flex space-x-2">
+      <div className="flex-col md:flex-row flex justify-between sm:items-center mb-6">
+        <h1 className="sm:text-2xl text-xl transition-color dark:text-white-50 text-black-50 font-bold">Daftar Kamar {selectedHotel?.nama_hotel}</h1>
+        <div className="sm:flex-row mt-5 sm:mt-0 flex flex-col space-x-2">
           <InputUI type="text" value={query} onValueChange={setQuey} placeholder="Cari Kamar" icon={FaMagnifyingGlass} />
           <button
             onClick={() => dispatch(openModals('add'))}

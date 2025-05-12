@@ -216,9 +216,9 @@ const HotelModal: React.FC<HotelModalProps> = ({
               ...(hotelData?.images?.filter(img => typeof img === 'string') || [])
             ]
           });
-        } finally {
+        }
+         finally {
           setIsPending(false);
-          handleCloseWithAnimation();
         }
       };
 

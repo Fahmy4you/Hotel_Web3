@@ -9,11 +9,6 @@ interface TableHeaderProps<T> {
   onSearch: (query: string) => void;
   addButtonText?: string;
   onAddButtonClick?: () => void;
-  renderModal?: (props: {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (data: T) => void;
-  }) => React.ReactNode;
   initialData?: T; 
 }
 
@@ -21,7 +16,6 @@ const TableHeader = <T extends unknown>({
   title,
   onSearch,
   addButtonText = 'Add New', // default text jika tidak diberikan
-  renderModal,
   initialData,
   placeholder = `Search ${title.toLowerCase()}...`,
   onAddButtonClick
@@ -55,23 +49,14 @@ const TableHeader = <T extends unknown>({
                 className="pl-10 pr-4 py-2 w-full border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 text-neutral-900 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            
-            {renderModal && (
-              <UiButton
+            <UiButton
                 click={onAddButtonClick || handleOpenModal} 
                 text={addButtonText}
                 // className="w-full sm:w-auto"
               />
-            )}
           </div>
         </div>
       </div>
-
-      {renderModal && renderModal({
-        isOpen: isModalOpen,
-        onClose: handleCloseModal,
-        onSubmit: () => {}
-      })}
     </>
   );
 };

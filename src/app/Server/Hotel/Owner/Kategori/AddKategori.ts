@@ -1,11 +1,11 @@
 'use server'
 import { prisma } from "@/utils/prisma"
 
-export const addKategori = async (kategori : string, userId : string) => {
+export const addKategori = async (kategori : string, hotel_id : string) => {
     try {
         const request = await prisma.kategoriKamar.create({
             data: {
-                hotel_id : Number(userId),
+                hotel_id : Number(hotel_id),
                 kategori : kategori,
                 is_banned : false, // default status
             }

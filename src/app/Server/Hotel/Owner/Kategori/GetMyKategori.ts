@@ -3,9 +3,20 @@ import { prisma } from "@/utils/prisma"
 
 export const getMyKategori = async (userId: string) => {
     try {
-        const request = await prisma.kategoriKamar.findMany({
+
+        const getHotelByUserId = await prisma.hotel.findMany({
             where: {
                 user_id: Number(userId)
+            }
+        })
+
+        const hotelIDs = getHotelByUserId.map(hotel => hotel.id);
+
+        const request = await prisma.kategoriKamar.findMany({
+            where: {
+                hotel_id: {
+                    in : hotelIDs
+                }
             },
             include : {
                 _count : {

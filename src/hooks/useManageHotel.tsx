@@ -3,7 +3,7 @@ import { getMyHotels } from "@/app/Server/Hotel/Owner/GettMyHotels";
 import { deleteHotel } from "@/app/Server/Hotel/Owner/DeleteHotel";
 import { HotelData } from "../../types/hotelData";
 import { hotelSchema } from "@/utils/zod";
-import { error } from "console";
+import { addToast } from "@heroui/react";
 
 export const useManageHotel = (
     userID: number,
@@ -12,15 +12,18 @@ export const useManageHotel = (
 ) => {
     const [hotels, setHotels] = useState<HotelData[]>([]);
     const [deleting, setDeleting] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [query, setQuery] = useState<string>("");
 
     const fetchHotels = async () => {
+        setLoading(true);
         try {
             const res = await getMyHotels({ search: query, page: 1 });
             setHotels(res.hotels || []);
         } catch (error) {
             console.error("Error fetching hotels:", error);
         } finally {
+            setLoading(false);
             setDeleting(false);
         }
     };
@@ -35,8 +38,20 @@ export const useManageHotel = (
             const res = await deleteHotel(hotelID);
             if (res) {
                 await fetchHotels();
+                addToast({
+                    title: 'Berhasil',
+                    description: 'Berhasil Menghapus Hotel!',
+                    variant: 'flat',
+                    color: 'success',
+                })
             }
         } catch (error) {
+            addToast({
+                title: 'Error',
+                description: 'Terjadi Error saat menghapus Hotel!',
+                variant: 'flat',
+                color: 'danger',
+            })
             console.error("Error deleting hotel:", error);
         } finally {
             setDeleting(false);
@@ -49,6 +64,7 @@ export const useManageHotel = (
         currentData: HotelData | null,
         closeModal: () => void
     ) => {
+        setLoading(true);
         try {
             const formDataToSend = new FormData();
             formDataToSend.append("nama_hotel", formData.nama_hotel);
@@ -70,49 +86,75 @@ export const useManageHotel = (
             const validated = hotelSchema.safeParse({
                 nama_hotel: formData.nama_hotel,
                 lokasi: formData.lokasi,
-                images: totalImages
+                images: totalImages,
+                user_id: userID
             });
 
-            if(!validated.success) {
+            if (!validated.success) {
                 const errors = validated.error.flatten().fieldErrors;
+                addToast({
+                    title: 'Error',
+                    description: Object.values(errors).flat().join(', '),
+                    variant: 'flat',
+                    color: 'danger',
+                })
+                console.log(errors);
                 return errors;
             }
 
+            const endpoint = isEditMode && currentData?.id
+                ? `/api/hotel/${currentData.id}`
+                : "/api/upload/hotels";
 
-            // const endpoint = isEditMode && currentData?.id
-            //     ? `/api/hotel/${currentData.id}`
-            //     : "/api/upload/hotels";
+            const method = isEditMode ? "PUT" : "POST";
 
-            // const method = isEditMode ? "PUT" : "POST";
+            const res = await fetch(endpoint, {
+                method,
+                body: formDataToSend,
+            });
 
-            // const res = await fetch(endpoint, {
-            //     method,
-            //     body: formDataToSend,
-            // });
+            if (!res.ok || res.status !== 200) {
+                 const errorData = await res.json().catch(() => ({}));
+                addToast({
+                    title: isEditMode ? 'Terjadi Error saat mengedit Kamar!' : 'Terjadi Error saat menambahkan Kamar!',
+                    description: errorData.message,
+                    variant: 'flat',
+                    color: 'danger',
+                })
+                throw new Error("Failed to submit hotel");
+            }
 
-            // if (!res.ok) {
-            //     const errorData = await res.json().catch(() => ({}));
-            //     throw new Error(errorData.error || "Failed to upload");
-            // }
+            const resData = await res.json();
+            addToast({
+                title: 'Berhasil',
+                description: 'Berhasil Menambahkan Hotel!',
+                variant: 'flat',
+                color: 'success',
+            })
+            if (isEditMode && currentData?.id) {
+                onEditHotel?.({ ...formData, id: currentData.id, images: resData.hotel.images });
+            } else {
+                onAddHotel?.({ ...formData, images: resData.hotel.images });
+            }
 
-            // const resData = await res.json();
-
-            // if (isEditMode && currentData?.id) {
-            //     onEditHotel?.({ ...formData, id: currentData.id, images: resData.hotel.images });
-            // } else {
-            //     onAddHotel?.({ ...formData, images: resData.hotel.images });
-            // }
-
-            // await fetchHotels();
-            // closeModal();
-        } catch (error) {
+            await fetchHotels();
+            closeModal();
+        } catch (error : any) {
+            addToast({
+                title: 'Error',
+                description: error.message,
+                variant: 'flat',
+                color: 'danger',
+            })
             console.error("Error submitting hotel:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
-
     return {
         hotels,
+        loading,
         deleting,
         setQuery,
         query,

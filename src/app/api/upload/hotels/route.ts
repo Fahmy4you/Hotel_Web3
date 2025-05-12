@@ -1,44 +1,68 @@
-import { NextRequest, NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from "next/server";
+import fs from "fs";
+import path from "path";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export const config = {
   api: {
-    bodyParser: false, 
-    sizeLimit: '10mb'
-  }
+    bodyParser: false,
+    sizeLimit: "5mb",
+  },
 };
 
 export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
 
-    const nama_hotel = formData.get('nama_hotel')?.toString().trim();
-    const lokasi = formData.get('lokasi')?.toString().trim();
-    const user_id = formData.get('user_id')?.toString().trim();
-    const files = formData.getAll('files') as File[];
+    const nama_hotel = formData.get("nama_hotel")?.toString().trim();
+    const lokasi = formData.get("lokasi")?.toString().trim();
+    const user_id = formData.get("user_id")?.toString().trim();
+    const files = formData.getAll("files") as File[];
 
     const missingFields = [];
-    if (!nama_hotel) missingFields.push('nama_hotel');
-    if (!lokasi) missingFields.push('lokasi');
-    if (!user_id) missingFields.push('user_id');
-    if (!files || files.length === 0) missingFields.push('files');
+    if (!nama_hotel) missingFields.push("nama_hotel");
+    if (!lokasi) missingFields.push("lokasi");
+    if (!user_id) missingFields.push("user_id");
+    if (!files || files.length === 0) missingFields.push("files");
 
     if (missingFields.length > 0) {
-      console.log('Missing fields:', missingFields);
+      console.log("Missing fields:", missingFields);
       return NextResponse.json(
-        { error: 'Missing fields', missingFields },
+        { error: "Missing fields", missingFields },
         { status: 400 }
       );
     }
-    
-    console.log("Form data received:", { nama_hotel, lokasi, user_id, fileCount: files.length });
+
+    console.log("Form data received:", {
+      nama_hotel,
+      lokasi,
+      user_id,
+      fileCount: files.length,
+    });
 
     if (!nama_hotel || !lokasi || !user_id || !files || files.length === 0) {
-      return NextResponse.json({ error: 'Field is missing' }, { status: 400 });
+      return NextResponse.json({ error: "Field is missing" }, { status: 400 });
+    }
+
+    const existingHotel = await prisma.hotel.findFirst({
+      where: {
+        nama_hotel: {
+          equals: nama_hotel,
+          mode: "insensitive",
+        },
+      },
+      select: { id: true },
+    });
+
+    if (existingHotel) {
+      return NextResponse.json(
+        {
+          error: "Hotel dengan nama tersebut sudah terdaftar",
+        },
+        { status: 409 }
+      );
     }
 
     const hotel = await prisma.hotel.create({
@@ -51,7 +75,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    const uploadDir = path.join(process.cwd(), "public/uploads");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -61,8 +85,8 @@ export async function POST(req: NextRequest) {
     for (const file of files) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
-      const ext = file.name.split('.').pop();
-      const newFileName = `${file.name.split('.')[0]}-${hotel.id}.${ext}`;
+      const ext = file.name.split(".").pop();
+      const newFileName = `${file.name.split(".")[0]}-${hotel.id}.${ext}`;
       const filePath = path.join(uploadDir, newFileName);
 
       fs.writeFileSync(filePath, buffer);
@@ -77,9 +101,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ message: 'Hotel created successfully', hotel: { ...hotel, images: imagePaths } });
+    return NextResponse.json({
+      message: "Hotel created successfully",
+      hotel: { ...hotel, images: imagePaths },
+    });
   } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    console.error("Upload error:", error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

@@ -11,16 +11,7 @@ const UiButton = ({ click, text, icon }: UiButtonProps) => {
     return (
         <button
             onClick={click}
-            className="bg-gradient-to-r
-            w-full sm:w-auto
-            from-purple-600 to-purple-800
-            text-white rounded-md p-2
-            hover:from-purple-700
-            hover:to-purple-900
-            focus:outline-none focus:ring-2
-            focus:ring-purple-500 focus:ring-opacity-50
-            transition-all shadow-lg hover:shadow-xl
-            text-sm font-medium flex items-center"
+            className="bg-neutral-800 dark:text-black-50 darlk:hover:bg-neutral-900 hover:bg-neutral-900 text-white px-4 py-2 rounded-md dark:bg-white dark:hover:bg-white-50"
         >
             {text}
             {icon && React.createElement(icon)}

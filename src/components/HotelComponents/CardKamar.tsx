@@ -9,21 +9,7 @@ import BadgeUI from '@/components/BadgeUI';
 import { RootState } from '../../../libs/store';
 import { KamarData } from '../../../types/kamarData';
 
-// Contoh data statis untuk ditampilkan
-const hotelRoom = {
-  id: 1,
-  nama_kamar: "Deluxe Ocean View",
-  price: 1250000,
-  is_banned: false,
-  kategori_id: 2,
-  hotel_id: 1,
-  features: ["Free WiFi", "Breakfast", "Swimming Pool", "King Size Bed"],
-  images: ["/api/placeholder/400/300"],
-  rating: 4.7,
-  kategori: "Premium"
-};
-
-export default function HotelRoomCard() {
+export default function kamarCard( { kamar } : { kamar: KamarData } ) {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [currentDataKamar, setCurrentDataKamar] = useState<KamarData | null>(null);
   const dp = useDispatch(); // dp as Dispatch
@@ -42,11 +28,11 @@ export default function HotelRoomCard() {
     <div className="flex flex-col md:flex-row bg-white dark:bg-neutral-900 rounded-lg shadow-md overflow-hidden  mx-auto">
       <div className="relative w-full md:w-2/5 h-48">
         <img
-          src={hotelRoom.images[currentImageIndex]}
-          alt={hotelRoom.nama_kamar}
+          src={kamar.images?.[currentImageIndex] || '/default-room-image.jpg'}
+          alt={kamar.nama_kamar}
           className="w-full h-full object-cover"
         />
-        {hotelRoom.is_banned && (
+        {kamar.is_active && (
           <div className="absolute top-0 right-0 bg-red-500 text-white px-2 py-0.5 m-2 text-xs rounded-md">
             Not Available
           </div>
@@ -58,21 +44,21 @@ export default function HotelRoomCard() {
         <div className="space-y-2">
           {/* Nama dan Rating */}
           <div className="flex justify-between items-start">
-            <h2 className="text-lg font-bold text-gray-800 dark:text-white">{hotelRoom.nama_kamar}</h2>
-            <div className="flex items-center">
+            <h2 className="text-lg font-bold text-gray-800 dark:text-white">{kamar.nama_kamar}</h2>
+            {/* <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
-              <span className="ml-1 text-gray-700 dark:text-white text-sm font-medium">{hotelRoom.rating}</span>
-            </div>
+              <span className="ml-1 text-gray-700 dark:text-white text-sm font-medium">{kamar.rating}</span>
+            </div> */}
           </div>
           
           {/* Badge Kategori */}
           <div className="flex items-center gap-2 mb-3">
-            <BadgeUI variant="primary" size="md" active={true}>{hotelRoom.kategori}</BadgeUI>
+            <BadgeUI variant="primary" size="md" active={true}>{kamar.kategori_id}</BadgeUI>
           </div>
           
           {/* Features Badges */}
           <div className="flex flex-wrap gap-2">
-            {hotelRoom.features.map((feature, index) => (
+            {kamar.features?.map((feature, index) => (
               <BadgeUI key={index} variant="default" size="md" active={true}>{feature}</BadgeUI>
             ))}
           </div>
@@ -81,7 +67,7 @@ export default function HotelRoomCard() {
         {/* Harga dan Tombol-tombol Action */}
         <div className="flex justify-between items-center mt-3">
           <div>
-            <p className="text-base font-bold text-gray-900 dark:text-white">{formatPrice(hotelRoom.price)}</p>
+            <p className="text-base font-bold text-gray-900 dark:text-white">{formatPrice(kamar.price)}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400">per malam</p>
           </div>
           
