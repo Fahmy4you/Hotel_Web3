@@ -3,9 +3,16 @@ interface BadgeProps {
   active?: boolean;
   size?: "md" | "lg";
   children: React.ReactNode;
+  className?: string;
 }
 
-export default function BadgeUI({ children, variant = "primary", active = true, size = "md" }: BadgeProps) {
+export default function BadgeUI({
+  children,
+  variant = "primary",
+  active = true,
+  size = "md",
+  className
+}: BadgeProps) {
   const darkModeStyles = {
     default: {
       bg: "bg-blue-500/20 dark:bg-blue-900/20",
@@ -29,11 +36,11 @@ export default function BadgeUI({ children, variant = "primary", active = true, 
       dot: "bg-red-400"
     },
     success: {
-      bg: "bg-green-900/20",
-      text: "text-green-400",
-      border: "border-green-400",
-      shadow: "shadow-[0_0_8px_rgba(74,222,128,0.5)]",
-      dot: "bg-green-400"
+      bg: "dark:bg-green-900/20 bg-green-600/20",
+      text: "dark:text-green-400 text-green-500",
+      border: "dark:border-green-400 border-green-500",
+      shadow: "dark:shadow-[0_0_8px_rgba(74,222,128,0.5)] shadow-[0_0_8px_rgba(74,222,128,0.8)]",
+      dot: "dark:bg-green-400 bg-green-600"
     },
     warning: {
       bg: "bg-yellow-900/20",
@@ -46,22 +53,24 @@ export default function BadgeUI({ children, variant = "primary", active = true, 
 
   const variantStyles = darkModeStyles;
   const selectedVariant = variantStyles[variant] || variantStyles.default;
-  
+
   const sizeStyles = {
     md: "px-2.5 py-1 text-xs",
     lg: "px-3 py-1.5 text-sm"
   };
-  
+
   const selectedSize = sizeStyles[size] || sizeStyles.md;
-  
+
   return (
-    <div 
+    <div
       className={`inline-flex items-center rounded-full font-medium ${selectedSize} backdrop-blur-sm
         ${selectedVariant.bg} ${selectedVariant.text} border ${selectedVariant.border} ${selectedVariant.shadow}
-        transition-all duration-300`}
+        transition-all duration-300 ${className ?? ""}`} // ← className opsional ditambahkan di akhir
     >
-      <span 
-        className={`rounded-full mr-1.5 animate-pulse ${selectedVariant.dot} ${size === "lg" ? "w-2.5 h-2.5" : "w-2 h-2"}`}
+      <span
+        className={`rounded-full mr-1.5 animate-pulse ${selectedVariant.dot} ${
+          size === "lg" ? "w-2.5 h-2.5" : "w-2 h-2"
+        }`}
       />
       {children}
     </div>

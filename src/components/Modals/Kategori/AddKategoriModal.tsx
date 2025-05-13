@@ -95,6 +95,7 @@ export default function AddKategoriModal({
               />
 
               <Select
+                selectionMode="multiple"
                 selectedKeys={category.hotel_id ? [category.hotel_id.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];
@@ -108,7 +109,7 @@ export default function AddKategoriModal({
                 disabled={loading}
               >
                 {hotels.map((hotel) => (
-                  <SelectItem key={hotel.id.toString()} textValue={hotel.nama_hotel}>
+                  <SelectItem key={hotel?.id?.toString() ?? ''} textValue={hotel.nama_hotel}>
                     {hotel.nama_hotel}
                   </SelectItem>
                 ))}

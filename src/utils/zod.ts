@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import { StatusKamar } from '@prisma/client';
 
 export const bookingSchema = z.object({
     nama: z.string().min(3, "Nama Booking minimal 3 karakter"),
@@ -106,3 +107,31 @@ export type KategoriFormValues = z.infer<typeof kategoriSchema>;
 export const validateKategori = (data: unknown) => {
   return kategoriSchema.safeParse(data);
 };
+
+
+const fileSchema = z.instanceof(File).optional();
+const featureSchema = z.object({
+  id: z.number().optional(),
+  nama_fasilitas: z.string().min(1, "Nama fasilitas harus diisi"),
+});
+export const kamarSchema = z.object({
+  id: z.number().optional(),
+  nama_kamar: z.string().min(1, "Nama kamar harus diisi"),
+  desk: z.string().min(10, "Deskripsi minimal 10 karakter"),
+  hotel_id: z.number().min(1, "Hotel harus dipilih"),
+  kategori_id: z.number().min(1, "Kategori harus dipilih"),
+  price: z.number().min(10000, "Harga minimal Rp 10.000"),
+  is_kyc: z.boolean(),
+  status: z.enum([StatusKamar.TERSEDIA, StatusKamar.DIPESAN, StatusKamar.DIBERSIHKAN, StatusKamar.DIPERBAIKI]),
+  images: z.array(z.union([z.string(), fileSchema]))
+    .min(1, "Minimal 1 gambar harus diupload")
+    .max(5, "Maksimal 5 gambar"),
+  features: z.array(featureSchema).min(1, "Minimal 1 fasilitas harus ditambahkan"),
+}).refine(data => {
+  return data.images && data.images.length > 0;
+}, {
+  message: "Minimal 1 gambar harus diupload",
+  path: ["images"]
+});
+
+export type KamarFormValues = z.infer<typeof kamarSchema>;

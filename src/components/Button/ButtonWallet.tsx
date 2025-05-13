@@ -43,12 +43,12 @@ const ButtonWallet = ({isCollapsed}: {isCollapsed: boolean}) => {
         if(isConnected) {
             return (
               <button
-                className="bg-[#7828C8] w-full rounded-lg p-2 cursor-pointer"
+                className="dark:bg-white-50 bg-neutral-800 w-full rounded-lg p-2 cursor-pointer"
                 onClick={openProfileModal}
               >
                 {isLoading ? 
-                <span>Loading...</span> : 
-                <span>
+                <span className="text-white dark:text-black-50">Loading...</span> : 
+                <span className="text-white dark:text-black-50">
                     {isCollapsed
                       ? `${formatNominal(Number(formatted))} IDRX` 
                       : `${formatNominal(Number(formatted)).slice(0, 1)}`} 

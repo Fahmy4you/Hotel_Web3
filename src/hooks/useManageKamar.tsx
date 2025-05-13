@@ -1,14 +1,18 @@
 'use client'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { addToast } from "@heroui/react";
 import { KamarData } from "../../types/kamarData";
 import { getMyHotelKamars } from "@/app/Server/Kamar/GetMyKamarHotel";
 import { deleteMyKamarHotels } from "@/app/Server/Kamar/DeleteMyKamarHotels";
 import { getKamarById } from "@/app/Server/Kamar/GetKamarByID";
-
+import { z } from "zod";
+import {useDebounce} from 'use-debounce'
+import { StatusKamar } from "@prisma/client";
+import { KamarFormValues } from "@/utils/zod";
+import { kamarSchema } from "@/utils/zod";
 
 export const useManageKamar = (
-  UserId : number,
+  UserId: number,
   onAddKamar?: (kamar: KamarData) => void,
   onEditKamar?: (kamar: KamarData) => void,
 ) => {
@@ -17,27 +21,76 @@ export const useManageKamar = (
   const [deleting, setDeleting] = useState(false);
   const [query, setQuery] = useState("");
 
-  const fetchKamars = async () => {
-    setIsLoading(true);
+  const validateKamar = (formData: KamarData) => {
     try {
-      const res = await getMyHotelKamars({ search: query, page: 1, userId: UserId });
-      setKamars(res.kamars || []);
+      const dataToValidate: KamarFormValues = {
+        ...formData,
+        hotel_id: formData.hotel_id || 0,
+        kategori_id: formData.kategori_id || 0,
+        price: formData.price || 0,
+        images: formData.images || [],
+        features: Array.isArray(formData.features) 
+          ? formData.features.map(f => typeof f === 'string' 
+            ? { nama_fasilitas: f } 
+            : f)
+          : [],
+        is_kyc: formData.is_kyc || false,
+        status: (formData.status as StatusKamar) || StatusKamar.TERSEDIA
+      };
+      
+      kamarSchema.parse(dataToValidate);
+      return { success: true };
     } catch (error) {
-      console.error("Error fetching kamar:", error);
+      if (error instanceof z.ZodError) {
+        error.errors.forEach(err => {
+          addToast({
+            title: 'Validasi Error',
+            description: err.message,
+            variant: 'flat',
+            color: 'danger',
+          });
+        });
+        return { success: false, errors: error.errors };
+      }
       addToast({
         title: 'Error',
-        description: 'Gagal memuat data kamar',
+        description: 'Terjadi kesalahan validasi',
         variant: 'flat',
         color: 'danger',
       });
-    } finally {
-      setIsLoading(false);
+      return { success: false, errors: [] };
     }
   };
 
+ const fetchKamars = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await getMyHotelKamars({ 
+        search: query, 
+        page: 1, 
+        userId: UserId 
+      });
+      const formattedKamars = (res.formatedResponse || []).map(kamar => ({
+        ...kamar,
+        kategori: kamar.kategori ?? undefined,
+        nama_hotel: kamar.nama_hotel ?? undefined
+      }));
+      setKamars(formattedKamars);
+    } catch (error) {
+      console.error("Error fetching kamar:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [UserId, query]);
+
   useEffect(() => {
+  const timer = setTimeout(() => {
     fetchKamars();
-  }, [query, UserId]);
+  }, 300);
+
+  return () => clearTimeout(timer);
+}, [fetchKamars]);
+
 
   const deleteKamar = async (kamarId: number) => {
     setDeleting(true);
@@ -64,30 +117,36 @@ export const useManageKamar = (
 
   const getDetailKamar = async (kamarId: number) => {
     setIsLoading(true);
-      try {
-        const res = await getKamarById(kamarId);
-        setKamars(res ? [res] : []);
-      } catch (error) {
-        console.error("Error get detail kamar:", error);
-        addToast({
-          title: 'Error',
-          description: 'Gagal memuat detail kamar',
-          variant: 'flat',
-          color: 'danger',
-        })
-      }
-  }
+    try {
+      const res = await getKamarById(kamarId);
+      setKamars(res ? [res] : []);
+    } catch (error) {
+      console.error("Error get detail kamar:", error);
+      addToast({
+        title: 'Error',
+        description: 'Gagal memuat detail kamar',
+        variant: 'flat',
+        color: 'danger',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const submitKamar = async (
     formData: KamarData,
     isEditMode: boolean,
     currentData: KamarData | null,
     closeModal: () => void
   ) => {
+    const validation = validateKamar(formData);
+    if (!validation.success) {
+      return;
+    }
+
     setIsLoading(true);
     try {
       const formDataToSend = new FormData();
-      
-      // Append basic fields
       formDataToSend.append("nama_kamar", formData.nama_kamar);
       formDataToSend.append("desk", formData.desk);
       formDataToSend.append("hotel_id", String(formData.hotel_id));
@@ -96,7 +155,6 @@ export const useManageKamar = (
       formDataToSend.append("is_kyc", String(formData.is_kyc));
       formDataToSend.append("status", formData.status);
 
-      // Handle images
       const existingImages = formData.images?.filter(img => typeof img === 'string') || [];
       const newFiles = formData.images?.filter(img => img instanceof File) as File[] || [];
       
@@ -108,7 +166,6 @@ export const useManageKamar = (
         formDataToSend.append("files", file);
       });
 
-      // Handle Features
       const allFasilitas = formData.features || [];
       formDataToSend.append("fasilitas", JSON.stringify(allFasilitas));
 

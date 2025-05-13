@@ -8,6 +8,8 @@ import { Address, erc20Abi, formatUnits } from "viem"
 import { useAccount, useReadContract } from "wagmi"
 import { formatNominal } from '@/utils/Helper';
 import { redirect } from "next/navigation"
+import { useSelector } from "react-redux"
+import { RootState } from "../../../libs/store"
 
 const ConnectWalletButton = () => {
     const {isConnected, address} = useAccount();
@@ -47,6 +49,7 @@ const ConnectWalletButton = () => {
 }
 
 const ConnectedButton = ({address}: {address: Address}) => {
+    const menuActive = useSelector((state: RootState) => state.activeMenu.activeLink);
     const {data, error, isLoading} = useReadContract({
         address: IDRX_ADDRESS,
         abi: erc20Abi,
@@ -66,7 +69,7 @@ const ConnectedButton = ({address}: {address: Address}) => {
     const formatted = Number(formatUnits(data ?? BigInt(0), 2));
 
     return (
-        <button className="contact-btn group" onClick={() => redirect('/dashboard')}>
+        <button className="contact-btn group" onClick={() => redirect(`${menuActive}`)}>
             <div className="inner">
                 <span>
                     {isLoading

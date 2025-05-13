@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {
           active: "riwayat",
           name: "Riwayat",
-          href: "/dashboard",
+          href: "/dashboard/riwayat",
           iconInActive: RiHistoryLine,
           iconActive: RiHistoryFill,
           roles: [1, 2, 3],

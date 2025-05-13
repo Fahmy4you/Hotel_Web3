@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { HotelData } from '../../../../types/hotelData';
 import { LuFilter } from "react-icons/lu";
+import { useDebounce } from 'use-debounce';
 import FilterModals from '@/components/Modals/Kamar/FilterModals';
 import AddKamarModals from '@/components/Modals/Kamar/AddKamarModals';
 import InputUI from '@/components/AtomsComponent/InputUI';
@@ -9,15 +10,22 @@ import { FaMagnifyingGlass } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { openModals, closeModals } from '../../../../libs/slices/modalSlice';
+import ListKamar from './ListKamar';
 
 export default function HotelRoomFilterPage() {
   const dispatch = useDispatch();
-  const modalState = useSelector((state: RootState) => state.modals); // State modals dengan redux
+  const modalState = useSelector((state: RootState) => state.modals);
 
   const [selectedHotel, setSelectedHotel] = useState<HotelData | null>(null);
-  const [query, setQuey] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debounce] = useDebounce(searchTerm, 500);
+
   const handleHotelSelect = (hotel: HotelData | null) => {
     setSelectedHotel(hotel);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
   };
 
   return (
@@ -25,16 +33,23 @@ export default function HotelRoomFilterPage() {
       <div className="flex-col md:flex-row flex justify-between sm:items-center mb-6">
         <h1 className="sm:text-2xl text-xl transition-color dark:text-white-50 text-black-50 font-bold">Daftar Kamar {selectedHotel?.nama_hotel}</h1>
         <div className="sm:flex-row mt-5 sm:mt-0 flex flex-col space-x-2">
-          <InputUI type="text" value={query} onValueChange={setQuey} placeholder="Cari Kamar" icon={FaMagnifyingGlass} />
+          <InputUI 
+            type="text" 
+            value={searchTerm} 
+            onValueChange={handleSearchChange} 
+            placeholder="Cari Kamar" 
+            icon={FaMagnifyingGlass} 
+          />
           <button
             onClick={() => dispatch(openModals('add'))}
             className="bg-neutral-900 text-sm cursor-pointer hover:bg-white-200 text-white px-4 rounded-md shadow-lg transition-all duration-300 
-    dark:bg-white dark:hover:bg-neutral-300 font-semibold dark:text-black border dark:border-gray-800">
+              dark:bg-white dark:hover:bg-neutral-300 font-semibold dark:text-black border dark:border-gray-800"
+          >
             Tambah Kamar
           </button>
           <button
             className="bg-neutral-900 cursor-pointer text-sm font-semibold text-white px-4 rounded-md flex items-center shadow-lg transition-all duration-300
-    dark:bg-white dark:hover:bg-neutral-300 dark:text-black border border-neutral-300 dark:border-gray-800"
+              dark:bg-white dark:hover:bg-neutral-300 dark:text-black border border-neutral-300 dark:border-gray-800"
             onClick={() => dispatch(openModals('filter'))}
           >
             <div className='flex gap-1 justify-center items-center'>
@@ -44,6 +59,8 @@ export default function HotelRoomFilterPage() {
           </button>
         </div>
       </div>
+      
+      <ListKamar searchQuery={debounce} />
       <FilterModals isOpen={modalState.filter} onClose={() => dispatch(closeModals('filter'))} onSelectHotel={handleHotelSelect} />
       <AddKamarModals isOpen={modalState.add} onClose={() => dispatch(closeModals('add'))} />
     </div>

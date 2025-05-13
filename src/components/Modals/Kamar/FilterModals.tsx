@@ -80,13 +80,10 @@ const FilterModals: React.FC<Props> = ({ isOpen, onClose, onAction, onSelectHote
               {valueFilter ?  <Button color="danger" variant="flat" onPress={handleClearFilter}>
                 Hapus Filter
               </Button> :  <Button color="danger" variant="light" onPress={onClose}>
-                Close
+                Batal
               </Button>}
-              {/* <Button color="danger" variant="light" onPress={onClose}>
-                Close
-              </Button> */}
               <Button color="primary" onPress={onAction || onClose}>
-                Action
+                Terapkan
               </Button>
             </ModalFooter>
           </>

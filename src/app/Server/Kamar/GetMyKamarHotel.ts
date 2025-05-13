@@ -30,6 +30,26 @@ export async function getMyHotelKamars({
           in: hotelIds,
         },
         is_active: true,
+        OR: [
+          {
+            nama_kamar: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      include: {
+        kategori: {
+          select: {
+            kategori: true,
+          },
+        },
+        hotel: {
+          select: {
+            nama_hotel: true,
+          },
+        },
       },
       skip,
       take: pageSize,
@@ -40,12 +60,26 @@ export async function getMyHotelKamars({
         hotel_id: {
           in: hotelIds,
         },
-        is_active: false,
+        is_active: true,
+        OR: [
+          {
+            nama_kamar: {
+              contains: search,
+              mode: "insensitive",
+            },
+          },
+        ],
       },
     });
 
+    const formatedResponse = kamars.map((kamar) => ({
+      ...kamar,
+      nama_hotel: kamar.hotel ? kamar.hotel.nama_hotel : null,
+      kategori: kamar.kategori ? kamar.kategori.kategori : null,
+    }));
+
     return {
-      kamars,
+      formatedResponse,
       currentPage: page,
       totalPages: Math.ceil(totalKamars / pageSize),
       totalKamars,
@@ -55,3 +89,4 @@ export async function getMyHotelKamars({
     throw new Error("Failed to fetch kamars");
   }
 }
+

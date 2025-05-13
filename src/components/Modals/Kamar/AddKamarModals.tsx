@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react'
 import { useManageHotel } from '@/hooks/useManageHotel';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
-import { getKategoriByHotelID } from '@/app/Server/Hotel/Owner/Kategori/GetKategoriByHotelID';
+import { getKategoriByHotelID } from '@/app/Server/Kategori/GetKategoriByHotelID';
 import { KategoriData } from '../../../../types/kategoriData';
 import { useManageKamar } from '@/hooks/useManageKamar';
 
@@ -41,7 +41,9 @@ const initialFormData: Required<KamarData> = {
   is_kyc: false,
   status: RoomStatus.TERSEDIA,
   features: [],
-  images: []
+  images: [],
+  kategori: '',
+  nama_hotel: ''
 };
 
 const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
@@ -63,7 +65,6 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
           setFormData(prev => ({ 
             ...prev, 
             hotel_id: Number(selectedHotelId),
-            // Reset kategori_id when hotel changes
             kategori_id: 0
           }));
         } else {
@@ -154,7 +155,7 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
     >
       <ModalContent>
         <ModalHeader className='flex items-center gap-3'>
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-800 dark:bg-blue-900/30 text-white dark:text-blue-400">
             <LuBedDouble className="w-4 h-4" />
           </div>
           Tambah Kamar Baru

@@ -10,4 +10,6 @@ export interface KamarData {
     images?: (File | string)[]
     features?: string[]
     is_active ?: boolean
+    kategori? : string
+    nama_hotel? : string
 }

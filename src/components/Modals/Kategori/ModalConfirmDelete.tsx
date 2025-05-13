@@ -10,8 +10,8 @@ import {
 interface ConfirmDeleteKategoriModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onConfirm: (hotelId: number) => Promise<void>;
-    hotelId: number;
+    onConfirm: (kategoriId: number) => Promise<void>;
+    kategoriId: number;
     hotelName?: string;
     isLoading?: boolean;
 }
@@ -20,23 +20,23 @@ export default function ConfirmDeleteKategoriModal({
     isOpen,
     onClose,
     onConfirm,
-    hotelId,
+    kategoriId,
     hotelName,
     isLoading = false,
 }: ConfirmDeleteKategoriModalProps) {
     const handleConfirm = async () => {
-        if (!hotelId) return;
-        await onConfirm(hotelId);
+        if (!kategoriId) return;
+        await onConfirm(kategoriId);
         onClose();
     };
 
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
             <ModalContent>
-                <ModalHeader>Konfirmasi Hapus Hotel</ModalHeader>
+                <ModalHeader>Konfirmasi Hapus Kategori</ModalHeader>
                 <ModalBody>
-                    <p>Apakah Anda yakin ingin menghapus hotel <strong>{hotelName}</strong>?</p>
-                    <p className="text-sm text-gray-500">ID Hotel: {hotelId}</p>
+                    <p>Apakah Anda yakin ingin menghapus kategori <strong>{hotelName}</strong>?</p>
+                    <p className="text-sm text-gray-500">ID Kategori: {kategoriId}</p>
                 </ModalBody>
                 <ModalFooter>
                     <Button variant="light" onPress={onClose} disabled={isLoading}>
