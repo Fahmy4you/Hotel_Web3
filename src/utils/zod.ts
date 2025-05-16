@@ -135,3 +135,11 @@ export const kamarSchema = z.object({
 });
 
 export type KamarFormValues = z.infer<typeof kamarSchema>;
+
+export const profileSchema = z.object({
+  nama_user: z.string().min(3, "Nama minimal 3 karakter"),
+  email: z.string().email("Email tidak valid"),
+  no_whatsapp: z.string().regex(/^\d+$/, "Hanya angka diperbolehkan").min(10)
+});
+
+export type ProfileFormValues = z.infer<typeof profileSchema>;

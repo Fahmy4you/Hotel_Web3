@@ -51,7 +51,7 @@ const handleSelectPaymentMethod = (methodId: PaymentMethod['id']): void => {
   const inputBg = darkMode ? 'bg-gray-700' : 'bg-gray-100';
 
   return (
-    <div className={`${mainBg} min-h-screen rounded-lg p-6 transition-all duration-300`}>
+    <div className={`${mainBg} min-h-screen rounded-lg transition-all duration-300`}>
       <div className="max-w-3xl mx-auto">
         <h1 className={`text-2xl font-bold mb-8 ${textColor}`}>Recharge Wallet</h1>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

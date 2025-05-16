@@ -76,13 +76,16 @@ export async function getMyHotelKamars({
       ...kamar,
       nama_hotel: kamar.hotel ? kamar.hotel.nama_hotel : null,
       kategori: kamar.kategori ? kamar.kategori.kategori : null,
+      total_kamar : totalKamars
     }));
+
+    console.log("total Kamar", totalKamars);
 
     return {
       formatedResponse,
       currentPage: page,
       totalPages: Math.ceil(totalKamars / pageSize),
-      totalKamars,
+      totalKamars
     };
   } catch (error) {
     console.error(error);

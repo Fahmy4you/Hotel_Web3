@@ -1,50 +1,30 @@
 'use client';
 import React, { useEffect } from 'react';
+import { openModals,closeModals } from '../../../libs/slices/modalSlice';
 import { BiWallet, BiSolidWallet } from "react-icons/bi";
 import LoadingName from '@/components/AtomsComponent/LoadingName';
 import Avatar from 'react-avatar';
-import { RiDashboardHorizontalLine, RiDashboardHorizontalFill } from "react-icons/ri";
-import { RiUserSettingsLine, RiUserSettingsFill } from "react-icons/ri";
+import { RiDashboardHorizontalLine, RiDashboardHorizontalFill,
+   RiHotelLine, RiHotelFill, RiHotelBedLine, RiHotelBedFill, RiUserSettingsLine,
+    RiUserSettingsFill, RiHistoryLine, RiHistoryFill } from "react-icons/ri";
 import { TiArrowMaximise, TiArrowMinimise } from "react-icons/ti";
-import { LuLayers } from "react-icons/lu";
+import { LuLayers,LuSettings } from "react-icons/lu";
 import { IoLayers } from "react-icons/io5";
-import { RiHotelBedLine, RiHotelBedFill } from "react-icons/ri";
-import { RiHotelLine, RiHotelFill } from "react-icons/ri";
-import { RiHistoryLine, RiHistoryFill } from "react-icons/ri";
 import MenuSidebar from '@/components/AtomsComponent/menuSidebar';
 import { toggleSidebar } from '../../../libs/slices/sidebarSlices';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../libs/store';
 import { setUser } from '../../../libs/slices/userSlice';
 import ButtonWallet from '@/components/Button/ButtonWallet';
+import Modalsetting from '@/components/Modals/Settings/Modalsetting';
+import { useHooksUser } from '@/hooks/useHooksUser';
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-    const [loading, setLoading] = React.useState(true);
-    const users = useSelector((state: RootState) => state.users);
-    const isCollapsed = useSelector((state: RootState) => state.sidebar.isColapsed);
     const dispatch = useDispatch();
-
-    useEffect(() => {
-        const getUserLogged = async () => {
-          try {
-            const res = await fetch('/api/me');
-            if (res.status !== 200) {
-                //window.location.href = '/'; 
-              return;
-            }
-            const user = await res.json();
-            setLoading(false);
-            console.log(user.role_id);
-            dispatch(setUser(user));
-          } catch (err) {
-            console.error(err);
-          }
-        };
-        getUserLogged();
-      }, [3000]);
-
-      
+    const modal = useSelector((state: RootState) => state.modals);
+    const {user, loading} = useHooksUser();
+    const isCollapsed = useSelector((state: RootState) => state.sidebar.isColapsed);
       const menuItems = [
         {
           active: "dashboard",
@@ -121,7 +101,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
                     <nav className="flex-grow overflow-y-auto">
                         <div className='flex flex-col gap-5'>
-                            {users.role_id != null && menuItems.filter((item) => item.roles.includes(Number(users.role_id))).map((item) => (
+                            {user?.role_id != null && menuItems.filter((item) => item.roles.includes(Number(user?.role_id))).map((item) => (
                                 <MenuSidebar
                                 key={item.active}
                                 active={item.active}
@@ -141,18 +121,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
                 <header className='dark:bg-black-100 bg-gray-100 p-4 transition-bg shadow flex items-center justify-between flex-none'>
                     {loading?  <LoadingName /> :
-                    <h2 className='dark:text-white-50 text-gray-900 text-medium font-bold transition-component'>Selamat Datang, {users.nama}!</h2>
+                    <h2 className='dark:text-white-50 text-gray-900 text-medium font-bold transition-component'>Selamat Datang, {user?.nama_user}!</h2>
                     }
                     <div className="flex items-center space-x-4">
-                            <Avatar  name={`${users.nama}`} size="35" className='cursor-pointer rounded-md' textSizeRatio={1.75} onClick={() => {
-                            window.location.href = '/dashboard/profile';
-                        }}/>
+                            <Avatar  name={`${user?.nama_user}`} size="35" className='cursor-pointer rounded-md' textSizeRatio={1.75} />
+                        <LuSettings onClick={() => dispatch(openModals('setting'))} className='cursor-pointer dark:text-white-50 text-gray-900 text-2xl'/>
                     </div>
                 </header>
 
                 <main className='flex-1 p-6 dark:bg-body bg-white transition-bg overflow-y-auto'>
                     {children}
                 </main>
+                <Modalsetting isOpen={modal.setting} onClose={() => dispatch(closeModals('setting'))} /> 
             </div>
         </div>
     );

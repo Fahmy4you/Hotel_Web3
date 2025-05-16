@@ -1,7 +1,18 @@
-
+'use client'
+import HistoryCard from "@/components/Card/HistoryCard"
 const page = () => {
   return (
-    <div>Welcome Page Riwayat</div>
+    <div>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+      <HistoryCard typeNotif="CRUD"/>
+    </div>
   )
 }
 

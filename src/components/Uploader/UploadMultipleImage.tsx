@@ -25,21 +25,20 @@ const UploadMultipleImage = ({
   const fileInputRef = useRef<HTMLInputElement>(null)
   const dropAreaRef = useRef<HTMLDivElement>(null)
 
-  // Create the file schema
+  // Buat Skema File
   const fileSchema = createImageFileSchema({ maxSizeInMB, acceptedTypes })
 
   const processFiles = useCallback((newFiles: File[]) => {
-    // Clear previous errors
     setErrorMessage(null);
 
-    // Step 1: Validate file count
+    // Step 1: Validasi Jumlah file
     const countValidation = validateFileCount(files.length, newFiles.length, maxFiles);
     if (!countValidation.success) {
       setErrorMessage(countValidation.error.errors[0].message);
       return;
     }
 
-    // Step 2: Validate individual files
+    // Step 2: Validasi setiap file
     let validFiles: File[] = [];
     let validationFailed = false;
 
@@ -84,7 +83,7 @@ const UploadMultipleImage = ({
     const newFiles = Array.from(e.target.files);
     processFiles(newFiles);
     
-    // Reset the input value so the same file can be selected again
+    // Reset input jika gambar sama
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -117,7 +116,7 @@ const UploadMultipleImage = ({
       const newFiles = Array.from(e.dataTransfer.files);
       processFiles(newFiles);
     } else if (e.dataTransfer.items) {
-      // Handle pasted images from clipboard
+      // Handle pasted images dari clipboard
       const items = Array.from(e.dataTransfer.items);
       const imageFiles = items
         .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
@@ -212,7 +211,7 @@ const UploadMultipleImage = ({
       <button
         type="button"
         onClick={() => {
-          // Clear all previews
+          // Clear semua preview
           imagePreviews.forEach(url => URL.revokeObjectURL(url));
           setImagePreviews([]);
           setFiles([]);

@@ -17,6 +17,7 @@ export const useManageKamar = (
   onEditKamar?: (kamar: KamarData) => void,
 ) => {
   const [kamars, setKamars] = useState<KamarData[]>([]);
+  const [totalKamar, setTotalKamar] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [query, setQuery] = useState("");
@@ -76,6 +77,7 @@ export const useManageKamar = (
         nama_hotel: kamar.nama_hotel ?? undefined
       }));
       setKamars(formattedKamars);
+      setTotalKamar(res.totalKamars);
     } catch (error) {
       console.error("Error fetching kamar:", error);
     } finally {
@@ -224,6 +226,7 @@ export const useManageKamar = (
     fetchKamars,
     deleteKamar,
     submitKamar,
-    getDetailKamar
+    getDetailKamar,
+    totalKamar
   };
 };
