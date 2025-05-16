@@ -1,9 +1,9 @@
 import { formatDate } from '../../utils/Helper';
 interface Props {
-    data: Record<string, any>;
-    columns: string[];
-    actions?: React.ReactNode;
-    customRender? : Record<string, (value: any, data : Record<string, any>) => React.ReactNode>;
+  data: Record<string, any>;
+  columns: string[];
+  actions?: React.ReactNode;
+  customRender?: Record<string, (value: any, data: Record<string, any>) => React.ReactNode>;
 }
 
 const GenericRow = ({ data, columns, actions, customRender }: Props) => {
@@ -32,4 +32,4 @@ const GenericRow = ({ data, columns, actions, customRender }: Props) => {
     )
 }
 
-export default GenericRow
+export default GenericRow;

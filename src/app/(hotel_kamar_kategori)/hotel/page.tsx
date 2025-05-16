@@ -1,10 +1,12 @@
 "use client"
 import FooterSection from "@/components/Section/FooterSection";
 import HeaderSection from "@/components/Section/HeaderSection";
+import HotelCard from "@/components/Card/HotelCard";
+import { IoLocationOutline, IoBed } from "react-icons/io5";
 import MySearchHeader from '@/components/MySearchHeader';
 import NavbarPages from '@/components/NavbarPages';
 import { getAllHotel } from "@/app/Server/Hotel/Data/data";
-import HotelCard from "@/components/HotelCard"
+import HotelCard from "@/components/Card/HotelCard"
 import { IoLocationOutline, IoBed } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { potongText } from '../../../utils/Helper';

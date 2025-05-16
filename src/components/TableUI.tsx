@@ -7,7 +7,7 @@ import { GetAllUser } from '@/app/Server/Users/GetAllUser';
 import RoleBadge from './TableAtom/RoleBadge';
 import WalletAddress from './TableAtom/WalletAddress';
 import TableHeader from './TableAtom/TableHeader';
-import UiButton from './UiButton';
+import UiButton from './Button/UiButton';
 import UserModal from './Modals/Users/UsersMoadal';
 
 import { UserData } from '../../types/userData';

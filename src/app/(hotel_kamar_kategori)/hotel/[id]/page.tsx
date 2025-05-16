@@ -1,7 +1,7 @@
 'use client';
 import FooterSection from "@/components/Section/FooterSection";
 import HeaderSection from "@/components/Section/HeaderSection";
-import HotelCard from "@/components/HotelCard";
+import HotelCard from "@/components/Card/HotelCard";
 import { IoBed, IoFastFood, IoFileTrayStacked, IoLocationOutline, IoStar, IoCard } from "react-icons/io5";
 import { FaMoneyBill } from "react-icons/fa6";
 import MySearchHeader from '@/components/MySearchHeader';
@@ -15,7 +15,7 @@ import { formatRupiah } from '@/utils/Helper';
 import { Spinner, Pagination } from "@heroui/react";
 import { getHotelById } from "@/app/Server/Hotel/Data/data";
 import TitleHeader from "@/components/TitleHeader";
-import GlowCard from "@/components/GlowCard";
+import GlowCard from "@/components/Card/GlowCard";
 import { getRatingByHotel } from "@/app/Server/Rating/Hotel/data";
 import Avatar from "react-avatar";
 

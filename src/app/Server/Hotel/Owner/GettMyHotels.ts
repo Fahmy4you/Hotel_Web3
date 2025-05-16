@@ -26,9 +26,6 @@ export async function getMyHotels({ search = '', page = 1}: GetAllHotelsParams) 
       },
       skip,
       take: pageSize,
-      orderBy: {
-        createdAt: 'desc',
-      },
     });
 
     const totalHotels = await prisma.hotel.count({

@@ -1,7 +1,7 @@
 'use client';
 import FooterSection from "@/components/Section/FooterSection";
 import HeaderSection from "@/components/Section/HeaderSection";
-import HotelCard from "@/components/HotelCard";
+import HotelCard from "@/components/Card/HotelCard";
 import { IoFastFood, IoBed, IoLocationOutline, IoStar, IoHomeOutline, IoCard } from "react-icons/io5";
 import { FaMoneyBill } from "react-icons/fa6";
 import { formatRupiah } from "@/utils/Helper";

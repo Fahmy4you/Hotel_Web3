@@ -125,23 +125,33 @@ section {
     @apply xl:w-[70%] w-full h-full min-h-[50vh] absolute xl:-top-20 top-24 xl:-right-20 right-0;
   }
 
-  .iconMode {
-    @apply bg-black text-white dark:bg-white dark:text-black cursor-pointer w-[50px] h-[50px] fixed bottom-[30px] right-[30px] rounded-full z-[99] flex justify-center items-center;
+.iconMode {
+  @apply bg-black text-white dark:bg-white dark:text-black cursor-pointer w-[50px] h-[50px] fixed bottom-[30px] right-[30px] rounded-full z-[99] flex justify-center items-center;
+  color: inherit;
+}
 
-    svg {
-      @apply absolute opacity-0 text-[20px] transition ease-in-out;
-    }
+.iconMode svg {
+  @apply text-[20px] transition-opacity duration-300 ease-in-out;
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
 
-    svg:nth-child(1) {
-      @apply opacity-100 rotate-[360deg];
-    }
-    &.active svg:nth-child(1) {
-      @apply opacity-0 rotate-[0deg];
-    }
-    &.active svg:nth-child(2) {
-      @apply opacity-100 rotate-[360deg];
-    }
-  }
+.iconMode:hover svg {
+  transform: scale(1.1);
+}
+
+.iconMode.active {
+  @apply bg-gray-800 dark:bg-gray-200;
+}
+
+.iconMode.system {
+  @apply bg-gray-500 dark:bg-gray-400;
+}
+
+.iconMode:focus {
+  @apply ring-2 ring-blue-500;
+}
 
   .navbar {
     @apply fixed w-full flex justify-between items-center top-0 left-0 px-[20px] py-[15px] transition ease-in-out z-[100] xl:py-[25px] xl:px-[40px];

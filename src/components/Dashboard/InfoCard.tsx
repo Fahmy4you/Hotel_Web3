@@ -14,7 +14,7 @@ const InfoCard = ({ title, value, icon: Icon, iconClassName = '', anotherInfo, t
   return (
     <div className="bg-white p-6 rounded-xl dark:bg-[#1A1A1D] shadow-sm border dark:border-gray-800 border-gray-100 flex items-start">
       <div className="mr-4">
-        <div className="bg-blue-100 p-3 rounded-lg">
+        <div className="dark:bg-blue-100 bg-gray-100 p-3 rounded-lg">
           <Icon className={iconClassName} size={24} />
         </div>
       </div>

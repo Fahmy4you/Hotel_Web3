@@ -1,4 +1,4 @@
-import CarouselUI from '@/components/CarrouselUI'
+import CarouselUI from '@/components/AtomsComponent/CarrouselUI'
 import { Modal, ModalContent, ModalFooter, ModalHeader, ModalBody } from '@heroui/react'
 import React from 'react'
 import { KamarData } from '../../../../types/kamarData'

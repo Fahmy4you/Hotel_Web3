@@ -1,6 +1,7 @@
 import { combineReducers } from "redux";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "./storage";
+import settingReducer from "../libs/slices/switchThemeSlice";
 import sidebarReducer from "../libs/slices/sidebarSlices";
 import modalsReducer from "../libs/slices/modalSlice";
 import themeReducer from "../libs/slices/themeSlices";
@@ -13,13 +14,14 @@ const rootReducer = combineReducers({
   theme: themeReducer,
   activeMenu: activeMenuReducer,
   users : usersReducer,
+  settings : settingReducer,
   modals : modalsReducer
 });
 
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["sidebar", "theme", "activeMenu", "users"],
+  whitelist: ["sidebar", "theme", "activeMenu", "users", "settings"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

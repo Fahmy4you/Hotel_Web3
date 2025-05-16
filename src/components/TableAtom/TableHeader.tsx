@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import UiButton from '@/components/UiButton';
+import UiButton from '@/components/Button/UiButton';
 import { IoRefresh } from 'react-icons/io5';
 
 interface TableHeaderProps<T> {
@@ -9,11 +9,6 @@ interface TableHeaderProps<T> {
   onSearch: (query: string) => void;
   addButtonText?: string;
   onAddButtonClick?: () => void;
-  renderModal?: (props: {
-    isOpen: boolean;
-    onClose: () => void;
-    onSubmit: (data: T) => void;
-  }) => React.ReactNode;
   handleRefresh?: () => void; 
   initialData?: T; 
 }
@@ -22,17 +17,12 @@ const TableHeader = <T extends unknown>({
   title,
   onSearch,
   addButtonText = 'Add New', // default text jika tidak diberikan
-  renderModal,
   initialData,
   placeholder = `Search ${title.toLowerCase()}...`,
   onAddButtonClick,
   handleRefresh
 }: TableHeaderProps<T>) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => setIsModalOpen(false);
   
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -62,22 +52,14 @@ const TableHeader = <T extends unknown>({
                 <UiButton click={handleRefresh} icon={IoRefresh}/>
             )}
             
-            {renderModal && (
               <UiButton
-                click={onAddButtonClick || handleOpenModal} 
+                click={() => onAddButtonClick} 
                 text={addButtonText}
                 // className="w-full sm:w-auto"
               />
-            )}
           </div>
         </div>
       </div>
-
-      {renderModal && renderModal({
-        isOpen: isModalOpen,
-        onClose: handleCloseModal,
-        onSubmit: () => {}
-      })}
     </>
   );
 };

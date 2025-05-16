@@ -10,7 +10,12 @@ const initialState: ModalState = {
    edit : false,
    detail : false,
    delete : false,
+   allKamar : false,
+   notification : false,
+   pengaturan : false,
+   addProfilePicture : false
 }
+
 
 const modalSlice = createSlice({
     name : 'modals',
