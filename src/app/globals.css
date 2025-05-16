@@ -142,7 +142,7 @@ section {
 }
 
 .iconMode.active {
-  @apply bg-gray-800 dark:bg-gray-200;
+  @apply bg-gray-800 text-white-50 dark:bg-gray-200 dark:text-gray-900;
 }
 
 .iconMode.system {
@@ -539,16 +539,16 @@ section {
   opacity: 1;
 }
 
-.swagger-ui {
-  box-sizing: border-box !important;
-  padding: 1rem !important; /* ruang di sekeliling */
-  height: calc(100vh - 2rem) !important; /* full viewport minus padding */
-  overflow: auto !important; /* scroll hanya di situ */
+
+.form-container {
+  background: rgba(28, 37, 38, 0.7);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #4A4A4A;
 }
 
-/* (Optional) Sticky topbar supaya header Swagger selalu di atas */
-.swagger-ui .topbar {
-  position: sticky !important;
-  top: 0;
-  z-index: 999;
+.form-container:hover {
+  border-color: #00FFDD;
+  box-shadow: 0 0 12px rgba(0, 255, 221, 0.5);
 }

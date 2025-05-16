@@ -147,7 +147,6 @@ export default function DashboardHome() {
   const {totalKamar,kamars} = useManageKamar(userId)
   return (
     <div>
-      {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
         <InfoCard title="Jumlah Kamar" value={totalKamar} icon={FaBed} iconClassName="text-blue-600" anotherInfo="23 Kosong" type="success"/>
         <InfoCard title="Tamu Hari Ini" value="120" icon={Users} iconClassName="text-purple-600" anotherInfo="+8 Hari Ini" type="warning"/>
@@ -187,7 +186,7 @@ export default function DashboardHome() {
                 </thead>
                 <tbody>
                   {bookingData.map((booking) => (
-                    <tr key={booking.id} className="border-b last:border-0 hover:bg-gray-50">
+                    <tr key={booking.id} className="border-b transition-all duration-250 last:border-0 hover:bg-gray-50 dark:hover:bg-neutral-900">
                       <td className="py-4 font-medium">{booking.guestName}</td>
                       <td className="py-4 text-gray-600">{booking.roomType}</td>
                       <td className="py-4 text-gray-600">{booking.checkIn}</td>
@@ -200,7 +199,7 @@ export default function DashboardHome() {
             </div>
           </div>
 
-          <div><Button color="primary">Test</Button></div>
+          <div><Button color="primary">Export Laporan ke Pdf</Button></div>
         </div>
 
         {/* Right Column */}

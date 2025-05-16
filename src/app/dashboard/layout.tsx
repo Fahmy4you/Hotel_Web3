@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { openModals,closeModals } from '../../../libs/slices/modalSlice';
 import { BiWallet, BiSolidWallet } from "react-icons/bi";
 import LoadingName from '@/components/AtomsComponent/LoadingName';
-import Avatar from 'react-avatar';
 import { RiDashboardHorizontalLine, RiDashboardHorizontalFill,
    RiHotelLine, RiHotelFill, RiHotelBedLine, RiHotelBedFill, RiUserSettingsLine,
     RiUserSettingsFill, RiHistoryLine, RiHistoryFill } from "react-icons/ri";
@@ -18,13 +17,14 @@ import { setUser } from '../../../libs/slices/userSlice';
 import ButtonWallet from '@/components/Button/ButtonWallet';
 import Modalsetting from '@/components/Modals/Settings/Modalsetting';
 import { useHooksUser } from '@/hooks/useHooksUser';
+import { Avatar } from '@heroui/react';
 
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     const dispatch = useDispatch();
     const modal = useSelector((state: RootState) => state.modals);
     const {user, loading} = useHooksUser();
-    const isCollapsed = useSelector((state: RootState) => state.sidebar.isColapsed);
+    const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
       const menuItems = [
         {
           active: "dashboard",
@@ -87,7 +87,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
     return (
         <div className="flex h-screen overflow-hidden">
-            <aside className={`bg-gray-100 dark:text-white-50 text-gray-900 dark:bg-black-100 p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-all duration-300`}>
+            <aside className={`bg-gray-100 border-r-1 shadow-md dark:border-gray-900 border-gray-200 dark:text-white-50 text-gray-900 dark:bg-black-100 p-4 h-screen flex flex-col ${isCollapsed ? 'w-64' : 'w-20'} transition-all duration-300`}>
                 <div className="flex flex-col h-full">
                     <div className="flex gap-2 justify-between mb-4">
                         <h2 className="text-2xl transition-all duration-300 font-bold"> {isCollapsed ? 'FK HOTEL' : 'FK'}</h2>
@@ -119,12 +119,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </aside>
 
             <div className="flex-1 flex flex-col h-screen overflow-hidden">
-                <header className='dark:bg-black-100 bg-gray-100 p-4 transition-bg shadow flex items-center justify-between flex-none'>
+                <header className='dark:bg-black-100 border-b-1 dark:border-gray-900 border-gray-200 bg-gray-100 p-4 transition-bg shadow-sm flex items-center justify-between flex-none'>
                     {loading?  <LoadingName /> :
                     <h2 className='dark:text-white-50 text-gray-900 text-medium font-bold transition-component'>Selamat Datang, {user?.nama_user}!</h2>
                     }
                     <div className="flex items-center space-x-4">
-                            <Avatar  name={`${user?.nama_user}`} size="35" className='cursor-pointer rounded-md' textSizeRatio={1.75} />
+                      {user?.profile_pict ? (
+                        <Avatar radius="full" isBordered src={`/uploads/profile_pict/${user?.profile_pict}`}/>
+                      ) : (
+                        <Avatar radius="full" isBordered name={user?.nama_user}/>
+                      )}
                         <LuSettings onClick={() => dispatch(openModals('setting'))} className='cursor-pointer dark:text-white-50 text-gray-900 text-2xl'/>
                     </div>
                 </header>

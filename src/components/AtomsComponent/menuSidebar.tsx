@@ -16,7 +16,7 @@ interface MenuSidebarProps {
 }
 
 const MenuSidebar = ({ active, href, name, iconActive, iconInActive }: MenuSidebarProps) => {
-  const isCollapsed = useSelector((state: RootState) => state.sidebar.isColapsed);
+  const isCollapsed = useSelector((state: RootState) => state.sidebar.isCollapsed);
   const dispatch = useDispatch();
   const activeMenu = useSelector((state: RootState) => state.activeMenu.activeMenu);
   const isActive = activeMenu === active;
