@@ -102,7 +102,7 @@ const AlurKerjaSection = () => {
                     {alurKerja.map((alur, index) => (
                         <div key={index} className="exp-card-wrapper">
                             <div className="xl:w-2/6">
-                                <GlowCard card={{review: alur.review}} index={index}>
+                                <GlowCard card={{review: alur.review, bintang: 5}} index={index}>
                                   <div className='flex items-center gap-3'>
                                       <div className='size-10 rounded-full'>
                                           <img src="/image/users/founder.jpg" alt="Foto Founder FK Hotel" className='w-full h-full rounded-full' />

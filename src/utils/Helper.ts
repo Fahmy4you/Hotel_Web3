@@ -1,10 +1,27 @@
-export const formatDate = (date: Date) => date.toISOString().split('T')[0];
+export const formatDate = (date: Date): string => {
+  return date
+    .toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
+    .replaceAll('/', ' - ');
+}
+
+export const tanggalSaja = (tanggal: Date) => {
+  const d = new Date(tanggal);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
 
 export const checkTanggalBooking = (start: string, end: string) => {
-    const today = new Date();
-    const todayString = formatDate(today);
-    const startDate =  new Date(start);
-    const endDate =  new Date(end);
+    let today = new Date();
+    let startDate =  new Date(start);
+    let endDate =  new Date(end);
+
+    today = tanggalSaja(today);
+    startDate = tanggalSaja(startDate);
+    endDate = tanggalSaja(endDate);
 
     // Cek Apakah Tanggal Start Kurang Dari Sekarang
     if(startDate < today) {
@@ -30,4 +47,36 @@ export const formatNominal = (value: number): string => {
   } else {
     return value.toString();
   }
+}
+
+export const generateRandomString = (length: number) => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+};
+
+export const formatDate2 = (dateStr: string) => {
+    const date = new Date(dateStr);
+    const formatter = new Intl.DateTimeFormat("id-ID", {
+        dateStyle: "medium"
+    });
+    return formatter.format(date);
+}
+
+export const formatRupiah = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0,
+    }).format(value);
+}
+
+export const potongText = (text: string, panjang: number) => {
+    const isPanjang = text.length > panjang;
+    const display = isPanjang ? text.slice(0, panjang) + "..." : text;
+
+    return display;
 }

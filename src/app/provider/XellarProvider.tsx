@@ -6,8 +6,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { XellarKitProvider, darkTheme } from "@xellar/kit";
 import { configXellar } from "@/utils/configXellar";
 
-
-
 const queryClient = new QueryClient();
 
 export const XellarProvider = ({ children }: { children: React.ReactNode }) => {

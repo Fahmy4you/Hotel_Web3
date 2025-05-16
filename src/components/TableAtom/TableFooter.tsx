@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa'
-import UiButton from '../UiButton'
+import UiButton from '@/components/UiButton'
 
 
 const TableFooter = ({ itemCount, itemName, onPrev, onNext }: {

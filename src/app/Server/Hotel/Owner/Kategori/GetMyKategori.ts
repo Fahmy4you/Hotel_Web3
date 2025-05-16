@@ -1,11 +1,11 @@
 "use server"
 import { prisma } from "@/utils/prisma"
 
-export const getMyKategori = async (userId: string) => {
+export const getMyKategori = async (hotelId: string) => {
     try {
         const request = await prisma.kategoriKamar.findMany({
             where: {
-                user_id: Number(userId)
+                hotel_id: Number(hotelId)
             },
             include : {
                 _count : {

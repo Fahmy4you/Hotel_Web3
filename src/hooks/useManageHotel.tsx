@@ -3,7 +3,6 @@ import { getMyHotels } from "@/app/Server/Hotel/Owner/GettMyHotels";
 import { deleteHotel } from "@/app/Server/Hotel/Owner/DeleteHotel";
 import { HotelData } from "../../types/hotelData";
 import { hotelSchema } from "@/utils/zod";
-import { error } from "console";
 
 export const useManageHotel = (
     userID: number,

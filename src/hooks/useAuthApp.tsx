@@ -1,20 +1,34 @@
 'use client';
 
+import { User } from '@prisma/client';
 import { useState, useEffect } from 'react';
 
 export function useAuthApp() {
-  const [token, setToken] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem('accessToken');
-    setToken(savedToken);
+    async function fetchUser() {
+      try {
+        const res = await fetch('/api/me', {
+          method: 'GET',
+        });
+
+        if (!res.ok) {
+          setUser(null);
+        } else {
+          const data = await res.json();
+          setUser(data);
+        }
+      } catch (error) {
+        setUser(null);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchUser();
   }, []);
 
-  const login = (accessToken: string) => {
-    localStorage.setItem('accessToken', accessToken);
-    setToken(accessToken);
-  };
-
-
-  return { token, login };
+  return { user, loading };
 }

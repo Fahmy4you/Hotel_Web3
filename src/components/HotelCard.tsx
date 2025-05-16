@@ -1,20 +1,22 @@
 "use client";
 import { useRef } from "react";
 import Link from "next/link";
+import { potongText } from "@/utils/Helper";
 
 type TypeCard = {
     data: {
-      image: string,
+      image?: string,
       nama: string,
       bintang?: number,
       url: string,
       buttonText?: string
     },
     index: number,
-    children: React.ReactNode
+    children: React.ReactNode,
+    showBintang?: boolean
 }
 
-const HotelCard = ({data, index, children}: TypeCard) => {
+const HotelCard = ({data, index, children, showBintang = true}: TypeCard) => {
     const cardRef = useRef<HTMLDivElement[]>([]);
     
     const handleMouseMove = (index: number) => (e: React.MouseEvent<HTMLDivElement>) => {
@@ -41,15 +43,23 @@ const HotelCard = ({data, index, children}: TypeCard) => {
                 <img src={data.image} alt={data.image} className="object-cover w-full h-full rounded" />
             </div>
             <div className="px-5 mt-5">
-                <h3 className="md:text-xl text-lg text-gray-900 dark:text-white-50 font-bold">{data.nama}</h3>
+                <h3 className="md:text-xl text-lg text-gray-900 dark:text-white-50 font-bold">{potongText(data.nama, 15)}</h3>
                 {children}
-                {(data.bintang && data.bintang != 0) && (
+
+                {showBintang && (
                     <div className="flex items-center gap-1 my-3">
-                        {Array.from({length: data.bintang}, (_, i) => (
-                            <img src="/image/star.png" key={i} alt="Star" className="size-5 filter brightness-40 dark:brightness-100" />
+                        {Array.from({ length: 5 }, (_, i) => (
+                            <img 
+                            src="/image/star.png" 
+                            key={i} 
+                            alt="Star" 
+                            className={`size-5 filter ${i < (data.bintang ?? 0) ? 'brightness-100' : 'opacity-40 dark:opacity-100 brightness-0'}`} 
+                            />
                         ))}
                     </div>
                 )}
+
+
             </div>
             <div className="flex justify-end">
                 <Link href={data.url} className="border-1 mb-3 flex justify-center items-center rounded hover:bg-gray-500 dark:hover:bg-white-50 bg-transparent hover:text-white-50 dark:hover:text-black-50 transition ease-in-out border-gray-500 dark:border-white-50 p-2 contact-btn group">

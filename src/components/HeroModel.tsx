@@ -6,6 +6,7 @@ import { HotelModel } from './HotelModel';
 
 const HeroModel = () => {
     const isTablet = useMediaQuery({ query: '(max-width: 1024px)' });
+    const enableZoom = useMediaQuery({ query: '(max-width: 1200px)' });
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
 
     let position: [x: number, y: number, z: number] = [0.5,-4.3,0];
@@ -26,7 +27,7 @@ const HeroModel = () => {
 
         <OrbitControls
             enablePan={false}
-            enableZoom={!isTablet}
+            enableZoom={!enableZoom}
             maxDistance={20}
             minDistance={5}
             minPolarAngle={Math.PI / 5}

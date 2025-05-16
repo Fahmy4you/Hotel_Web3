@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Search } from 'lucide-react';
-import UiButton from '../UiButton';
-
+import UiButton from '@/components/UiButton';
+import { IoRefresh } from 'react-icons/io5';
 
 interface TableHeaderProps<T> {
   title: string;
@@ -14,6 +14,7 @@ interface TableHeaderProps<T> {
     onClose: () => void;
     onSubmit: (data: T) => void;
   }) => React.ReactNode;
+  handleRefresh?: () => void; 
   initialData?: T; 
 }
 
@@ -24,7 +25,8 @@ const TableHeader = <T extends unknown>({
   renderModal,
   initialData,
   placeholder = `Search ${title.toLowerCase()}...`,
-  onAddButtonClick
+  onAddButtonClick,
+  handleRefresh
 }: TableHeaderProps<T>) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,6 +57,10 @@ const TableHeader = <T extends unknown>({
                 className="pl-10 pr-4 py-2 w-full border dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 text-neutral-900 border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
+
+            {handleRefresh && (
+                <UiButton click={handleRefresh} icon={IoRefresh}/>
+            )}
             
             {renderModal && (
               <UiButton

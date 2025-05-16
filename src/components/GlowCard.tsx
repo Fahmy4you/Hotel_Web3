@@ -34,11 +34,16 @@ const GlowCard = ({card, children, index}: TypeCard) => {
     }} onMouseMove={handleMouseMove(index)} className="card card-border timeline-card rounded-xl p-10 mb-5 break-inside-avoid-column">
       <div className="glow"/>
       <div className="flex items-center gap-1 mb-5">
-        {(card.bintang && (
-          Array.from({length: card.bintang}, (_, i) => (
-            <img src="/image/star.png" key={i} alt="Star" className="size-5 filter brightness-40 dark:brightness-100" />
-          ))
-        ))}
+        <div className="flex items-center gap-1 my-3">
+            {Array.from({ length: 5 }, (_, i) => (
+                <img 
+                src="/image/star.png" 
+                key={i} 
+                alt="Star" 
+                className={`size-5 filter ${i < (card.bintang ?? 0) ? 'brightness-100' : 'opacity-40 dark:opacity-100 brightness-0'}`} 
+                />
+            ))}
+        </div>
       </div>
 
       <div className="mb-5">

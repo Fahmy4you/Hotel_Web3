@@ -3,55 +3,6 @@ export const HotelBookingAbi = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "_adminAddress",
-				"type": "address"
-			}
-		],
-		"name": "addAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idTransaksi",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_information",
-				"type": "string"
-			}
-		],
-		"name": "addBookingData",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_walletHotel",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_nominal",
-				"type": "uint256"
-			}
-		],
-		"name": "addTransaksi",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
 				"name": "_tokenAddress",
 				"type": "address"
 			}
@@ -71,19 +22,6 @@ export const HotelBookingAbi = [
 		],
 		"name": "AdminAddedEvent",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_idTransaksi",
-				"type": "uint256"
-			}
-		],
-		"name": "batalTransaksi",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -109,19 +47,6 @@ export const HotelBookingAbi = [
 		],
 		"name": "BookingAddedEvent",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_walletAddress",
-				"type": "address"
-			}
-		],
-		"name": "editWalletPerusahaan",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -226,6 +151,68 @@ export const HotelBookingAbi = [
 		"inputs": [
 			{
 				"internalType": "address",
+				"name": "_adminAddress",
+				"type": "address"
+			}
+		],
+		"name": "addAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_idTransaksi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_information",
+				"type": "string"
+			}
+		],
+		"name": "addBookingData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_walletHotel",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_nominal",
+				"type": "uint256"
+			}
+		],
+		"name": "addTransaksi",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_idTransaksi",
+				"type": "uint256"
+			}
+		],
+		"name": "batalTransaksi",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
 				"name": "adminAddress",
 				"type": "address"
 			}
@@ -239,6 +226,19 @@ export const HotelBookingAbi = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "editWalletPerusahaan",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -320,6 +320,19 @@ export const HotelBookingAbi = [
 	{
 		"inputs": [],
 		"name": "getIDRXSmartContract",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getLengthTransaksi",
 		"outputs": [
 			{
 				"internalType": "uint256",
@@ -1026,19 +1039,6 @@ export const TopUpAbi = [
 		"type": "event"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_wallet",
-				"type": "address"
-			}
-		],
-		"name": "setWalletPerusahaan",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -1064,32 +1064,6 @@ export const TopUpAbi = [
 		"type": "event"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_hargaETH",
-				"type": "uint256"
-			}
-		],
-		"name": "swapETHtoIDRX",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_nominal",
-				"type": "uint256"
-			}
-		],
-		"name": "tambahIDRXSC",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -1113,24 +1087,6 @@ export const TopUpAbi = [
 		],
 		"name": "TopUpEvent",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_wallet",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_nominal",
-				"type": "uint256"
-			}
-		],
-		"name": "transferIDRX",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -1212,6 +1168,76 @@ export const TopUpAbi = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getTotalTransaksi",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			}
+		],
+		"name": "setWalletPerusahaan",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_hargaETH",
+				"type": "uint256"
+			}
+		],
+		"name": "swapETHtoIDRX",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_nominal",
+				"type": "uint256"
+			}
+		],
+		"name": "tambahIDRXSC",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_wallet",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_nominal",
+				"type": "uint256"
+			}
+		],
+		"name": "transferIDRX",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ] as const;

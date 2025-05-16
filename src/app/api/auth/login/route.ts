@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
-import { isAddress} from "viem";
+import { isAddress } from "viem";
 import generateRandomUserName from "@/utils/generateRandomUsername";
 import { generateRefreshToken } from "@/utils/jwt";
 
@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 export async function POST(request: NextRequest) {
   try {
     const nameDefaultUser = generateRandomUserName();
-    const { wallet_address} = await request.json();
+    const { wallet_address } = await request.json();
 
     if (!wallet_address || !isAddress(wallet_address)) return NextResponse.json({ message: "Address Is Required And Valid Address" }, { status: 400 });
 

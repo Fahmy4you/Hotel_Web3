@@ -32,6 +32,14 @@ const NavbarPages = ({isHeaderSection}: {isHeaderSection?: boolean}) => {
             name: "List Kategori",
             link: "/kategori"
         },
+        {
+            name: "Cek Transaksi",
+            link: "/cek_transaksi"
+        },
+        {
+            name: "Cek Booking",
+            link: "/cek_booking"
+        },
     ]
 
   return (

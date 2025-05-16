@@ -54,6 +54,7 @@ model Role {
 model KategoriKamar {
   id       Int            @id @default(autoincrement())
   kategori String
+  image   String
   hotel_id  Int
   is_banned Boolean
   hotel     Hotel           @relation("HotelKategori", fields: [hotel_id], references: [id], onDelete: Cascade)    
