@@ -1,4 +1,4 @@
-import {Modal,ModalContent,ModalHeader,ModalBody,ModalFooter,Button,Input,Select,SelectItem,addToast} from "@heroui/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem, addToast } from "@heroui/react";
 import React, { useState, useEffect } from "react";
 import { FaTags } from "react-icons/fa6";
 import { KategoriData } from "../../../../types/kategoriData";
@@ -6,7 +6,6 @@ import { useManageHotel } from "@/hooks/useManageHotel";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../libs/store";
 import { validateKategori } from "@/utils/zod";
-
 
 interface AddKategoriModalProps {
   isOpen: boolean;
@@ -29,6 +28,7 @@ export default function AddKategoriModal({
     kategori: '',
     hotel_id: 0,
   });
+  const [isSubmitted, setIsSubmitted] = useState(false); // State baru untuk melacak submit
   const validateResult = validateKategori(category);
   const { hotels, loading } = useManageHotel(user_id);
 
@@ -43,10 +43,13 @@ export default function AddKategoriModal({
           hotel_id: 0
         });
       }
+      setIsSubmitted(false);
     }
   }, [isOpen, initialData, isEdit, hotels]);
 
   const handleSubmit = () => {
+    setIsSubmitted(true); // Tandai bahwa form telah disubmit
+
     if (!category.kategori.trim() || !category.hotel_id) {
       addToast({
         title: 'Error',
@@ -55,7 +58,7 @@ export default function AddKategoriModal({
         color: 'danger',
       });
       return;
-    }
+    } 
 
     if (!validateResult.success) {
       const errors = validateResult.error.flatten();
@@ -66,8 +69,8 @@ export default function AddKategoriModal({
         color: 'danger',
       });
       return;
-      
     }
+    
     onSubmit(validateResult.data);
     onClose();
   };
@@ -82,6 +85,8 @@ export default function AddKategoriModal({
             </ModalHeader>
             <ModalBody>
               <Input
+                errorMessage={isSubmitted && !category.kategori ? "Input Kategori Terlebih Dahulu" : undefined}
+                isInvalid={isSubmitted && !category.kategori}
                 endContent={<FaTags className="text-2xl text-default-400" />}
                 label="Kategori"
                 placeholder="Input Kategori"
@@ -95,7 +100,8 @@ export default function AddKategoriModal({
               />
 
               <Select
-                selectionMode="multiple"
+                isInvalid={isSubmitted && !category.hotel_id}
+                errorMessage={isSubmitted && !category.hotel_id ? "Pilih Hotel Terlebih Dahulu" : undefined}
                 selectedKeys={category.hotel_id ? [category.hotel_id.toString()] : []}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0];

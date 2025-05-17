@@ -9,7 +9,7 @@ interface GetAllHotelsParams {
 }
 
 export async function getMyHotels({ search = '', page = 1}: GetAllHotelsParams) {
-  const pageSize = 15;
+  const pageSize = 10;
   const skip = (page - 1) * pageSize;
 
   try {

@@ -14,21 +14,30 @@ export const useManageKategori = (
     const [deleting, setDeleting] = useState(false);
     const [query, setQuery] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const itemsPerPage = 10;
 
     const fetchKategori = async () => {
         setLoading(true);
         try {
-            const res = await getMyKategori(userID);
-            setKategori(res || []);
-            setLoading(false);
+            const response = await getMyKategori(userID, currentPage, itemsPerPage);
+            setKategori(response.data);
+            setTotalPages(response.totalPages);
+            setTotalItems(response.total);
         } catch (error) {
-            setLoading(false);
-            console.error("Error fetching kategori:", error);
+            console.error('Error fetching kategori:', error);
         } finally {
             setLoading(false);
-            setDeleting(false);
         }
     };
+
+    useEffect(() => {
+        if (userID) {
+            fetchKategori();
+        }
+    }, [userID, currentPage]);
 
     useEffect(() => {
         fetchKategori();
@@ -134,12 +143,17 @@ export const useManageKategori = (
 
     return {
         kategori,
-        deleting,
-        setQuery,
         query,
+        setQuery,
         loading,
+        deleting,
         editKategori,
-        handleDeleteKategori,
         submitKategori,
+        handleDeleteKategori,
+        currentPage,
+        setCurrentPage,
+        totalPages,
+        totalItems,
+        itemsPerPage
     };
 };

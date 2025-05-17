@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
-import { FaTrashAlt } from "react-icons/fa";
-import { RiPencilLine } from "react-icons/ri";
+import { FaTrashAlt } from 'react-icons/fa';
+import { RiPencilLine } from 'react-icons/ri';
 import TableHeader from '@/components/TableAtom/TableHeader';
 import TableFooter from '@/components/TableAtom/TableFooter';
 import { HotelData } from '../../../../types/hotelData';
@@ -33,7 +33,12 @@ const TableHotel = () => {
     setQuery,
     submitHotel,
     deleteMyHotel,
-    loading
+    loading,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
   } = useManageHotel(userID);
 
   const filteredData = hotels.filter(hotel =>
@@ -88,13 +93,17 @@ const TableHotel = () => {
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   const columns = ['id', 'nama_hotel', 'lokasi', 'isBaned'];
   const customRender = {
     isBaned: (value: boolean) => (
       <BadgeUI variant={value ? 'error' : 'success'}>
         {value ? 'Inactive' : 'Active'}
       </BadgeUI>
-    )
+    ),
   };
 
   return (
@@ -111,11 +120,18 @@ const TableHotel = () => {
         <table className="min-w-full divide-y divide-gray-400 dark:divide-gray-800">
           <thead className="bg-gray-100 dark:bg-black-50">
             <tr className="divide-x divide-gray-200 dark:divide-gray-800">
-              {columns.map((column) => (
-                <th key={column} className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  {column === 'nama_hotel' ? 'Nama Hotel' :
-                    column === 'lokasi' ? 'Lokasi' :
-                      column === 'isBaned' ? 'Status' : column}
+              {columns.map(column => (
+                <th
+                  key={column}
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  {column === 'nama_hotel'
+                    ? 'Nama Hotel'
+                    : column === 'lokasi'
+                      ? 'Lokasi'
+                      : column === 'isBaned'
+                        ? 'Status'
+                        : column}
                 </th>
               ))}
               <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -125,44 +141,49 @@ const TableHotel = () => {
           </thead>
 
           <tbody className="bg-slate-100 dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-800">
-            {loading ? 
-              Array.from({ length: 5 }).map((_, index) => (
-                <tr key={index} className="hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors">
+            {loading ? (
+              Array.from({ length: itemsPerPage }).map((_, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors"
+                >
                   {columns.map((col, idx) => (
                     <td key={idx} className="px-6 py-4 whitespace-nowrap">
                       <Skeleton className="h-4 w-full rounded-md" />
                     </td>
                   ))}
-                  <td className="px-6 flex justify-center py-4 whitespace-nowrap text-right space-x-2">
-                    <Skeleton className="h-8 w-16 rounded-md" />
-                    <Skeleton className="h-8 w-16 rounded-md" />
+                  <td className="px-6 py-4 whitespace-nowrap text-right space-x-2">
+                    <Skeleton className="h-8 w-16 rounded-md inline-block" />
+                    <Skeleton className="h-8 w-16 rounded-md inline-block" />
                   </td>
                 </tr>
-              )) : 
+              ))
+            ) : (
               filteredData.map(hotel => (
-              <GenericRow
-                key={hotel.id}
-                data={hotel}
-                columns={columns}
-                customRender={customRender}
-                actions={
-                  <div className='space-x-2'>
-                    <button
-                      className='inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-yellow-500 bg-yellow-900/10 border border-yellow-500/50 hover:bg-yellow-900/20 hover:shadow-[0_0_5px_rgba(234,179,8,0.5)] transition-all duration-200 text-xs'
-                      onClick={() => handleEditHotel(hotel)}
-                    >
-                      Edit <RiPencilLine className="h-5 w-5" />
-                    </button>
-                    <button
-                      className='inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-red-500 bg-red-900/10 border border-red-500/50 hover:bg-red-900/20 hover:shadow-[0_0_5px_rgba(239,68,68,0.5)] transition-all duration-200 text-xs'
-                      onClick={() => handleDeleteHotel(hotel)}
-                    >
-                      Hapus <FaTrashAlt className="h-5 w-5" />
-                    </button>
-                  </div>
-                }
-              />
-            ))}
+                <GenericRow
+                  key={hotel.id}
+                  data={hotel}
+                  columns={columns}
+                  customRender={customRender}
+                  actions={
+                    <div className="space-x-2">
+                      <button
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-yellow-500 bg-yellow-900/10 border border-yellow-500/50 hover:bg-yellow-900/20 hover:shadow-[0_0_5px_rgba(234,179,8,0.5)] transition-all duration-200 text-xs"
+                        onClick={() => handleEditHotel(hotel)}
+                      >
+                        Edit <RiPencilLine className="h-5 w-5" />
+                      </button>
+                      <button
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-red-500 bg-red-900/10 border border-red-500/50 hover:bg-red-900/20 hover:shadow-[0_0_5px_rgba(239,68,68,0.5)] transition-all duration-200 text-xs"
+                        onClick={() => handleDeleteHotel(hotel)}
+                      >
+                        Hapus <FaTrashAlt className="h-5 w-5" />
+                      </button>
+                    </div>
+                  }
+                />
+              ))
+            )}
           </tbody>
         </table>
 
@@ -173,7 +194,14 @@ const TableHotel = () => {
         )}
       </div>
 
-      <TableFooter onPrev={() => { }} onNext={() => { }} itemCount={filteredData.length} itemName="hotels" />
+      <TableFooter
+        itemCount={totalItems}
+        itemName="hotels"
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
+      />
 
       <ConfirmDeleteHotelModal
         hotelId={selectedHotelId || 0}

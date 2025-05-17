@@ -10,7 +10,6 @@ export const bookingSchema = z.object({
     message: "Tanggal Checkin dan Checkout tidak boleh sama",
     path: ["startDate"]
 });
-export type BookingDataType = z.infer<typeof bookingSchema>;
 
 
 export const hotelSchema = z.object({
@@ -93,16 +92,14 @@ export const formatFileSize = (bytes: number): string => {
 export const kategoriSchema = z.object({
   id: z.number().optional(),
   kategori: z.string()
-    .min(3, "Nama kategori minimal 3 karakter")
-    .max(50, "Nama kategori maksimal 50 karakter")
+    .min(5, "Nama kategori minimal 5 karakter")
+    .max(15, "Nama kategori maksimal 15 karakter")
     .regex(/^[a-zA-Z0-9\s]+$/, "Hanya boleh mengandung huruf, angka, dan spasi"),
   hotel_id: z.number({
     required_error: "Hotel harus dipilih",
     invalid_type_error: "Hotel harus dipilih"
   }).min(1, "Hotel harus dipilih")
 });
-
-export type KategoriFormValues = z.infer<typeof kategoriSchema>;
 
 export const validateKategori = (data: unknown) => {
   return kategoriSchema.safeParse(data);
@@ -134,7 +131,6 @@ export const kamarSchema = z.object({
   path: ["images"]
 });
 
-export type KamarFormValues = z.infer<typeof kamarSchema>;
 
 export const profileSchema = z.object({
   nama_user: z.string().min(3, "Nama minimal 3 karakter"),
@@ -142,4 +138,25 @@ export const profileSchema = z.object({
   no_whatsapp: z.string().regex(/^\d+$/, "Hanya angka diperbolehkan").min(10)
 });
 
+
+export const userSchema = z.object({
+  nama_user: z.string()
+    .min(10, 'Nama minimal 10 karakter')
+    .max(50, 'Nama maksimal 50 karakter')
+    .nonempty('Nama wajib diisi'),
+  email: z.string()
+    .email('Email tidak valid')
+    .min(5, 'Email minimal 5 karakter')
+    .nonempty('Email wajib diisi'),
+  no_whatsapp: z.string()
+    .min(10, 'Nomor WhatsApp minimal 10 digit')
+    .max(15, 'Nomor WhatsApp maksimal 15 digit')
+    .regex(/^[0-9]+$/, 'Hanya boleh berisi angka')
+    .nonempty('Nomor WhatsApp wajib diisi'),
+});
+
+export type UserFormData = z.infer<typeof userSchema>;
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+export type KamarFormValues = z.infer<typeof kamarSchema>;
+export type KategoriFormValues = z.infer<typeof kategoriSchema>;
+export type BookingDataType = z.infer<typeof bookingSchema>;

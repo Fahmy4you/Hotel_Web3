@@ -1,20 +1,21 @@
 import { useCallback, useEffect, useState } from "react";
 import { TypeGetMe } from "../../types/userData";
 import { addToast } from "@heroui/react";
+import { userSchema, UserFormData } from "@/utils/zod";
 
 export const useHooksUser = () => {
   const [user, setUser] = useState<TypeGetMe | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [isEdit, setIsEdit] = useState(false);
+  const [error, setError] = useState<Partial<Record<keyof UserFormData, string>>>({});
   const [loading, setLoading] = useState(false);
   const [editLoading, setEditLoading] = useState(false);
 
-  // Fetch user data
   const fetchUser = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch('/api/me');
       const userData = await response.json();
-      
+
       if (!response.ok) {
         throw new Error(userData.message || "Failed to fetch user");
       }
@@ -24,9 +25,8 @@ export const useHooksUser = () => {
       }
 
       setUser(userData);
-      setError(null);
+      setError({});
     } catch (error: any) {
-      setError(error.message);
       addToast({
         title: 'Error',
         description: error.message,
@@ -38,30 +38,41 @@ export const useHooksUser = () => {
     }
   }, []);
 
-  // Edit user data
-  const updateUser = useCallback(async (userData: {
-    nama_user: string;
-    email: string;
-    no_whatsapp: string;
-  }) => {
+  const updateUser = useCallback(async (sendFormData: UserFormData) => {
     try {
       setEditLoading(true);
-      const response = await fetch(`/api/me/update-information/${user?.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
+      const validated = userSchema.safeParse(sendFormData);
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update profile');
+      if (!validated.success) {
+        const errors = validated.error.flatten().fieldErrors;
+        const errorMessages: { [key: string]: string } = {};
+        for (const [field, messages] of Object.entries(errors)) {
+          errorMessages[field] = messages.join(', ');
+        }
+        setError(errorMessages);
+        return;
       }
 
-      const updatedUser = await response.json();
-      setUser(updatedUser);
-      
+      if (isEdit) {
+        const formData = new FormData();
+        formData.append('nama_user', sendFormData.nama_user);
+        formData.append('email', sendFormData.email);
+        formData.append('no_whatsapp', sendFormData.no_whatsapp);
+
+        const response = await fetch(`/api/me/update-information/${user?.id}`, {
+          method: 'PUT',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update profile');
+        }
+      }
+
+      setIsEdit(false);
+      await fetchUser();
+
       addToast({
         title: 'Success',
         description: 'Berhasil memperbarui profil',
@@ -69,31 +80,33 @@ export const useHooksUser = () => {
         color: 'success',
       });
 
-      return updatedUser;
-    } catch (error: any) {
-      setError(error.message);
+      return user;
+    } catch (err: any) {
+      const errorMessage = err.message || 'Terjadi kesalahan saat memperbarui profil';
       addToast({
         title: 'Error',
-        description: error.message,
+        description: errorMessage,
         variant: 'flat',
         color: 'danger',
       });
-      throw error;
+      throw new Error(errorMessage);
     } finally {
       setEditLoading(false);
     }
-  }, [user?.id]);
+  }, [user?.id, fetchUser, isEdit]);
 
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
 
-  return { 
-    user, 
-    error, 
+  return {
+    user,
+    error,
     loading,
     editLoading,
-    refetch: fetchUser, 
-    updateUser 
+    setIsEdit,
+    refetch: fetchUser,
+    updateUser,
+    isEdit,
   };
 };

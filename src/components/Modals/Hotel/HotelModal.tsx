@@ -239,17 +239,17 @@ const HotelModal: React.FC<HotelModalProps> = ({
             {/* Modal Content */}
             <div 
                 ref={contentRef}
-                className="relative w-full max-w-md mx-4 rounded-lg shadow-xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700"
+                className="relative w-full max-w-md mx-4 rounded-lg shadow-xl overflow-hidden bg-white dark:bg-neutral-800 border backdrop-blur-md border-gray-200 dark:border-gray-700"
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-neutral-700 flex justify-between items-center">
                     <div className="flex items-center">
-                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-gray-50 text-blue-600 dark:text-neutral-900">
                             <FaHotel className="w-4 h-4" />
                         </div>
                         <h3 className="ml-3 text-lg font-medium text-gray-900 dark:text-white">
-                            {mode === 'add' ? 'Add New Hotel' : 'Edit Hotel'}
+                            {mode === 'add' ? 'Tambah Hotel Baru' : 'Edit Hotel'}
                         </h3>
                     </div>
                     <button
@@ -274,7 +274,7 @@ const HotelModal: React.FC<HotelModalProps> = ({
                                 {imagePreviews.map((preview, index) => (
                                     <div 
                                         key={index} 
-                                        className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-inner group"
+                                        className="relative w-20 h-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-neutral-900 border border-gray-200 dark:border-gray-700 shadow-inner group"
                                     >
                                         <div className="relative w-full h-full">
                                         <img

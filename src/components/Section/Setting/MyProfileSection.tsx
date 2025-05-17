@@ -4,19 +4,24 @@ import { openModals, closeModals } from '../../../../libs/slices/modalSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { MdOutlinePhotoCamera } from 'react-icons/md';
-import { addToast } from '@heroui/react';
+import { addToast, Button, Form, Input, Textarea } from '@heroui/react';
 import { FaPencil } from 'react-icons/fa6';
-import { setUser } from '../../../../libs/slices/userSlice';
 import { useHooksUser } from '@/hooks/useHooksUser';
 import { formatDateWithDay } from '@/utils/dateFormater';
+import LoadingInfoUser from '@/components/WhileLoading/LoadingInfoUser';
+import { UserFormData } from '@/utils/zod';
 
 const MyProfileSection = () => {
-  const { user } = useHooksUser();
-  const [isEditing, setIsEditing] = useState(false);
+  const { user, updateUser, setIsEdit, editLoading, isEdit, error } = useHooksUser();
   const modals = useSelector((state: RootState) => state.modals);
   const dispatch = useDispatch();
+  const [formData, setFormData] = useState<UserFormData>({
+    nama_user: '',
+    email: '',
+    no_whatsapp: '',
+  });
 
-  const [userData, setUserData] = useState({
+  const [initialUserData, setInitialUserData] = useState({
     nama_user: '',
     email: '',
     no_whatsapp: '',
@@ -24,17 +29,23 @@ const MyProfileSection = () => {
 
   useEffect(() => {
     if (user) {
-      setUserData({
+      const initialData = {
         nama_user: user.nama_user ?? '',
         email: user.email ?? '',
         no_whatsapp: user.no_wa ?? '',
-      });
+      };
+      setFormData(initialData);
+      setInitialUserData(initialData); // Simpan data awal
     }
   }, [user]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    const { name, value } = e.target;
-    setUserData((prev) => ({
+  const handleCancel = () => {
+    setFormData(initialUserData); // Kembalikan ke data awal
+    setIsEdit(false);
+  };
+
+  const handleHeroInputChange = (value: string, name: string): void => {
+    setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
@@ -42,37 +53,12 @@ const MyProfileSection = () => {
 
   const handleSaveProfile = async () => {
     try {
-      const formData = new FormData();
-      formData.append('nama_user', userData.nama_user);
-      formData.append('email', userData.email);
-      formData.append('no_whatsapp', userData.no_whatsapp);
-
-      const response = await fetch(`/api/me/update-information/${user?.id}`, {
-        method: 'PUT',
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Gagal memperbarui profil');
-      }
-
-      const updatedUser = await response.json();
-      addToast({
-        title: 'Berhasil',
-        description: 'Profil berhasil diperbarui',
-        variant: 'flat',
-        color: 'success',
-      });
-
-      console.log('Profil berhasil diperbarui:', updatedUser);
-      dispatch(setUser(updatedUser));
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Error saving profile:', error);
+      await updateUser(formData);
+    } catch (err) {
+      console.error('Error saving profile:', err);
       addToast({
         title: 'Gagal',
-        description: error instanceof Error ? error.message : 'Terjadi kesalahan saat memperbarui profil',
+        description: err instanceof Error ? err.message : 'Terjadi kesalahan saat memperbarui profil',
         variant: 'flat',
         color: 'danger',
       });
@@ -80,12 +66,12 @@ const MyProfileSection = () => {
   };
 
   if (!user) {
-    return <div className="p-6 text-gray-400 dark:text-gray-500">Loading...</div>;
+    return <LoadingInfoUser />;
   }
 
   return (
     <div className="md:overflow-hidden h-auto md:h-[500px] bg-white dark:bg-neutral-800 p-5 rounded-lg border border-gray-200 dark:border-neutral-700 backdrop-blur-md text-gray-900 dark:text-white">
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-12 md:gap-12">
         {/* Profile Picture Section */}
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
@@ -105,7 +91,9 @@ const MyProfileSection = () => {
           </div>
 
           <div className="text-center">
-            <h3 className="text-xl font-bold text-gray-900 dark:text-white">{userData.nama_user}</h3>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              {formData.nama_user.length <= 19 ? formData.nama_user : formData.nama_user.slice(0, 19) + '...'}
+            </h3>
             <p className="text-gray-600 dark:text-gray-300">{user.role}</p>
           </div>
         </div>
@@ -116,24 +104,45 @@ const MyProfileSection = () => {
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Informasi Profil</h2>
 
             <div className="flex gap-3">
-              {isEditing ? (
+              {isEdit ? (
                 <>
-                  <button
-                    onClick={() => setIsEditing(false)}
-                    className="px-4 py-2 text-sm font-medium rounded-md border border-gray-200 dark:border-neutral-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors duration-200"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={handleSaveProfile}
-                    className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200"
-                  >
-                    Simpan
-                  </button>
+                  {editLoading ? (
+                    <>
+                      <Button
+                        isDisabled
+                        onPress={handleCancel}
+                        className="px-4 py-2 text-sm font-medium rounded-md border border-gray-200 dark:border-neutral-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors duration-200"
+                      >
+                        Batal
+                      </Button>
+                      <Button
+                        isLoading
+                        onPress={handleSaveProfile}
+                        className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        Simpan
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button
+                        onPress={handleCancel}
+                        className="px-4 py-2 text-sm font-medium rounded-md border border-gray-200 dark:border-neutral-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-neutral-700 transition-colors duration-200"
+                      >
+                        Batal
+                      </Button>
+                      <Button
+                        onPress={handleSaveProfile}
+                        className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200"
+                      >
+                        Simpan
+                      </Button>
+                    </>
+                  )}
                 </>
               ) : (
                 <button
-                  onClick={() => setIsEditing(true)}
+                  onClick={() => setIsEdit(true)}
                   className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
                 >
                   <FaPencil size={16} />
@@ -144,101 +153,98 @@ const MyProfileSection = () => {
           </div>
 
           <div className="space-y-4">
-            {/* Form Fields */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Nama Lengkap */}
-              <div>
-                <label
-                  htmlFor="nama_user"
-                  className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-                >
-                  Nama Lengkap
-                </label>
-                <input
-                  type="text"
-                  id="nama_user"
-                  name="nama_user"
-                  value={userData.nama_user}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-neutral-900 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-colors duration-200"
-                />
-              </div>
+            <Form validationErrors={error || undefined} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Nama Lengkap"
+                labelPlacement='outside'
+                isRequired
+                radius="sm"
+                variant="bordered"
+                size="lg"
+                color={error?.nama_user ? 'danger' : 'default'}
+                errorMessage={error?.nama_user || null}
+                type="text"
+                id="nama_user"
+                name="nama_user"
+                value={formData.nama_user}
+                onValueChange={(value) => handleHeroInputChange(value, 'nama_user')}
+                isDisabled={!isEdit}
+                classNames={{ input: [isEdit ? 'cursor-pointer' : 'cursor-not-allowed'] }}
+              />
+
 
               {/* Email */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-                >
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={userData.email}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-neutral-900 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-colors duration-200"
-                />
-              </div>
+              <Input
+                label="Email"
+                labelPlacement='outside'
+                isRequired
+                radius="sm"
+                variant="bordered"
+                size="lg"
+                color={error?.email ? 'danger' : 'default'}
+                errorMessage={error?.email || null}
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onValueChange={(value) => handleHeroInputChange(value, 'email')}
+                isDisabled={!isEdit}
+                classNames={{ input: [isEdit ? 'cursor-pointer' : 'cursor-not-allowed'] }}
+              />
 
               {/* Nomor Whatsapp */}
-              <div>
-                <label
-                  htmlFor="no_whatsapp"
-                  className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-                >
-                  Nomor Whatsapp
-                </label>
-                <input
-                  type="tel"
-                  id="no_whatsapp"
-                  name="no_whatsapp"
-                  value={userData.no_whatsapp}
-                  onChange={handleInputChange}
-                  disabled={!isEditing}
-                  className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-neutral-600 bg-white dark:bg-neutral-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 dark:disabled:bg-neutral-900 disabled:text-gray-400 dark:disabled:text-gray-500 disabled:cursor-not-allowed transition-colors duration-200"
-                />
-              </div>
+              <Input
+                label="Nomor Whatsapp"
+                labelPlacement='outside'
+                isRequired
+                radius="sm"
+                variant="bordered"
+                size="lg"
+                color={error?.no_whatsapp ? 'danger' : 'default'}
+                errorMessage={error?.no_whatsapp || null}
+                type="tel"
+                id="no_whatsapp"
+                name="no_whatsapp"
+                value={formData.no_whatsapp}
+                onValueChange={(value) => handleHeroInputChange(value, 'no_whatsapp')}
+                isDisabled={!isEdit}
+                classNames={{ input: [isEdit ? 'cursor-pointer' : 'cursor-not-allowed'] }}
+              />
 
               {/* Wallet Address (Disabled) */}
-              <div>
-                <label
-                  htmlFor="wallet"
-                  className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-                >
-                  Wallet Address
-                </label>
-                <input
-                  type="text"
-                  id="wallet"
-                  name="wallet_address"
-                  value={user?.wallet_address ?? ''}
-                  disabled
-                  className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-neutral-600 bg-gray-100 dark:bg-neutral-900 text-gray-400 dark:text-gray-500 cursor-not-allowed transition-colors duration-200"
-                />
-              </div>
+
+              <Input
+                label="Wallet Address"
+                labelPlacement='outside'
+                isDisabled
+                radius="sm"
+                variant="bordered"
+                size="lg"
+                type="text"
+                id="wallet"
+                name="wallet_address"
+                value={user?.wallet_address ?? ''}
+                classNames={{ input: ['cursor-not-allowed'] }}
+
+              />
 
               {/* Join Date (Disabled) */}
               <div className="md:col-span-2">
-                <label
-                  htmlFor="join_date"
-                  className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1"
-                >
-                  Tanggal Bergabung
-                </label>
-                <textarea
+                <Textarea
+                  label="Tanggal Bergabung"
+                  labelPlacement='outside'
+                  isDisabled
+                  radius="sm"
+                  variant="bordered"
+                  size="lg"
                   id="join_date"
                   name="join_date"
                   rows={4}
                   value={formatDateWithDay(user?.join_date ?? '')}
-                  disabled
-                  className="w-full px-3 py-2 rounded-md border border-gray-200 dark:border-neutral-600 bg-gray-100 dark:bg-neutral-900 text-gray-400 dark:text-gray-500 cursor-not-allowed transition-colors duration-200 resize-none"
+                  classNames={{ input: ['cursor-not-allowed'] }}
                 />
               </div>
-            </div>
+            </Form>
           </div>
         </div>
       </div>

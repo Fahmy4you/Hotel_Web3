@@ -32,27 +32,32 @@ const MyCategoriTable = () => {
     submitKategori,
     loading,
     handleDeleteKategori,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
   } = useManageKategori(userId);
 
   const filteredData = kategori.filter(k =>
     (k.kategori || '').toLowerCase().includes(query.toLowerCase())
   );
-  
+
   const tableData = filteredData.map(item => ({
     ...item,
     'Jumlah Kamar': item.kamar_count,
     'Status': item.is_banned,
-    'Hotel': item.nama_hotel
+    'Hotel': item.nama_hotel,
   }));
 
   const columns = ['id', 'kategori', 'Jumlah Kamar', 'Status', 'Hotel'];
 
   const customRender = {
-    'Status': (value: boolean) => (
+    Status: (value: boolean) => (
       <BadgeUI variant={value ? 'error' : 'success'}>
         {value ? 'Inactive' : 'Active'}
       </BadgeUI>
-    )
+    ),
   };
 
   const handleOpenAddModal = () => {
@@ -95,9 +100,14 @@ const MyCategoriTable = () => {
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <WrapperTable>
       <TableHeader
+        placeholder="Cari Kategori..."
         title="Manage Kategori"
         onSearch={setQuery}
         onAddButtonClick={handleOpenAddModal}
@@ -108,7 +118,10 @@ const MyCategoriTable = () => {
           <thead className="bg-gray-100 dark:bg-black-50">
             <tr className="divide-x divide-gray-200 dark:divide-gray-800">
               {columns.map(column => (
-                <th key={column} className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  key={column}
+                  className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   {column}
                 </th>
               ))}
@@ -120,11 +133,14 @@ const MyCategoriTable = () => {
 
           <tbody className="bg-slate-100 dark:bg-neutral-800 divide-y divide-gray-200 dark:divide-gray-800">
             {loading ? (
-              Array.from({ length: 5 }).map((_, index) => (
-                <tr key={index} className="hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors">
+              Array.from({ length: itemsPerPage }).map((_, index) => (
+                <tr
+                  key={index}
+                  className="hover:bg-slate-200 dark:hover:bg-neutral-700 transition-colors"
+                >
                   {columns.map((col, idx) => (
                     <td key={idx} className="px-6 py-4 whitespace-nowrap">
-                      <Skeleton className="h-4 w-full rounded-md" />
+                      <Skeleton className="h-6 w-full rounded-md" />
                     </td>
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-right space-x-2">
@@ -141,15 +157,15 @@ const MyCategoriTable = () => {
                   columns={columns}
                   customRender={customRender}
                   actions={
-                    <div className='space-x-2'>
+                    <div className="space-x-2">
                       <button
-                        className='inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-yellow-500 bg-yellow-900/10 border border-yellow-500/50 hover:bg-yellow-900/20 hover:shadow-[0_0_5px_rgba(234,179,8,0.5)] transition-all duration-200 text-xs'
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-yellow-500 bg-yellow-900/10 border border-yellow-500/50 hover:bg-yellow-900/20 hover:shadow-[0_0_5px_rgba(234,179,8,0.5)] transition-all duration-200 text-xs"
                         onClick={() => handleEdit(kategori)}
                       >
                         Edit <RiPencilLine className="h-5 w-5" />
                       </button>
                       <button
-                        className='inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-red-500 bg-red-900/10 border border-red-500/50 hover:bg-red-900/20 hover:shadow-[0_0_5px_rgba(239,68,68,0.5)] transition-all duration-200 text-xs'
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-red-500 bg-red-900/10 border border-red-500/50 hover:bg-red-900/20 hover:shadow-[0_0_5px_rgba(239,68,68,0.5)] transition-all duration-200 text-xs"
                         onClick={() => handleDelete(kategori)}
                       >
                         Hapus <FaTrashAlt className="h-5 w-5" />
@@ -170,10 +186,12 @@ const MyCategoriTable = () => {
       </div>
 
       <TableFooter
-        itemCount={tableData.length}
+        itemCount={totalItems}
         itemName="Kategori"
-        onPrev={() => { }}
-        onNext={() => { }}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+        itemsPerPage={itemsPerPage}
       />
 
       <ConfirmDeleteKategoriModal

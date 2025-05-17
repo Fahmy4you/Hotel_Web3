@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { PrismaClient } from "@prisma/client";
+import generateRandomFileName from "@/utils/generateRandomFileName";
 
 const prisma = new PrismaClient();
 
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const ext = file.name.split(".").pop();
-      const newFileName = `${file.name.split(".")[0]}-${hotel.id}.${ext}`;
+      const newFileName = `${generateRandomFileName(5, file.name, 'hotels_')}.${ext}`;
       const filePath = path.join(uploadDir, newFileName);
 
       fs.writeFileSync(filePath, buffer);

@@ -1,45 +1,69 @@
 "use server"
 import { prisma } from "@/utils/prisma"
 
-export const getMyKategori = async (userId: string) => {
+export const getMyKategori = async (userId: string, page: number = 1, itemsPerPage: number = 10) => {
     try {
+        const skip = (page - 1) * itemsPerPage;
 
+        // Ambil hotel yang dimiliki pengguna
         const getHotelByUserId = await prisma.hotel.findMany({
             where: {
                 user_id: Number(userId)
             }
-        })
+        });
 
         const hotelIDs = getHotelByUserId.map(hotel => hotel.id);
 
-        const request = await prisma.kategoriKamar.findMany({
-            where: {
-                hotel_id: {
-                    in : hotelIDs
-                }
-            },
-            include : {
-                _count : {
-                    select : {
-                        kamar : true
+        // Ambil data kategori dengan pagination
+        const [request, totalCount] = await Promise.all([
+            prisma.kategoriKamar.findMany({
+                where: {
+                    hotel_id: {
+                        in: hotelIDs
                     }
                 },
-                hotel : {
-                    select : {
-                        nama_hotel : true
+                include: {
+                    _count: {
+                        select: {
+                            kamar: true
+                        }
+                    },
+                    hotel: {
+                        select: {
+                            nama_hotel: true
+                        }
+                    }
+                },
+                skip,
+                take: itemsPerPage,
+                orderBy: {
+                    id: 'asc'
+                }
+            }),
+            prisma.kategoriKamar.count({
+                where: {
+                    hotel_id: {
+                        in: hotelIDs
                     }
                 }
-            }
-        })
+            })
+        ]);
+
+        // Parse data
         const parseRequest = request.map(kategori => ({
             ...kategori,
-            nama_hotel : kategori.hotel?.nama_hotel,
-            kamar_count : kategori._count.kamar
-        }))
-        //console.log(parseRequest);
-        return parseRequest;
+            nama_hotel: kategori.hotel?.nama_hotel,
+            kamar_count: kategori._count.kamar
+        }));
+
+        return {
+            data: parseRequest,
+            total: totalCount,
+            currentPage: page,
+            totalPages: Math.ceil(totalCount / itemsPerPage)
+        };
     } catch (error) {
-        console.error("Error fetching hotels:", error);
-        throw new Error("Failed to fetch hotels");
+        console.error("Error fetching kategori:", error);
+        throw new Error("Failed to fetch kategori");
     }
 }
