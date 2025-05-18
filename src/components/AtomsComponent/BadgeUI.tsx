@@ -1,9 +1,14 @@
 interface BadgeProps {
-  variant?: "default" | "primary" | "error" | "success" | "warning";
+  variant?: "default" | "primary" | "error" | "success" | "warning" | "custom";
   active?: boolean;
   size?: "md" | "lg";
   children: React.ReactNode;
   className?: string;
+  customBg?: string;      // Background color class (contoh: "bg-orange-100")
+  customText?: string;    // Text color class (contoh: "text-orange-800")
+  customBorder?: string;  // Border color class (contoh: "border-orange-300")
+  customShadow?: string;  // Shadow class (contoh: "shadow-[0_0_8px_rgba(255,90,31,0.5)]")
+  customDot?: string;     // Dot color class (contoh: "bg-orange-600")
 }
 
 export default function BadgeUI({
@@ -11,7 +16,12 @@ export default function BadgeUI({
   variant = "primary",
   active = true,
   size = "md",
-  className
+  className,
+  customBg,
+  customText,
+  customBorder,
+  customShadow,
+  customDot
 }: BadgeProps) {
   const darkModeStyles = {
     default: {
@@ -48,6 +58,13 @@ export default function BadgeUI({
       border: "border-yellow-400",
       shadow: "shadow-[0_0_8px_rgba(250,204,21,0.5)]",
       dot: "bg-yellow-400"
+    },
+    custom: {
+      bg: customBg || "bg-gray-100 dark:bg-gray-800/40",
+      text: customText || "text-gray-800 dark:text-gray-300",
+      border: customBorder || "border-gray-300 dark:border-gray-700",
+      shadow: customShadow || "shadow-none",
+      dot: customDot || "bg-gray-500 dark:bg-gray-400"
     }
   };
 
@@ -64,14 +81,16 @@ export default function BadgeUI({
   return (
     <div
       className={`inline-flex items-center rounded-full font-medium ${selectedSize} backdrop-blur-sm
-        ${selectedVariant.bg} ${selectedVariant.text} border ${selectedVariant.border} ${selectedVariant.shadow}
-        transition-all duration-300 ${className ?? ""}`} // ← className opsional ditambahkan di akhir
+        ${selectedVariant.bg} ${selectedVariant.text} border ${selectedVariant.border} ${active ? selectedVariant.shadow : ''}
+        transition-all duration-300 ${className ?? ""}`}
     >
-      <span
-        className={`rounded-full mr-1.5 animate-pulse ${selectedVariant.dot} ${
-          size === "lg" ? "w-2.5 h-2.5" : "w-2 h-2"
-        }`}
-      />
+      {active && (
+        <span
+          className={`rounded-full mr-1.5 animate-pulse ${selectedVariant.dot} ${
+            size === "lg" ? "w-2.5 h-2.5" : "w-2 h-2"
+          }`}
+        />
+      )}
       {children}
     </div>
   );

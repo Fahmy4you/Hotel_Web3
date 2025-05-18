@@ -36,7 +36,7 @@ export default function ConfirmDeleteHotelModal({
             <ModalContent>
                 <ModalHeader>Konfirmasi Hapus Hotel</ModalHeader>
                 <ModalBody>
-                    <p>Apakah Anda yakin ingin menghapus hotel <strong>{hotelName}</strong>?</p>
+                    <p>Apakah Anda yakin ingin menghapus hotel? Semua Data Hotel akan dihapus termasuk Kamar, Fasilitas, dan Rating!.<strong>{hotelName}</strong>?</p>
                     <p className="text-sm text-gray-500">ID Hotel: {hotelId}</p>
                 </ModalBody>
                 <ModalFooter>

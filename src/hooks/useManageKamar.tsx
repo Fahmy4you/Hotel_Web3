@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useCallback } from "react";
 import { addToast } from "@heroui/react";
-import { KamarData } from "../../types/kamarData";
+import { detailDataKamar, KamarData } from "../../types/kamarData";
 import { getMyHotelKamars } from "@/app/Server/Kamar/GetMyKamarHotel";
 import { deleteMyKamarHotels } from "@/app/Server/Kamar/DeleteMyKamarHotels";
 import { getKamarById } from "@/app/Server/Kamar/GetKamarByID";
@@ -21,6 +21,7 @@ export const useManageKamar = (
   const [isLoading, setIsLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [query, setQuery] = useState("");
+  const [detailDataKamar, setDetailDataKamar] = useState<detailDataKamar | null>(null);
 
   const validateKamar = (formData: KamarData) => {
     try {
@@ -96,6 +97,7 @@ export const useManageKamar = (
 
   const deleteKamar = async (kamarId: number) => {
     setDeleting(true);
+    setIsLoading(true);
     try {
       await deleteMyKamarHotels(kamarId);
       await fetchKamars();
@@ -114,14 +116,20 @@ export const useManageKamar = (
       });
     } finally {
       setDeleting(false);
+      setIsLoading(false);
     }
   };
 
-  const getDetailKamar = async (kamarId: number) => {
+  const getDetailKamar = useCallback(async (kamarId: number) => {
     setIsLoading(true);
     try {
+      setDetailDataKamar(null);
       const res = await getKamarById(kamarId);
-      setKamars(res ? [res] : []);
+      if (res) {
+        setDetailDataKamar(res as detailDataKamar);
+      } else {
+        setDetailDataKamar(null);
+      }
     } catch (error) {
       console.error("Error get detail kamar:", error);
       addToast({
@@ -133,7 +141,7 @@ export const useManageKamar = (
     } finally {
       setIsLoading(false);
     }
-  };
+  },[]);
 
   const submitKamar = async (
     formData: KamarData,
@@ -227,6 +235,7 @@ export const useManageKamar = (
     deleteKamar,
     submitKamar,
     getDetailKamar,
-    totalKamar
+    totalKamar,
+    detailDataKamar
   };
 };

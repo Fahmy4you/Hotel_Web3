@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect } from 'react'
 
-
-const CarouselUI = () => {
+const CarouselUI = ({ images = ['/default-room-image.jpg'] }) => {
     const [index, setIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
     
-    const images = [
+    // Use provided images or fallback to placeholders
+    const carouselImages = images.length > 0 ? images : [
         '/api/placeholder/800/400',
         '/api/placeholder/800/400',
         '/api/placeholder/800/400',
@@ -15,14 +15,15 @@ const CarouselUI = () => {
     const handleNext = () => {
         if (isTransitioning) return;
         setIsTransitioning(true);
-        setIndex((currentIndex) => (currentIndex + 1) % images.length);
+        setIndex((currentIndex) => (currentIndex + 1) % carouselImages.length);
     }
     
     const handlePrev = () => {
         if (isTransitioning) return;
         setIsTransitioning(true);
-        setIndex((currentIndex) => (currentIndex - 1 + images.length) % images.length);
+        setIndex((currentIndex) => (currentIndex - 1 + carouselImages.length) % carouselImages.length);
     }
+    
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsTransitioning(false);
@@ -45,7 +46,7 @@ const CarouselUI = () => {
                 className="flex transition-transform duration-700 ease-in-out h-64"
                 style={{ transform: `translateX(-${index * 100}%)` }}
             >
-                {images.map((img, idx) => (
+                {carouselImages.map((img, idx) => (
                     <div key={idx} className="min-w-full flex-shrink-0 relative">
                         <img 
                             src={img} 
@@ -54,8 +55,7 @@ const CarouselUI = () => {
                         />
                         <div className="absolute inset-0 bg-black bg-opacity-20 flex items-end">
                             <div className="p-4 text-white">
-                                <h3 className="text-xl font-bold">Client {idx + 1}</h3>
-                                <p className="text-sm">Client testimonial or description</p>
+                                <h3 className="text-xl font-bold">Room View {idx + 1}</h3>
                             </div>
                         </div>
                     </div>
@@ -78,7 +78,7 @@ const CarouselUI = () => {
             
             {/* Indicator dots */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-                {images.map((_, idx) => (
+                {carouselImages.map((_, idx) => (
                     <button
                         key={idx}
                         onClick={() => {

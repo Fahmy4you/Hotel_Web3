@@ -13,3 +13,18 @@ export interface KamarData {
     kategori? : string
     nama_hotel? : string
 }
+
+export interface detailDataKamar {
+    id : number
+    nama_kamar : string,
+    harga_kamar : number,
+    kategori_id : number,
+    kategori : string,
+    hotel_id : number,
+    hotel : string,
+    deskripsi : string,
+    images : string[],
+    is_active : boolean,
+    status : string,
+    features : string[],
+}

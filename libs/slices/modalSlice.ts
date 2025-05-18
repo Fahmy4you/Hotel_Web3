@@ -13,7 +13,8 @@ const initialState: ModalState = {
    allKamar : false,
    notification : false,
    pengaturan : false,
-   addProfilePicture : false
+   addProfilePicture : false,
+   detailKamar : false
 }
 
 

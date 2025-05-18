@@ -6,13 +6,12 @@ import {
     ModalFooter,
     Button,
 } from "@heroui/react";
-import { useState } from "react";
 
 interface ConfirmModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (id: number) => Promise<void>;
-    userId: number;
+    ID: number | null;
     title?: string;
     description?: string;
     confirmText?: string;
@@ -24,26 +23,23 @@ export default function ConfirmModal({
     isOpen,
     onClose,
     onConfirm,
-    userId,
+    ID,
     title = "Konfirmasi Hapus",
     description = "Apakah Anda yakin ingin menghapus pengguna ini?",
     confirmText = "Ya, Hapus",
     cancelText = "Batal",
     isLoading = false,
 }: ConfirmModalProps) {
-    // const [isLoading, setIsLoading] = useState(false);
-
     const handleConfirm = async () => {
-        if (!userId) return;
-
-        //   setIsLoading(true);
+         if (ID === null) return; 
         try {
-            await onConfirm(userId);
-        } finally {
-            // setIsLoading(false);
-            onClose();
-        }
-    };
+            await onConfirm(ID);
+        } catch(error){
+            console.error("Gagal menghapus:", error);
+            return;
+        };
+        onClose();
+    }
     
     return (
         <Modal isOpen={isOpen} onOpenChange={onClose} placement="center">
@@ -51,17 +47,18 @@ export default function ConfirmModal({
                 <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
                 <ModalBody>
                     <p>{description}</p>
-                    {userId && <p className="text-sm text-gray-500">ID : {userId}</p>}
+                    {ID && <p className="text-sm text-gray-500">ID : {ID}</p>}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="danger" variant="light" onPress={onClose} disabled={isLoading}>
                         {cancelText}
                     </Button>
                     <Button
-                        color="primary"
+                        className="bg-neutral-900 text-white dark:text-neutral-800 dark:bg-white dark:hover:bg-white-50"
+                        variant="shadow"
                         onPress={handleConfirm}
                         isLoading={isLoading}
-                        disabled={!userId || isLoading}
+                        disabled={ID === null || isLoading}
                     >
                         {confirmText}
                     </Button>
