@@ -36,13 +36,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Form data received:", {
-      nama_hotel,
-      lokasi,
-      user_id,
-      fileCount: files.length,
-    });
-
     if (!nama_hotel || !lokasi || !user_id || !files || files.length === 0) {
       return NextResponse.json({ error: "Field is missing" }, { status: 400 });
     }
@@ -76,7 +69,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const uploadDir = path.join(process.cwd(), "public/uploads");
+    const uploadDir = path.join(process.cwd(), "public/uploads/hotels");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

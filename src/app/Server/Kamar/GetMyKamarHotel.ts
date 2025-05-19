@@ -79,8 +79,6 @@ export async function getMyHotelKamars({
       total_kamar : totalKamars
     }));
 
-    console.log("total Kamar", totalKamars);
-
     return {
       formatedResponse,
       currentPage: page,

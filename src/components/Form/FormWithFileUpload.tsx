@@ -6,22 +6,37 @@ import UploadSingleImage from '../Uploader/UploadSingleImage';
 interface MultipleProps {
   type: 'multiple';
   children: React.ReactNode;
+  previewsCurrentlyImage?: string[];
   onImagesChange?: (files: File[]) => void;
   onImageChange?: never;
+  isPreview?: boolean;
   onUpload?: never;
+  onRemoveInitialImage?: (index: number) => void;
 }
 
 interface SingleProps {
   type: 'single';
   children?: React.ReactNode;
+  previewsCurrentlyImage?: never;
   onImagesChange?: never;
+  isPreview?: boolean;
   onImageChange?: (file: File | null) => void;
   onUpload?: () => void;
+  onRemoveInitialImage?: never;
 }
 
 type Props = MultipleProps | SingleProps;
 
-const FormUploadwImage = ({ type, children, onImagesChange, onImageChange, onUpload }: Props) => {
+const FormUploadwImage = ({ 
+  type, 
+  children, 
+  onImagesChange, 
+  onImageChange, 
+  onUpload, 
+  previewsCurrentlyImage, 
+  isPreview,
+  onRemoveInitialImage 
+}: Props) => {
   if (type === 'multiple' && !children) {
     throw new Error('Children wajib disediakan untuk type="multiple"');
   }
@@ -32,9 +47,17 @@ const FormUploadwImage = ({ type, children, onImagesChange, onImageChange, onUpl
         {type === 'multiple' && children}
         {type === 'single' && children}
         {type === 'multiple' ? (
-          <UploadMultipleImage onImagesChange={onImagesChange} />
+          <UploadMultipleImage 
+            forPreview={isPreview}
+            initialImages={previewsCurrentlyImage} 
+            onImagesChange={onImagesChange}
+            onRemoveInitialImage={onRemoveInitialImage}
+          />
         ) : (
-          <UploadSingleImage onImageChange={onImageChange} handleUpload={onUpload} />
+          <UploadSingleImage 
+            onImageChange={onImageChange} 
+            handleUpload={onUpload} 
+          />
         )}
       </div>
     </Form>

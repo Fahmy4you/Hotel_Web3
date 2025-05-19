@@ -9,25 +9,17 @@ import { RootState } from '../../../../libs/store';
 import { getKategoriByHotelID } from '@/app/Server/Kategori/GetKategoriByHotelID';
 import { KategoriData } from '../../../../types/kategoriData';
 import { useManageKamar } from '@/hooks/useManageKamar';
-
+import { StatusKamar } from '@prisma/client';
 interface AddKamarModalsProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// Enum for room status
-enum RoomStatus {
-  TERSEDIA = 'TERSEDIA',
-  DIPESAN = 'DIPESAN',
-  DIBERSIHKAN = 'DIBERSIHKAN',
-  DIPERBAIKI = 'DIPERBAIKI'
-}
-
 const roomStatusOptions = [
-  { value: RoomStatus.TERSEDIA, label: "Tersedia" },
-  { value: RoomStatus.DIPESAN, label: "Dipesan" },
-  { value: RoomStatus.DIBERSIHKAN, label: "Dibersihkan" },
-  { value: RoomStatus.DIPERBAIKI, label: "Diperbaiki" }
+  { value: StatusKamar.TERSEDIA, label: "Tersedia" },
+  { value: StatusKamar.DIPESAN, label: "Dipesan" },
+  { value: StatusKamar.DIBERSIHKAN, label: "Dibersihkan" },
+  { value: StatusKamar.DIPERBAIKI, label: "Diperbaiki" }
 ];
 
 const initialFormData: Required<KamarData> = {
@@ -39,7 +31,7 @@ const initialFormData: Required<KamarData> = {
   is_active: true,
   price: 0,
   is_kyc: false,
-  status: RoomStatus.TERSEDIA,
+  status: StatusKamar.TERSEDIA,
   features: [],
   images: [],
   kategori: '',
@@ -273,7 +265,7 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
               value={formData.status}
               onChange={(e) => setFormData({ 
                 ...formData, 
-                status: e.target.value as RoomStatus 
+                status: e.target.value as StatusKamar 
               })}
             >
               {roomStatusOptions.map((status) => (

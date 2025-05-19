@@ -63,16 +63,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    console.log("Form data received:", {
-      nama_kamar,
-      desk,
-      hotel_id,
-      kategori_id,
-      is_kyc,
-      fasilitas,
-      fileCount: files.length,
-    });
-
     if (
       !nama_kamar ||
       !kategori_id ||
@@ -139,17 +129,17 @@ export async function POST(req: NextRequest) {
     }
 
     const imagePaths: string[] = [];
-
+  
     for (const file of files) {
       const bytes = await file.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const ext = file.name.split(".").pop();
       const newFileName =
-        generateRandomFileName(6, file.name, "Kamar") + `.${ext}`;
+        generateRandomFileName(12, file.name, "Kamar") + `.${ext}`;
       const filePath = path.join(uploadDir, newFileName);
 
       fs.writeFileSync(filePath, buffer);
-      imagePaths.push(`uploads/${newFileName}`);
+      imagePaths.push(newFileName);
     }
 
     // Update kamar hotel dengan path gambar

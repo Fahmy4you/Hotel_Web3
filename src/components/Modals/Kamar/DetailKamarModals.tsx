@@ -22,7 +22,7 @@ const DetailKamarModals = ({ title, isOpen, onClose, selectedIdKamar }: DetailKa
   const roomImages = detailDataKamar?.images?.length 
     ? detailDataKamar.images.map(img => 
         typeof img === 'string' 
-          ? `/uploads/kamars/${img.split('/').pop()}` 
+          ? `/uploads/kamars/${img}` 
           : '/image/empty-image.png'
       )
     : ['/image/empty-image.png'];

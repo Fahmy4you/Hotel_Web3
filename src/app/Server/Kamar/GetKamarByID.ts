@@ -34,7 +34,6 @@ export async function getKamarById(idKamar: number) {
       status: res.status,
       features: parseField(res.features),
     };
-    console.log(responseParsed);
     return responseParsed;
   } catch (error) {
     console.error("Error get detail kamar:", error);

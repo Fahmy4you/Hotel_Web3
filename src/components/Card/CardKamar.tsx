@@ -12,6 +12,7 @@ import { parseFeatures } from '@/utils/parseFeatures';
 import { Chip, addToast } from '@heroui/react';
 import { useManageKamar } from '@/hooks/useManageKamar';
 import ConfirmModal from '../Modals/DeleteModalDialog';
+import EditKamarModal from '../Modals/Kamar/EditKamarModal';
 
 interface KamarCardProps {
   kamar: KamarData;
@@ -38,6 +39,11 @@ export default function KamarCard({ kamar }: KamarCardProps) {
     dispatch(openModals('delete'));
   };
 
+  const handleEdit = () => {
+    setSelectedKamar(kamar.id ?? null);
+    dispatch(openModals('edit'));
+  }
+
   const confirmDeleteKamar = async () => {
     if (selectedKamar === null) {
       addToast({
@@ -57,7 +63,6 @@ export default function KamarCard({ kamar }: KamarCardProps) {
     }
 };
 
-  const imageUrl = getImageUrl(kamar, currentImageIndex);
   const features = parseFeatures(kamar.features);
   const formattedPrice = formatRupiah(kamar.price);
 
@@ -74,7 +79,7 @@ export default function KamarCard({ kamar }: KamarCardProps) {
       {/* Room Image */}
       <div className="relative w-full h-48 overflow-hidden">
         <img
-          src={imageUrl}
+          src={getImageUrl(kamar, currentImageIndex)}
           alt={kamar.nama_kamar}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           onError={(e) => {
@@ -113,12 +118,12 @@ export default function KamarCard({ kamar }: KamarCardProps) {
             <ActionButton 
               icon={<Edit2 size={16} />} 
               color="amber" 
-              onClick={() => {}} 
+              onClick={handleEdit} 
               tooltip="Edit"
             />
             <ActionButton 
               icon={<Trash2 size={16} />} 
-              color="red" 
+              color="red"
               onClick={() => kamar.id && handleDeleteInit(kamar.id)}
               tooltip="Delete"
             />
@@ -192,6 +197,8 @@ export default function KamarCard({ kamar }: KamarCardProps) {
     title="Konfirmasi Hapus Kamar"
     description="Apakah Anda yakin ingin menghapus kamar ini?"
 />
+
+<EditKamarModal selectedIdKamar={selectedKamar} isOpen={modal.edit} onClose={() => dispatch(closeModals('edit'))} />
     </div>
   );
 }
