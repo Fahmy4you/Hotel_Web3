@@ -1,5 +1,5 @@
 import { Line } from 'react-chartjs-2';
-import type { ChartData } from '../../../../types/TypesChart';
+import type { ChartData } from '../../../types/TypesChart';
 import type { ChartOptions } from 'chart.js';
 
 interface OccupancyChartProps {

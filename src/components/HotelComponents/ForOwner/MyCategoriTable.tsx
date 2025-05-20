@@ -4,7 +4,7 @@ import { RiPencilLine } from 'react-icons/ri';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { openModals, closeModals } from '../../../../libs/slices/modalSlice';
-import { KategoriData } from '../../../../types/kategoriData';
+import { KategoriData } from '../../../types/kategoriData';
 import { useManageKategori } from '@/hooks/useManageKategori';
 import AddKategoriModal from '@/components/Modals/Kategori/AddKategoriModal';
 import ConfirmDeleteKategoriModal from '@/components/Modals/Kategori/ModalConfirmDelete';

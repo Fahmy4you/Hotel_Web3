@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { getMyHotels } from '@/app/Server/Hotel/Owner/GettMyHotels';
 import { deleteHotel } from '@/app/Server/Hotel/Owner/DeleteHotel';
-import { HotelData } from '../../types/hotelData';
+import { HotelData } from '../types/hotelData';
 import { hotelSchema } from '@/utils/zod';
 import { addToast } from '@heroui/react';
 

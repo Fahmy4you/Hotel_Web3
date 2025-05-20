@@ -1,5 +1,5 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@heroui/react"
-import { ModalProps } from "../../../types/TypesPropModal"
+import { ModalProps } from "../../types/TypesPropModal"
 
 const NotificationModal = ({isOpen, onClose} : ModalProps) => {
   return (

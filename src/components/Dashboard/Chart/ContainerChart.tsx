@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import RevenueChart from './RevenueChart';
 import OccupancyChart from './OccupancyChart';
-import { ChartData, ChartTab } from '../../../../types/TypesChart';
+import { ChartData, ChartTab } from '../../../types/TypesChart';
 
 const ChartContainer = () => {
   const [activeTab, setActiveTab] = useState<ChartTab>('pendapatan');

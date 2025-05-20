@@ -1,14 +1,14 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react'
-import { createImageFileSchema, validateFileCount, formatFileSize } from '@/utils/zod'
-import { RiUploadCloud2Line } from "react-icons/ri";
-import { FaTrash } from 'react-icons/fa6'
+import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { createImageFileSchema, validateFileCount, formatFileSize } from '@/utils/zod';
+import { RiUploadCloud2Line } from 'react-icons/ri';
+import { FaTrash } from 'react-icons/fa6';
 
 interface Props {
-  onImagesChange?: (files: File[]) => void
-  onImagesUpload?: (files: File[]) => void
-  acceptedTypes?: string
-  maxFiles?: number
-  maxSizeInMB?: number
+  onImagesChange?: (files: File[]) => void;
+  onImagesUpload?: (files: File[]) => void;
+  acceptedTypes?: string;
+  maxFiles?: number;
+  maxSizeInMB?: number;
   initialImages?: string[];
   forPreview?: boolean;
   onRemoveInitialImage?: (index: number) => void;
@@ -17,88 +17,95 @@ interface Props {
 const UploadMultipleImage = ({
   onImagesChange,
   onImagesUpload,
-  acceptedTypes = "image/*",
+  acceptedTypes = 'image/*',
   maxFiles = 5,
   maxSizeInMB = 5,
   initialImages = [],
   forPreview = false,
-  onRemoveInitialImage
+  onRemoveInitialImage,
 }: Props) => {
-  const [files, setFiles] = useState<File[]>([])
-  const [imagePreviews, setImagePreviews] = useState<string[]>([])
-  const [existingImages, setExistingImages] = useState<typeof initialImages>([])
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-  const [isDragging, setIsDragging] = useState(false)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-  const dropAreaRef = useRef<HTMLDivElement>(null)
+  const [files, setFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const dropAreaRef = useRef<HTMLDivElement>(null);
 
-  const fileSchema = createImageFileSchema({ maxSizeInMB, acceptedTypes })
+  const fileSchema = createImageFileSchema({ maxSizeInMB, acceptedTypes });
+
+  // Sync existingImages with initialImages only if they differ
   useEffect(() => {
-    setExistingImages(initialImages || []);
-  }, [initialImages]);
-
-  const processFiles = useCallback((newFiles: File[]) => {
-    setErrorMessage(null);
-
-    const totalImagesCount = files.length + existingImages.length;
-    const countValidation = validateFileCount(totalImagesCount, newFiles.length, maxFiles);
-    if (!countValidation.success) {
-      setErrorMessage(countValidation.error.errors[0].message);
-      return;
+    if (JSON.stringify(existingImages) !== JSON.stringify(initialImages)) {
+      setExistingImages(initialImages);
     }
+  }, [initialImages, existingImages]);
 
-    let validFiles: File[] = [];
-    let validationFailed = false;
+  const processFiles = useCallback(
+    (newFiles: File[]) => {
+      setErrorMessage(null);
 
-    for (const file of newFiles) {
-      const result = fileSchema.safeParse(file);
-      if (!result.success) {
-        setErrorMessage(result.error.errors[0].message);
-        validationFailed = true;
-        break;
+      const totalImagesCount = files.length + existingImages.length;
+      const countValidation = validateFileCount(totalImagesCount, newFiles.length, maxFiles);
+      if (!countValidation.success) {
+        setErrorMessage(countValidation.error.errors[0].message);
+        return;
       }
-      validFiles.push(file);
-    }
 
-    if (validationFailed) return;
+      let validFiles: File[] = [];
+      let validationFailed = false;
 
-    const updatedFiles = [...files, ...validFiles];
-    const newPreviews = validFiles.map(file => URL.createObjectURL(file));
-    const updatedPreviews = [...imagePreviews, ...newPreviews];
+      for (const file of newFiles) {
+        const result = fileSchema.safeParse(file);
+        if (!result.success) {
+          setErrorMessage(result.error.errors[0].message);
+          validationFailed = true;
+          break;
+        }
+        validFiles.push(file);
+      }
 
-    setFiles(updatedFiles);
-    setImagePreviews(updatedPreviews);
+      if (validationFailed) return;
 
-    if (onImagesChange) {
-      onImagesChange(updatedFiles);
-    }
-  }, [files, fileSchema, imagePreviews, maxFiles, onImagesChange, existingImages.length]);
+      const updatedFiles = [...files, ...validFiles];
+      const newPreviews = validFiles.map(file => URL.createObjectURL(file));
+      const updatedPreviews = [...imagePreviews, ...newPreviews];
 
-  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFiles(updatedFiles);
+      setImagePreviews(updatedPreviews);
+
+      if (onImagesChange && JSON.stringify(updatedFiles) !== JSON.stringify(files)) {
+        onImagesChange(updatedFiles); // Only call if files have changed
+      }
+    },
+    [files, imagePreviews, maxFiles, onImagesChange, existingImages.length, fileSchema]
+  );
+
+  const handleFilesChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0) return;
     const newFiles = Array.from(e.target.files);
     processFiles(newFiles);
     if (fileInputRef.current) fileInputRef.current.value = '';
-  };
+  }, [processFiles]);
 
-  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragEnter = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
-  };
+  }, []);
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-  };
+  }, []);
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
-  };
+  }, []);
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
@@ -112,12 +119,12 @@ const UploadMultipleImage = ({
         .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
         .map(item => item.getAsFile())
         .filter((file): file is File => file !== null);
-      
+
       if (imageFiles.length > 0) processFiles(imageFiles);
     }
-  };
+  }, [processFiles]);
 
-  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+  const handlePaste = useCallback((e: React.ClipboardEvent<HTMLDivElement>) => {
     if (e.clipboardData && e.clipboardData.files.length > 0) {
       e.preventDefault();
       const pastedFiles = Array.from(e.clipboardData.files);
@@ -128,19 +135,19 @@ const UploadMultipleImage = ({
         .filter(item => item.kind === 'file' && item.type.startsWith('image/'))
         .map(item => item.getAsFile())
         .filter((file): file is File => file !== null);
-      
+
       if (imageFiles.length > 0) {
         e.preventDefault();
         processFiles(imageFiles);
       }
     }
-  };
+  }, [processFiles]);
 
-  const handleButtonClick = () => {
+  const handleButtonClick = useCallback(() => {
     if (fileInputRef.current) fileInputRef.current.click();
-  };
+  }, []);
 
-  const handleRemoveImage = (index: number) => {
+  const handleRemoveImage = useCallback((index: number) => {
     const newFiles = [...files];
     newFiles.splice(index, 1);
     URL.revokeObjectURL(imagePreviews[index]);
@@ -148,22 +155,16 @@ const UploadMultipleImage = ({
     newPreviews.splice(index, 1);
     setFiles(newFiles);
     setImagePreviews(newPreviews);
-    if (onImagesChange) onImagesChange(newFiles);
-  };
+    if (onImagesChange && JSON.stringify(newFiles) !== JSON.stringify(files)) {
+      onImagesChange(newFiles);
+    }
+  }, [files, imagePreviews, onImagesChange]);
 
-  const handleRemoveExistingImage = (index: number) => {
+  const handleRemoveExistingImage = useCallback((index: number) => {
     if (onRemoveInitialImage) {
       onRemoveInitialImage(index);
     }
-  };
-
-  // const handleUpload = () => {
-  //   if (files.length === 0) {
-  //     setErrorMessage('Please select at least one file to upload');
-  //     return;
-  //   }
-  //   if (onImagesUpload) onImagesUpload(files);
-  // };
+  }, [onRemoveInitialImage]);
 
   const totalImagesCount = files.length + existingImages.length;
   const shouldHideUploadArea = totalImagesCount >= maxFiles;
@@ -241,8 +242,8 @@ const UploadMultipleImage = ({
                       />
                     </div>
                     <div className="mt-1 text-xs text-gray-500">
-                      <p className="truncate">{files[index].name}</p>
-                      <p>{formatFileSize(files[index].size)}</p>
+                      <p className="truncate">{files[index]?.name || `Image ${index + 1}`}</p>
+                      <p>{files[index] ? formatFileSize(files[index].size) : ''}</p>
                     </div>
                     {!forPreview && (
                       <button
@@ -259,7 +260,7 @@ const UploadMultipleImage = ({
             </div>
           )}
         </div>
-        
+
         {!forPreview && (
           <div className="w-full">
             <input
@@ -270,7 +271,7 @@ const UploadMultipleImage = ({
               onChange={handleFilesChange}
               className="hidden"
             />
-            
+
             <div
               ref={dropAreaRef}
               onDragEnter={handleDragEnter}
@@ -280,9 +281,8 @@ const UploadMultipleImage = ({
               onPaste={handlePaste}
               onClick={handleButtonClick}
               tabIndex={0}
-              className={`h-28 ${shouldHideUploadArea ? 'hidden' : 'flex'} flex-col items-center justify-center border-2 rounded-md transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 ${
-                isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 dark:border-neutral-900 dark:bg-neutral-800'
-              }`}
+              className={`h-28 ${shouldHideUploadArea ? 'hidden' : 'flex'} flex-col items-center justify-center border-2 rounded-md transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gray-500 ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 dark:border-neutral-900 dark:bg-neutral-800'
+                }`}
             >
               <div className="text-center p-6 justify-center items-center flex flex-col">
                 <RiUploadCloud2Line className="w-8 h-8 mb-2 text-neutral-800 dark:text-white" />
@@ -298,7 +298,7 @@ const UploadMultipleImage = ({
         )}
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default UploadMultipleImage
+export default UploadMultipleImage;

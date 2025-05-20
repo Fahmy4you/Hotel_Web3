@@ -1,12 +1,12 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { openModals, closeModals } from '../../../libs/slices/modalSlice';
 import { Info, Edit2, Trash2, Coffee, Tag, Home } from 'lucide-react';
 import type { RootState } from '../../../libs/store';
 import { ActionButton } from '../Button/ActionButton';
 import DetailKamarModals from '../Modals/Kamar/DetailKamarModals';
-import type { KamarData } from '../../../types/kamarData';
+import type { KamarData } from '../../types/kamarData';
 import { formatRupiah } from '@/utils/RupiahFormater';
 import { parseFeatures } from '@/utils/parseFeatures';
 import { Chip, addToast } from '@heroui/react';
@@ -16,14 +16,25 @@ import EditKamarModal from '../Modals/Kamar/EditKamarModal';
 
 interface KamarCardProps {
   kamar: KamarData;
+  onRefresh?: () => void;
 }
 
-export default function KamarCard({ kamar }: KamarCardProps) {
+export default function KamarCard({ kamar, onRefresh }: KamarCardProps) {
   const dispatch = useDispatch();
   const modal = useSelector((state: RootState) => state.modals);
-  const { deleteKamar, isLoading } = useManageKamar(kamar.id || 0);
+  const { deleteKamar, isLoading, fetchKamars } = useManageKamar(kamar.id || 0);
   const [selectedKamar, setSelectedKamar] = useState<number | null>(null);
   const [currentImageIndex] = useState(0);
+
+  // Callback handler for successful operations
+  const handleSuccess = () => {
+    if (onRefresh) {
+      onRefresh();
+    }
+    
+    // Juga refresh data dari hook langsung
+    fetchKamars();
+  };
 
   const handleOpenDetail = () => {
     setSelectedKamar(kamar.id ?? null);
@@ -51,17 +62,30 @@ export default function KamarCard({ kamar }: KamarCardProps) {
         description: 'Id kamar null',
         variant: 'flat',
         color: 'danger',
-      })
+      });
+      return;
     };
     
     try {
         await deleteKamar(selectedKamar as number);
+        // Refresh data setelah hapus
+        handleSuccess();
     } catch (error) {
         console.error("Gagal menghapus kamar:", error);
+        addToast({
+          title: 'Error',
+          description: 'Gagal menghapus kamar',
+          variant: 'flat',
+          color: 'danger',
+        });
     } finally {
         dispatch(closeModals('delete'));
     }
-};
+  };
+
+  const handleEditSuccess = (data: KamarData) => {
+    handleSuccess();
+  };
 
   const features = parseFeatures(kamar.features);
   const formattedPrice = formatRupiah(kamar.price);
@@ -186,19 +210,28 @@ export default function KamarCard({ kamar }: KamarCardProps) {
       />
 
       <ConfirmModal
-    isOpen={modal.delete}
-    onClose={() => {
-        setSelectedKamar(null);
-        dispatch(closeModals('delete'));
-    }}
-    onConfirm={confirmDeleteKamar}
-    ID={selectedKamar}
-    isLoading={isLoading}
-    title="Konfirmasi Hapus Kamar"
-    description="Apakah Anda yakin ingin menghapus kamar ini?"
-/>
+        isOpen={modal.delete}
+        onClose={() => {
+          setSelectedKamar(null);
+          dispatch(closeModals('delete'));
+        }}
+        onConfirm={confirmDeleteKamar}
+        ID={selectedKamar}
+        isLoading={isLoading}
+        title="Konfirmasi Hapus Kamar"
+        description="Apakah Anda yakin ingin menghapus kamar ini?"
+      />
 
-<EditKamarModal selectedIdKamar={selectedKamar} isOpen={modal.edit} onClose={() => dispatch(closeModals('edit'))} />
+      <EditKamarModal
+        selectedIdKamar={selectedKamar}
+        isOpen={modal.edit}
+        onClose={() => {
+          dispatch(closeModals('edit'));
+          handleSuccess();
+        }}
+        onEditKamar={handleEditSuccess}
+        onSuccess={handleSuccess}
+      />
     </div>
   );
 }

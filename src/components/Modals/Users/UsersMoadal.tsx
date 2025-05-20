@@ -1,7 +1,7 @@
 import React, { useState, useTransition, useEffect } from 'react';
 import { FaRegUserCircle, FaRegUser, FaWhatsapp, FaRegCopy } from "react-icons/fa";
 import { LuWallet } from "react-icons/lu";
-import { UserData } from '../../../../types/userData';
+import { UserData } from '../../../types/userData';
 import AddUpdateModal from '../RootModals';
 import { useRouter } from 'next/navigation';
 

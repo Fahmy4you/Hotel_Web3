@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, useRef } from 'react';
 import { FaHotel, FaImage, FaMapMarkerAlt, FaTimes, FaTrash } from "react-icons/fa";
-import { HotelData } from '../../../../types/hotelData';
+import { HotelData } from '../../../types/hotelData';
 import { gsap } from 'gsap';
 
 interface HotelModalProps {

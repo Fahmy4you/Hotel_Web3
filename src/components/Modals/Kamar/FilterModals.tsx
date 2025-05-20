@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import RadioCard from '@/components/Card/RadioCard';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
-import { HotelData } from '../../../../types/hotelData';
+import { HotelData } from '../../../types/hotelData';
 
 interface Props {
   isOpen: boolean;

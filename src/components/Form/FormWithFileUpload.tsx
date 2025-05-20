@@ -27,15 +27,15 @@ interface SingleProps {
 
 type Props = MultipleProps | SingleProps;
 
-const FormUploadwImage = ({ 
-  type, 
-  children, 
-  onImagesChange, 
-  onImageChange, 
-  onUpload, 
-  previewsCurrentlyImage, 
+const FormUploadwImage = ({
+  type,
+  children,
+  onImagesChange,
+  onImageChange,
+  onUpload,
+  previewsCurrentlyImage,
   isPreview,
-  onRemoveInitialImage 
+  onRemoveInitialImage
 }: Props) => {
   if (type === 'multiple' && !children) {
     throw new Error('Children wajib disediakan untuk type="multiple"');
@@ -47,16 +47,16 @@ const FormUploadwImage = ({
         {type === 'multiple' && children}
         {type === 'single' && children}
         {type === 'multiple' ? (
-          <UploadMultipleImage 
+          <UploadMultipleImage
             forPreview={isPreview}
-            initialImages={previewsCurrentlyImage} 
+            initialImages={previewsCurrentlyImage}
             onImagesChange={onImagesChange}
             onRemoveInitialImage={onRemoveInitialImage}
           />
         ) : (
-          <UploadSingleImage 
-            onImageChange={onImageChange} 
-            handleUpload={onUpload} 
+          <UploadSingleImage
+            onImageChange={onImageChange}
+            handleUpload={onUpload}
           />
         )}
       </div>

@@ -1,13 +1,13 @@
 import FormUploadwImage from '@/components/Form/FormWithFileUpload'
 import { LuBedDouble } from "react-icons/lu";
-import { KamarData } from '../../../../types/kamarData';
+import { KamarData } from '../../../types/kamarData';
 import { ModalBody, RadioGroup, Radio, ModalContent, Textarea, ModalHeader, ModalFooter, Modal, Input, Select, SelectItem, Button, Chip, addToast } from '@heroui/react'
 import { useEffect, useState } from 'react'
 import { useManageHotel } from '@/hooks/useManageHotel';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { getKategoriByHotelID } from '@/app/Server/Kategori/GetKategoriByHotelID';
-import { KategoriData } from '../../../../types/kategoriData';
+import { KategoriData } from '../../../types/kategoriData';
 import { useManageKamar } from '@/hooks/useManageKamar';
 import { StatusKamar } from '@prisma/client';
 interface AddKamarModalsProps {

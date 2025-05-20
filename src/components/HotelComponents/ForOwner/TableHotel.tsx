@@ -4,7 +4,7 @@ import { FaTrashAlt } from 'react-icons/fa';
 import { RiPencilLine } from 'react-icons/ri';
 import TableHeader from '@/components/TableAtom/TableHeader';
 import TableFooter from '@/components/TableAtom/TableFooter';
-import { HotelData } from '../../../../types/hotelData';
+import { HotelData } from '../../../types/hotelData';
 import HotelModal from '@/components/Modals/Hotel/HotelModal';
 import { useDispatch, useSelector } from 'react-redux';
 import GenericRow from '@/components/TableAtom/GenericRow';

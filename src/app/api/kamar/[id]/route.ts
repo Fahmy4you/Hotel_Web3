@@ -38,6 +38,7 @@ export async function PUT(
     const is_kyc = formData.get("is_kyc") === "true";
     const status = formData.get("status")?.toString().trim() as StatusKamar;
     const files = formData.getAll("files") as File[];
+    const features = JSON.parse(formData.get("features")?.toString() || "[]");
     const existingImages = JSON.parse(formData.get("existing_images")?.toString() || "[]");
 
     // Validasi status
@@ -80,6 +81,7 @@ export async function PUT(
         is_kyc,
         status,
         images: [...existingImages, ...imagePaths],
+        features : features,
         updatedAt: new Date(),
       },
     });

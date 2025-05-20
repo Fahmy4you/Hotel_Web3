@@ -10,7 +10,7 @@ import TableHeader from './TableAtom/TableHeader';
 import UiButton from './Button/UiButton';
 import UserModal from './Modals/Users/UsersMoadal';
 
-import { UserData } from '../../types/userData';
+import { UserData } from '../types/userData';
 import SuccessAlert from './Alert/SuccessAllert';
 import ConfirmModal from './Modals/DeleteModalDialog';
 import { deleteUser } from '@/app/Server/Users/DeleteUser';

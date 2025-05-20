@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { HotelData } from '../../../../types/hotelData';
+import { HotelData } from '../../../types/hotelData';
 import { LuFilter } from "react-icons/lu";
 import { useDebounce } from 'use-debounce';
 import FilterModals from '@/components/Modals/Kamar/FilterModals';

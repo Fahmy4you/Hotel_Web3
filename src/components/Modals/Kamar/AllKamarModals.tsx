@@ -11,7 +11,7 @@ import { RootState } from '../../../../libs/store';
 import { useSelector } from 'react-redux';
 import { useManageKamar } from '@/hooks/useManageKamar';
 import { typeResponseListKamar } from '@/components/Card/CardListKamar';
-import { ModalProps } from '../../../../types/TypesPropModal';
+import { ModalProps } from '../../../types/TypesPropModal';
 
 const AllKamarModals = ({isOpen, onClose} : ModalProps) => {
     const userId = useSelector((state: RootState) => state.users.id) || 0;

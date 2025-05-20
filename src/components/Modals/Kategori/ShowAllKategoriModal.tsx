@@ -1,5 +1,5 @@
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@heroui/react"
-import { ModalProps } from "../../../../types/TypesPropModal"
+import { ModalProps } from "../../../types/TypesPropModal"
 
 const ShowAllKategoriModal = ({isOpen, onClose} : ModalProps) => {
   return (

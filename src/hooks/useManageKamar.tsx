@@ -1,12 +1,12 @@
 'use client'
 import { useState, useEffect, useCallback } from "react";
 import { addToast } from "@heroui/react";
-import { detailDataKamar, KamarData } from "../../types/kamarData";
+import { detailDataKamar, KamarData } from "../types/kamarData";
 import { getMyHotelKamars } from "@/app/Server/Kamar/GetMyKamarHotel";
 import { deleteMyKamarHotels } from "@/app/Server/Kamar/DeleteMyKamarHotels";
 import { getKamarById } from "@/app/Server/Kamar/GetKamarByID";
 import { z } from "zod";
-import {useDebounce} from 'use-debounce'
+import { useDebounce } from 'use-debounce'
 import { StatusKamar } from "@prisma/client";
 import { KamarFormValues } from "@/utils/zod";
 import { kamarSchema } from "@/utils/zod";
@@ -21,6 +21,7 @@ export const useManageKamar = (
   const [isLoading, setIsLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [query, setQuery] = useState("");
+  const [DebounceQuery] = useDebounce(query, 500)
   const [detailDataKamar, setDetailDataKamar] = useState<detailDataKamar | null>(null);
 
   const validateKamar = (formData: KamarData) => {
@@ -31,15 +32,15 @@ export const useManageKamar = (
         kategori_id: formData.kategori_id || 0,
         price: formData.price || 0,
         images: formData.images || [],
-        features: Array.isArray(formData.features) 
-          ? formData.features.map(f => typeof f === 'string' 
-            ? { nama_fasilitas: f } 
+        features: Array.isArray(formData.features)
+          ? formData.features.map(f => typeof f === 'string'
+            ? { nama_fasilitas: f }
             : f)
           : [],
         is_kyc: formData.is_kyc || false,
         status: (formData.status as StatusKamar) || StatusKamar.TERSEDIA
       };
-      
+
       kamarSchema.parse(dataToValidate);
       return { success: true };
     } catch (error) {
@@ -64,13 +65,13 @@ export const useManageKamar = (
     }
   };
 
- const fetchKamars = useCallback(async () => {
+  const fetchKamars = useCallback(async () => {
     setIsLoading(true);
     try {
-      const res = await getMyHotelKamars({ 
-        search: query, 
-        page: 1, 
-        userId: UserId 
+      const res = await getMyHotelKamars({
+        search: DebounceQuery,
+        page: 1,
+        userId: UserId
       });
       const formattedKamars = (res.formatedResponse || []).map(kamar => ({
         ...kamar,
@@ -84,15 +85,11 @@ export const useManageKamar = (
     } finally {
       setIsLoading(false);
     }
-  }, [UserId, query]);
+  }, [UserId, DebounceQuery]);
 
   useEffect(() => {
-  const timer = setTimeout(() => {
     fetchKamars();
-  }, 300);
-
-  return () => clearTimeout(timer);
-}, [fetchKamars]);
+  }, [fetchKamars]);
 
 
   const deleteKamar = async (kamarId: number) => {
@@ -141,7 +138,7 @@ export const useManageKamar = (
     } finally {
       setIsLoading(false);
     }
-  },[]);
+  }, []);
 
   const submitKamar = async (
     formData: KamarData,
@@ -164,14 +161,15 @@ export const useManageKamar = (
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("is_kyc", String(formData.is_kyc));
       formDataToSend.append("status", formData.status);
+      formDataToSend.append("features", JSON.stringify(formData.features || []));
 
       const existingImages = formData.images?.filter(img => typeof img === 'string') || [];
       const newFiles = formData.images?.filter(img => img instanceof File) as File[] || [];
-      
+
       if (existingImages.length > 0) {
         formDataToSend.append("existing_images", JSON.stringify(existingImages));
       }
-      
+
       newFiles.forEach(file => {
         formDataToSend.append("files", file);
       });
@@ -179,7 +177,7 @@ export const useManageKamar = (
       const allFasilitas = formData.features || [];
       formDataToSend.append("fasilitas", JSON.stringify(allFasilitas));
 
-      const endpoint = isEditMode && currentData?.id 
+      const endpoint = isEditMode && currentData?.id
         ? `/api/kamar/${currentData.id}`
         : "/api/kamar";
 
@@ -196,7 +194,7 @@ export const useManageKamar = (
       }
 
       const responseData = await response.json();
-      
+
       addToast({
         title: 'Berhasil',
         description: isEditMode ? 'Kamar berhasil diperbarui!' : 'Kamar berhasil ditambahkan!',

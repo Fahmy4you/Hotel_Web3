@@ -3,7 +3,7 @@ import FormUploadwImage from '@/components/Form/FormWithFileUpload';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { addToast, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@heroui/react';
-import { ModalProps } from '../../../../types/TypesPropModal';
+import { ModalProps } from '../../../types/TypesPropModal';
 
 export const UploadProfileModals = ({ isOpen, onClose }: ModalProps) => {
   const userId = useSelector((state: RootState) => state.users.id) || 0;

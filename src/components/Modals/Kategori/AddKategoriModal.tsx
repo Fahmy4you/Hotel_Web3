@@ -1,7 +1,7 @@
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Input, Select, SelectItem, addToast } from "@heroui/react";
 import React, { useState, useEffect } from "react";
 import { FaTags } from "react-icons/fa6";
-import { KategoriData } from "../../../../types/kategoriData";
+import { KategoriData } from "../../../types/kategoriData";
 import { useManageHotel } from "@/hooks/useManageHotel";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../libs/store";

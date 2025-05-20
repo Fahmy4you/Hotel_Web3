@@ -6,7 +6,7 @@ import { CiPalette } from "react-icons/ci";
 import { BiGlobe } from "react-icons/bi";
 import { IoFileTrayOutline } from "react-icons/io5";
 import { RiCustomerServiceLine } from "react-icons/ri";
-import { ModalProps } from '../../../../types/TypesPropModal';
+import { ModalProps } from '../../../types/TypesPropModal';
 import { TbBellCog } from "react-icons/tb";
 import MyProfileSection from '@/components/Section/Setting/MyProfileSection';
 import SettingTampilanSection from '@/components/Section/Setting/SettingTampilanSection';

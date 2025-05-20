@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 import fs from "fs";
 import path from "path";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/utils/prisma";
 import generateRandomFileName from "@/utils/generateRandomFileName";
 import { StatusKamar } from "@prisma/client";
 
-const prisma = new PrismaClient();
 
 export const config = {
   api: {
@@ -48,7 +47,7 @@ export async function POST(req: NextRequest) {
     if (!nama_kamar) missingFields.push("nama_kamar");
     if (!desk) missingFields.push("desk");
     if (!hotel_id) missingFields.push("hotel_id");
-    if (!is_kyc) missingFields.push("is_kyc");
+    // if (!is_kyc) missingFields.push("is_kyc");
     if (!price) missingFields.push("price");
     if (!kategori_id) missingFields.push("kategori_id");
     if (!status) missingFields.push("status");
@@ -72,8 +71,7 @@ export async function POST(req: NextRequest) {
       files.length === 0 ||
       !fasilitas ||
       fasilitas.length === 0 ||
-      !status ||
-      !is_kyc
+      !status
     ) {
       return NextResponse.json({ error: "Field is missing" }, { status: 400 });
     }
@@ -106,15 +104,30 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    //Parse features agar hanya array
+    let arrayFeatures : string[];
+    try {
+      const fasilitasInput = formData.get("fasilitas");
+      if (typeof fasilitasInput === "string") {
+      arrayFeatures = JSON.parse(fasilitasInput);
+      } else {
+        arrayFeatures = formData.getAll("fasilitas").map(f => f.toString());
+      }
+    } catch (error) {
+        arrayFeatures = [];
+        console.error("error in parsing features", error)
+    }
+
+
     const kamarsInHotel = await prisma.kamarInHotel.create({
       data: {
         nama_kamar: nama_kamar,
         desk: desk,
         price: price,
         kategori_id: kategori_id,
-        is_kyc: is_kyc, // Boolean
+        is_kyc: is_kyc || false, // Boolean
         status: status, // ini tipenya harusnya enum
-        features: fasilitas,
+        features: arrayFeatures,
         hotel_id: hotel_id,
         is_active: true,
         images: [],

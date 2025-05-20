@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { TypeGetMe } from "../../types/userData";
+import { TypeGetMe } from "../types/userData";
 import { addToast } from "@heroui/react";
 import { userSchema, UserFormData } from "@/utils/zod";
 

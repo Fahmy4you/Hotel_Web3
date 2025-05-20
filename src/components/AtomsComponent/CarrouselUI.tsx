@@ -5,8 +5,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 const CarouselUI = ({ images = ['/default-room-image.jpg'] }) => {
     const [index, setIndex] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
-    
-    // Use provided images or fallback to placeholders
     const carouselImages = images && images.length > 0 ? images : [
         '/api/placeholder/800/400',
         '/api/placeholder/800/400',
@@ -50,7 +48,7 @@ const CarouselUI = ({ images = ['/default-room-image.jpg'] }) => {
                 {carouselImages.map((img, idx) => (
                     <div key={idx} className="min-w-full flex-shrink-0 relative">
                         <img 
-                            src={`uploads/kamars/${img}`}
+                            src={img}
                             alt={`Slide ${idx + 1}`}
                             className="w-full h-full object-cover"
                             onError={(e) => {
@@ -66,7 +64,7 @@ const CarouselUI = ({ images = ['/default-room-image.jpg'] }) => {
                 ))}
             </div>
             
-            {/* Minimalist arrow buttons */}
+            {/* Minimalis arrow buttons */}
             <button 
                 className="absolute top-1/2 left-2 -translate-y-1/2 bg-white/30 hover:bg-opacity-50 text-black p-1 rounded-full transition-all duration-300"
                 onClick={handlePrev}
@@ -84,7 +82,7 @@ const CarouselUI = ({ images = ['/default-room-image.jpg'] }) => {
                 <ChevronRight size={24} className="text-white" />
             </button>
             
-            {/* Modern minimal indicator dots */}
+            {/* Modern indicator */}
             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2 bg-black/20 px-3 py-1 rounded-full">
                 {carouselImages.map((_, idx) => (
                     <button

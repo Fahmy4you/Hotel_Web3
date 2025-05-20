@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { getMyKategori } from "@/app/Server/Kategori/GetMyKategori";
 import { deleteMyKategori } from "@/app/Server/Kategori/DeleteMyKategori";
-import { KategoriData } from "../../types/kategoriData";
+import { KategoriData } from "../types/kategoriData";
 import { updateMyKategori } from "@/app/Server/Kategori/UpdateMyKategori";
 import { addKategori } from "@/app/Server/Kategori/AddKategori";
 import { addToast } from "@heroui/react";
