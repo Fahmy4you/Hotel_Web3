@@ -14,6 +14,8 @@ import SettingBahasaSection from '@/components/Section/Setting/SettingBahasaSect
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { toggleSettingSidebar, setMobileSidebar } from '../../../../libs/slices/sidebarSlices';
+import BantuanPage from '@/components/Section/Setting/SettingBantuan';
+import SettingKeamanan from '@/components/Section/Setting/SettingKeamanan';
 
 const Modalsetting = ({ isOpen, onClose }: ModalProps) => {
   const [activeMenu, setActiveMenu] = useState(1);
@@ -61,36 +63,14 @@ const Modalsetting = ({ isOpen, onClose }: ModalProps) => {
         );
       case 3:
         return (
-          <div className="p-4">
-            <h3 className="text-xl font-semibold mb-4">Keamanan Akun</h3>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Password Lama</label>
-                <input type="password" className="w-full p-2 border rounded" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Password Baru</label>
-                <input type="password" className="w-full p-2 border rounded" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Konfirmasi Password</label>
-                <input type="password" className="w-full p-2 border rounded" />
-              </div>
-              <button className="bg-blue-500 text-white px-4 py-2 rounded">Ubah Password</button>
-              <div className="mt-6">
-                <h4 className="text-lg font-medium mb-2">Autentikasi Dua Faktor</h4>
-                <div className="flex items-center justify-between">
-                  <span>Aktifkan 2FA</span>
-                  <input type="checkbox" className="toggle" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <SettingKeamanan />
         );
       case 4:
         return <SettingTampilanSection />;
       case 5:
         return <SettingBahasaSection />;
+      case 7:
+        return <BantuanPage />;
       default:
         return <div>Pilih menu di samping</div>;
     }

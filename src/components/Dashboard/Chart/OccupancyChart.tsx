@@ -6,7 +6,18 @@ interface OccupancyChartProps {
   data: ChartData;
 }
 
-const OccupancyChart = ({ data }: OccupancyChartProps) => {
+const OccupancyAreaChart = ({ data }: OccupancyChartProps) => {
+  // Configure datasets for area chart (add fill property)
+  const areaData = {
+    ...data,
+    datasets: data.datasets.map(dataset => ({
+      ...dataset,
+      fill: true, // This enables the area fill
+      backgroundColor: 'rgba(75, 192, 192, 0.2)', // Semi-transparent fill color
+      borderColor: 'rgba(75, 192, 192, 1)', // Line color
+    }))
+  };
+
   const options: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
@@ -41,16 +52,15 @@ const OccupancyChart = ({ data }: OccupancyChartProps) => {
     },
     elements: {
       point: {
-        radius: 4,
-        hoverRadius: 6,
+        radius: 3,
+        hoverRadius: 5,
       },
       line: {
         tension: 0.4,
       }
     },
   };
-
-  return <Line data={data} options={options} />;
+  return <Line data={areaData} options={options} />;
 };
 
-export default OccupancyChart;
+export default OccupancyAreaChart;

@@ -26,22 +26,23 @@ model Booking {
 }
 
 model User {
-  id             Int      @id @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   nama           String?
   no_wa          String?
   email          String?
   profile_pict   String?
-  wallet_address String   @unique
-  is_active      Boolean  @default(true)
-  role_id        Int      @default(1)
+  wallet_address String           @unique
+  is_active      Boolean          @default(true)
+  role_id        Int              @default(1)
   pofile         String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
 
-  role        Role         @relation(fields: [role_id], references: [id])
-  bookings    Booking[]    @relation("UserBookings")
+  role        Role              @relation(fields: [role_id], references: [id])
+  bookings    Booking[]         @relation("UserBookings")
   ratings     Rating[]
-  hotels      Hotel[]      @relation("UserHotels")
+  hotels      Hotel[]           @relation("UserHotels")
+  verified    Verified_Account? @relation("UserToVerified") // HANYA nama relasi di sini
 }
 
 
@@ -110,6 +111,17 @@ model Rating {
   user  User  @relation(fields: [user_id], references: [id], onDelete: Cascade)
   hotel Hotel @relation(fields: [hotel_id], references: [id], onDelete: Cascade)
 }
+
+
+model Verified_Account {
+  id               Int    @id @default(autoincrement())
+  user_id          Int    @unique
+  isEmail_verified Boolean
+  isNoWa_verified  Boolean
+
+  user_verified User @relation("UserToVerified", fields: [user_id], references: [id], onDelete: Cascade)
+}
+
 
 enum StatusKamar {
   TERSEDIA

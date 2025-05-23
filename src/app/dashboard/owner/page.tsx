@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import AddKamarModals from '@/components/Modals/Kamar/AddKamarModals';
-import { closeModals, openModals } from '../../../libs/slices/modalSlice';
+import { closeModals, openModals } from '../../../../libs/slices/modalSlice';
 import { useDispatch } from 'react-redux';
 import { formatRupiah } from '@/utils/RupiahFormater';
 import { FaBed } from 'react-icons/fa6';
@@ -21,76 +21,18 @@ import InfoCard from '@/components/Dashboard/InfoCard';
 import ChartContainer from '@/components/Dashboard/Chart/ContainerChart';
 import { useManageKamar } from '@/hooks/useManageKamar';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../../libs/store';
+import { RootState } from '../../../../libs/store';    
 import AllKamarModals from '@/components/Modals/Kamar/AllKamarModals';
 import CardListKamar, { typeResponseListKamar } from '@/components/Card/CardListKamar';
 import ShowAllKategoriModal from '@/components/Modals/Kategori/ShowAllKategoriModal';
 import NotificationModal from '@/components/Modals/NotificationModal';
 import { Button } from '@heroui/react';
 import { useHooksUser } from '@/hooks/useHooksUser';
-
-// Sample data
-interface Booking {
-  id: number;
-  guestName: string;
-  roomType: string;
-  checkIn: string;
-  checkOut: string;
-  status: RoomStatus;
-}
-
-const bookingData: Booking[] = [
-  { 
-    id: 1, 
-    guestName: 'Ahmad Saputra', 
-    roomType: 'Deluxe King', 
-    checkIn: '2025-05-09', 
-    checkOut: '2025-05-12', 
-    status: 'check-in' 
-  },
-  { 
-    id: 2, 
-    guestName: 'Siti Rahayu', 
-    roomType: 'Suite', 
-    checkIn: '2025-05-10', 
-    checkOut: '2025-05-15', 
-    status: 'booked' 
-  },
-  { 
-    id: 3, 
-    guestName: 'Budi Santoso', 
-    roomType: 'Twin Room', 
-    checkIn: '2025-05-08', 
-    checkOut: '2025-05-09', 
-    status: 'check-out' 
-  },
-  { 
-    id: 4, 
-    guestName: 'Dewi Putri', 
-    roomType: 'Standard Queen', 
-    checkIn: '2025-05-09', 
-    checkOut: '2025-05-11', 
-    status: 'booked' 
-  },
-  { 
-    id: 5, 
-    guestName: 'Rudi Hartono', 
-    roomType: 'Family Room', 
-    checkIn: '2025-05-09', 
-    checkOut: '2025-05-13', 
-    status: 'check-in' 
-  }
-];
+import { useMyData } from '@/hooks/useMyData';
+import ModalAllTransaction from '@/components/Modals/Transaction/ModalAllTransaction';
 
 type RoomStatus = 'check-in' | 'check-out' | 'booked' | 'cancelled' | 'completed' | 'occupied' | 'available' | 'cleaning';
 
-const roomData = [
-  { id: 101, type: 'Deluxe King', status: 'occupied' as RoomStatus, lastUpdated: '2025-05-08' },
-  { id: 102, type: 'Suite', status: 'available' as RoomStatus, lastUpdated: '2025-05-08' },
-  { id: 103, type: 'Twin Room', status: 'cleaning' as RoomStatus, lastUpdated: '2025-05-09' },
-  { id: 104, type: 'Standard Queen', status: 'available' as RoomStatus, lastUpdated: '2025-05-09' },
-  { id: 105, type: 'Family Room', status: 'occupied' as RoomStatus, lastUpdated: '2025-05-09' }
-];
 
 const notificationData = [
   { id: 1, type: 'upcoming', message: 'Familia Nur akan check-in besok', time: '15 menit yang lalu' },
@@ -139,8 +81,11 @@ const StatusBadge = ({ status }: { status: 'check-in' | 'check-out' | 'booked' |
 };
 
 export default function DashboardHome() {
-  const dispatch = useDispatch();
-  const {user} = useHooksUser();
+    const dispatch = useDispatch();
+    const {user} = useHooksUser();
+    //Data Booking
+    const {transactions} = useMyData(user?.id ?? 0);
+    console.log(transactions);
   console.log(user);
   const modalState = useSelector((state : RootState) => state.modals);
   const userId = useSelector((state : RootState) => state.users.id) || 0;
@@ -167,10 +112,10 @@ export default function DashboardHome() {
                 <h2 className="text-lg font-bold">Booking Terbaru</h2>
                 <p className="text-gray-500 text-sm">Daftar pemesanan terbaru</p>
               </div>
-              <button className="flex items-center gap-1 text-blue-600 text-sm font-medium hover:text-blue-800">
+              <Button onPress={() => dispatch(openModals('allTransaction'))} className="flex items-center gap-1 text-blue-600 text-sm font-medium hover:text-blue-800">
                 Lihat Semua
                 <ArrowRight size={16} />
-              </button>
+              </Button>
             </div>
 
             <div className="overflow-x-auto">
@@ -185,13 +130,13 @@ export default function DashboardHome() {
                   </tr>
                 </thead>
                 <tbody>
-                  {bookingData.map((booking) => (
+                  {transactions.slice(0, 5).map((booking) => (
                     <tr key={booking.id} className="border-b transition-all duration-250 last:border-0 hover:bg-gray-50 dark:hover:bg-neutral-900">
-                      <td className="py-4 font-medium">{booking.guestName}</td>
-                      <td className="py-4 text-gray-600">{booking.roomType}</td>
-                      <td className="py-4 text-gray-600">{booking.checkIn}</td>
-                      <td className="py-4 text-gray-600">{booking.checkOut}</td>
-                      <td className="py-4"><StatusBadge status={booking.status} /></td>
+                      <td className="py-4 font-medium">{booking.pemesan}</td>
+                      <td className="py-4 text-gray-600">{booking.tipe_kamar}</td>
+                      <td className="py-4 text-gray-600">{booking.check_in}</td>
+                      <td className="py-4 text-gray-600">{booking.check_out}</td>
+                      {/* <td className="py-4"><StatusBadge status={booking.status} /></td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -298,6 +243,7 @@ export default function DashboardHome() {
         <AllKamarModals isOpen={modalState.allKamar} onClose={() => dispatch(closeModals('allKamar'))}/>
           <ShowAllKategoriModal isOpen={modalState.detail} onClose={() => dispatch(closeModals('detail'))}/>
             <NotificationModal isOpen={modalState.notification} onClose={() => dispatch(closeModals('notification'))}/>
+                <ModalAllTransaction isOpen={modalState.allTransaction} onClose={() => dispatch(closeModals('allTransaction'))}/>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { openModals, closeModals } from '../../../../libs/slices/modalSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../libs/store';
 import { MdOutlinePhotoCamera } from 'react-icons/md';
-import { addToast, Button, Form, Input, Textarea } from '@heroui/react';
+import { addToast, Avatar, Button, Form, Input, Textarea } from '@heroui/react';
 import { FaPencil } from 'react-icons/fa6';
 import { useHooksUser } from '@/hooks/useHooksUser';
 import { formatDateWithDay } from '@/utils/dateFormater';
@@ -76,6 +76,13 @@ const MyProfileSection = () => {
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
             <div className="w-40 h-40 rounded-full overflow-hidden border-2 border-gray-200 dark:border-neutral-600 shadow-md">
+              {user.profile_pict !== null ? (
+                <img
+                  src={`/uploads/profile_pict/${user.profile_pict ?? 'default.jpg'}`}
+                  alt={user.profile_pict ?? 'default.jpg'}
+                  className="w-full h-full object-cover"
+                />
+              ) : <Avatar name={user.nama_user} className="w-full h-full object-cover" />}
               <img
                 src={`/uploads/profile_pict/${user.profile_pict ?? 'default.jpg'}`}
                 alt={user.profile_pict ?? 'default.jpg'}

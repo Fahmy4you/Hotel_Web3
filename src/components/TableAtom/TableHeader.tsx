@@ -41,7 +41,7 @@ const TableHeader = <T,>({
               className="w-full pl-10 pr-4 py-2 text-sm border rounded-lg border-gray-300 text-neutral-900 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
-          <Button className="bg-neutral-800 dark:text-black-50 darlk:hover:bg-neutral-900 hover:bg-neutral-900 text-white px-4 py-2 rounded-md dark:bg-white dark:hover:bg-white-50" onPress={onAddButtonClick}>{addButtonText}</Button>
+          <Button className="bg-neutral-800 dark:text-black-50 darlk:hover:bg-neutral-900 hover:bg-neutral-900 text-white px-4 py-2 rounded-md dark:bg-white dark:hover:bg-white-50 font-medium" onPress={onAddButtonClick}>{addButtonText}</Button>
         </div>
       </div>
     </div>

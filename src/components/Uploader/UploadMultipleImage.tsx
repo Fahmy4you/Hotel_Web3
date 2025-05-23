@@ -33,8 +33,6 @@ const UploadMultipleImage = ({
   const dropAreaRef = useRef<HTMLDivElement>(null);
 
   const fileSchema = createImageFileSchema({ maxSizeInMB, acceptedTypes });
-
-  // Sync existingImages with initialImages only if they differ
   useEffect(() => {
     if (JSON.stringify(existingImages) !== JSON.stringify(initialImages)) {
       setExistingImages(initialImages);
