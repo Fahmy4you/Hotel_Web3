@@ -1,14 +1,13 @@
 import { useState } from "react";
 import { Shield, Lock, Mail, Phone, Check, AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { useVerified } from "@/hooks/useVerified";
+import { useHooksUser } from "@/hooks/useHooksUser";
+import { Button } from "@heroui/react";
 
 const SettingKeamanan = () => {
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [newPasswordVisible, setNewPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(false);
-  const [whatsappVerified, setWhatsappVerified] = useState(false);
-  const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const {user} = useHooksUser();
+  const {verifiedData} = useVerified(user?.id ?? 0);
 
   return (
     <div className="p-6 h-full bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white rounded-lg shadow-lg">
@@ -30,23 +29,23 @@ const SettingKeamanan = () => {
           
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-400 dark:text-gray-300 mb-2">user@example.com</p>
+              <p className="text-gray-400 dark:text-gray-300 mb-2">{user?.email}</p>
               <p className="text-sm text-gray-400">
-                {emailVerified 
+                {verifiedData?.Email_verified
                   ? "Email telah terverifikasi" 
                   : "Verifikasi email untuk keamanan akun"}
               </p>
             </div>
             
-            {emailVerified ? (
+            {verifiedData?.Email_verified ? (
               <span className="bg-green-900/30 text-green-400 px-3 py-1 rounded-full flex items-center gap-1 text-sm">
                 <Check size={16} />
                 Terverifikasi
               </span>
             ) : (
-              <button className="bg-neutral-900 font-semibold dark:bg-white dark:hover:bg-gray-300 dark:text-neutral-900 hover:bg-neutral-800 text-white px-4 py-2 rounded text-sm transition-colors duration-300">
-                <Link href="/verification/email">Verifikasi Sekarang</Link>
-              </button>
+              <Button radius="sm" className="bg-neutral-900 cursor-pointer font-semibold dark:bg-white dark:hover:bg-gray-300 dark:text-neutral-900 hover:bg-neutral-800 text-white transition-colors duration-300">
+                Verifikasi Sekarang
+              </Button>
             )}
           </div>
         </div>
@@ -60,23 +59,23 @@ const SettingKeamanan = () => {
           
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-gray-300 mb-2">+62 812-3456-7890</p>
+              <p className="text-gray-300 mb-2">{user?.no_wa}</p>
               <p className="text-gray-400 dark:text-gray-300 text-sm">
-                {whatsappVerified 
+                {verifiedData?.NoWa_verified
                   ? "Nomor WhatsApp telah terverifikasi" 
                   : "Verifikasi nomor untuk pemulihan akun"}
               </p>
             </div>
             
-            {whatsappVerified ? (
+            {verifiedData?.NoWa_verified ? (
               <span className="bg-green-900/30 text-green-400 px-3 py-1 rounded-full flex items-center gap-1 text-sm">
                 <Check size={16} />
                 Terverifikasi
               </span>
             ) : (
-              <button className="bg-neutral-900 font-semibold dark:bg-white dark:hover:bg-gray-300 dark:text-neutral-900 hover:bg-neutral-800 text-white px-4 py-2 rounded text-sm transition-colors duration-300">
-                <Link href={"/verification/whatsApp"}>Verifikasi Sekarang</Link>
-              </button>
+              <Button radius="sm" className="bg-neutral-900 cursor-pointer font-semibold dark:bg-white dark:hover:bg-gray-300 dark:text-neutral-900 hover:bg-neutral-800 text-white transition-colors duration-300">
+                Verifikasi Sekarang
+              </Button>
             )}
           </div>
         </div>

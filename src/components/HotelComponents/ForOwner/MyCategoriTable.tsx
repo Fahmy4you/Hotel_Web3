@@ -62,12 +62,12 @@ const MyCategoriTable = () => {
 
   const handleOpenAddModal = () => {
     setCurrentKategori(null);
-    dispatch(openModals('add'));
+    dispatch(openModals('addKategori'));
   };
 
   const handleCloseModal = (): void => {
     setCurrentKategori(null);
-    dispatch(closeModals(isEditMode ? 'edit' : 'add'));
+    dispatch(closeModals(isEditMode ? 'editKategori' : 'addKategori'));
   };
 
   const handleSubmitKategori = (data: KategoriData) => {
@@ -83,20 +83,20 @@ const MyCategoriTable = () => {
 
   const handleEdit = (kategori: KategoriData) => {
     setCurrentKategori(kategori);
-    dispatch(openModals('edit'));
+    dispatch(openModals('editKategori'));
   };
 
   const handleDelete = (kategori: KategoriData) => {
     if (kategori.id) {
       setSelectedKategoriId(kategori.id);
-      dispatch(openModals('delete'));
+      dispatch(openModals('deleteKategori'));
     }
   };
 
   const confirmDelete = async () => {
     if (selectedKategoriId) {
       await handleDeleteKategori(selectedKategoriId);
-      dispatch(closeModals('delete'));
+      dispatch(closeModals('deleteKategori'));
     }
   };
 
@@ -152,6 +152,7 @@ const MyCategoriTable = () => {
             ) : (
               tableData.map(kategori => (
                 <GenericRow
+                  showActionsCol={true}
                   key={kategori.id}
                   data={kategori}
                   columns={columns}
@@ -197,7 +198,7 @@ const MyCategoriTable = () => {
       <ConfirmDeleteKategoriModal
         kategoriId={selectedKategoriId || 0}
         isOpen={modalsState.delete}
-        onClose={() => dispatch(closeModals('delete'))}
+        onClose={() => dispatch(closeModals('deleteKategori'))}
         onConfirm={confirmDelete}
         isLoading={deleting}
       />
@@ -205,7 +206,7 @@ const MyCategoriTable = () => {
       <AddKategoriModal
         isEdit={isEditMode}
         initialData={currentKategori}
-        isOpen={modalsState.add || modalsState.edit}
+        isOpen={modalsState.addKategori || modalsState.editKategori}
         onClose={handleCloseModal}
         onSubmit={handleSubmitKategori}
       />

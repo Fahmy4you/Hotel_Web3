@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import HotelRoomCard from '../../Card/CardKamar'
+import HotelRoomCard from '../../Card/KamarCard'
 import { useManageKamar } from '@/hooks/useManageKamar'
 import { RotateCwIcon } from 'lucide-react'
 import { Button, Skeleton } from '@heroui/react'

@@ -1,16 +1,11 @@
 import type { Metadata } from "next";
 import { Mona_Sans } from "next/font/google";
 import "./globals.css";
-import { registerChartJS } from "@/utils/chartConfig";
 import { XellarProvider } from './provider/XellarProvider';
 import { ReduxProvider } from "../../libs/provider";
 import { ThemeInitializer } from "../components/root/ThemeInitializer";
-import ChartJSInitializer from "@/components/root/ChartInitializer";
 import SwitchThemeButton from '../components/Button/SwitchThemeButton';
 import Providers from "./provider/ToastProvider";
-
-//Agar ChartJS bisa di render di client side
-registerChartJS();
 
 const mona_sans = Mona_Sans({
   variable: '--font-mona',
@@ -37,7 +32,6 @@ export default function RootLayout({
         <XellarProvider>
           <ReduxProvider>
             <ThemeInitializer>
-              <ChartJSInitializer />
               <Providers>
               {children}
               </Providers>

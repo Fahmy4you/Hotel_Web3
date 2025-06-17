@@ -15,7 +15,7 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const hotel_id = await params.id;
+    const hotel_id = params.id;
     const ParsedhotelId = parseInt(hotel_id);
     if (isNaN(ParsedhotelId)) {
       return NextResponse.json({ error: "Invalid hotel ID" }, { status: 400 });

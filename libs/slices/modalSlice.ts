@@ -6,11 +6,13 @@ interface ModalState {
 
 const initialState: ModalState = {
    filter : false,
-   add : false,
-   edit : false,
+   addKategori : false,
+   editKategori : false,
    detail : false,
-   delete : false,
+   deleteKategori : false,
    allKamar : false,
+   editkamar : false,
+   deleteKamar : false,
    notification : false,
    pengaturan : false,
    addProfilePicture : false,

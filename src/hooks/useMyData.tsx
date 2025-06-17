@@ -1,10 +1,11 @@
 'use client'
 import { getMyTransactions } from "@/app/Server/Transaction/GetMyTransactions";
+import { getIncome } from "@/app/Server/Transaction/owner/GetIncome";
 import { getMyHotelsTransaction } from "@/app/Server/Transaction/owner/GetMyHotelsTransaction";
-import { bookingData } from "@/types/bookingData";
+import { bookingData, incomeTypes } from "@/types/bookingData";
 import { useCallback, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import { useCall } from "wagmi";
+
 
 export const useMyData = (userID: number) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -14,8 +15,10 @@ export const useMyData = (userID: number) => {
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
     const [totalItems, setTotalItems] = useState<number>(0);
+    const [revenueData, setRevenueData] = useState<{ name: string; revenue: number | null; }[]>([]);
     const itemPerPage = 10;
 
+    // Region Get My Transaction
     const getMyTransaction = useCallback(async () => {
         if (!userID || userID <= 0) return;
 
@@ -45,8 +48,8 @@ export const useMyData = (userID: number) => {
         getMyTransaction();
     }, [getMyTransaction]);
 
-
-    const getTransactionMyHotel = useCallback(async () => {
+    //Region Get Current Transaction (Untuk Owner)
+    const currentTransactionMyHotel = useCallback(async () => {
         setLoading(true);
         try {
             const res = await getMyHotelsTransaction(userID);
@@ -64,9 +67,29 @@ export const useMyData = (userID: number) => {
     }, [userID])
 
     useEffect(() => {
-        getTransactionMyHotel();
-    }, [getTransactionMyHotel]);
+        currentTransactionMyHotel();
+    }, [currentTransactionMyHotel]);
 
+    //Region Data Dashboard For Owner
+    const monthlyIncome = useCallback(async () => {
+        setLoading(true)
+        try {
+            const response = await getIncome(userID)
+            if (response && Array.isArray(response.data)) {
+                setRevenueData(response.data);
+            } else {
+                setRevenueData([]);
+            }
+        } catch (error) {
+            setRevenueData([]);
+        }finally{
+            setLoading(false);
+        }
+    }, [userID])
+
+    useEffect(() => {
+        monthlyIncome()
+    }, [monthlyIncome])
 
     return {
         transactions,
@@ -77,6 +100,7 @@ export const useMyData = (userID: number) => {
         loading,
         itemPerPage,
         query,
-        setQuery
+        setQuery,
+        revenueData
     };
 };

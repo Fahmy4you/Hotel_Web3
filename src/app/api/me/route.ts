@@ -26,7 +26,6 @@ export async function GET(req: NextRequest) {
             id : user?.id,
             no_wa : user?.no_wa,
             join_date : user?.createdAt};
-            //console.log("response api", responseParsed);
         return NextResponse.json(responseParsed);
     } catch (error : any) {
         return NextResponse.json({ message: 'Invalid or expired token' }, { status: 401 });

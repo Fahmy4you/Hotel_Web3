@@ -1,15 +1,3 @@
-export interface ChartData {
-  labels: string[];
-  datasets: {
-    label: string;
-    data: number[];
-    backgroundColor: string;
-    borderColor: string;
-    borderWidth: number;
-    borderRadius?: number;
-    tension?: number;
-    fill?: boolean;
-  }[];
-}
-
+import type { ChartData as ChartJSData } from 'chart.js';
 export type ChartTab = 'pendapatan' | 'okupansi';
+export type ChartData = ChartJSData<'line', number[], string>;

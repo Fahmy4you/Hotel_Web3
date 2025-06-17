@@ -12,4 +12,9 @@ export interface bookingData {
 }
 
 
+export interface incomeTypes {
+    name?: string,
+    revenue? : number
+}
+
  

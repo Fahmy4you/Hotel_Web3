@@ -8,7 +8,7 @@ import { addToast, Avatar, Button, Form, Input, Textarea } from '@heroui/react';
 import { FaPencil } from 'react-icons/fa6';
 import { useHooksUser } from '@/hooks/useHooksUser';
 import { formatDateWithDay } from '@/utils/dateFormater';
-import LoadingInfoUser from '@/components/WhileLoading/LoadingInfoUser';
+import LoadingInfoUser from '@/components/LoadingSkeleton/LoadingInfoUser';
 import { UserFormData } from '@/utils/zod';
 
 const MyProfileSection = () => {
@@ -72,7 +72,6 @@ const MyProfileSection = () => {
   return (
     <div className="md:overflow-hidden h-auto md:h-[500px] bg-white dark:bg-neutral-800 p-5 rounded-lg border border-gray-200 dark:border-neutral-700 backdrop-blur-md text-gray-900 dark:text-white">
       <div className="flex flex-col md:flex-row gap-12 md:gap-12">
-        {/* Profile Picture Section */}
         <div className="flex flex-col items-center space-y-4">
           <div className="relative">
             <div className="w-40 h-40 rounded-full overflow-hidden border-2 border-gray-200 dark:border-neutral-600 shadow-md">
@@ -90,10 +89,11 @@ const MyProfileSection = () => {
               />
             </div>
             <button
+              title="Upload Profile Picture"
               onClick={() => dispatch(openModals('addProfilePicture'))}
-              className="absolute bottom-2 right-2 bg-blue-100 dark:bg-blue-900 p-2 rounded-full shadow-md hover:bg-blue-200 dark:hover:bg-blue-800 transition-colors duration-200"
+              className="absolute bottom-2 cursor-pointer right-2 bg-black-50 dark:bg-white p-2 rounded-full shadow-md hover:bg-neutral-800 dark:hover:bg-gray-200 transition-colors duration-200"
             >
-              <MdOutlinePhotoCamera size={20} className="text-blue-600 dark:text-blue-300" />
+              <MdOutlinePhotoCamera size={20} className="text-white-50 dark:text-black-50" />
             </button>
           </div>
 
@@ -105,7 +105,6 @@ const MyProfileSection = () => {
           </div>
         </div>
 
-        {/* Profile Information Section */}
         <div className="flex-1 space-y-6">
           <div className="flex justify-between items-center">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Informasi Profil</h2>
@@ -125,7 +124,7 @@ const MyProfileSection = () => {
                       <Button
                         isLoading
                         onPress={handleSaveProfile}
-                        className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200"
+                        className="px-4 py-2 text-sm font-medium rounded-md dark:bg-white dark:text-black-50 dark:hover:bg-gray-200 bg-black-50 text-white hover:bg-neutral-800 transition-colors duration-200"
                       >
                         Simpan
                       </Button>
@@ -140,7 +139,7 @@ const MyProfileSection = () => {
                       </Button>
                       <Button
                         onPress={handleSaveProfile}
-                        className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors duration-200"
+                        className="px-4 py-2 text-sm font-medium rounded-md dark:bg-white dark:text-black-50 dark:hover:bg-gray-200 bg-black-50 text-white hover:bg-neutral-800 transition-colors duration-200"
                       >
                         Simpan
                       </Button>
@@ -150,7 +149,7 @@ const MyProfileSection = () => {
               ) : (
                 <button
                   onClick={() => setIsEdit(true)}
-                  className="px-4 py-2 text-sm font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 transition-colors duration-200 flex items-center gap-2"
+                  className="px-4 py-2 text-sm font-medium rounded-md bg-black-50 text-white hover:bg-neutrak-800 dark:bg-white dark:text-black-50 dark:hover:bg-gray-200 cursor-pointer transition-colors duration-200 flex items-center gap-2"
                 >
                   <FaPencil size={16} />
                   Edit Profil

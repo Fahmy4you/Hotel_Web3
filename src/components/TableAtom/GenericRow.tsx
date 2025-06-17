@@ -33,7 +33,7 @@ const GenericRow = ({ data, columns, actions, customRender, showActionsCol = tru
           )}
         </td>
       ))}
-      {showActionsCol && actions === true && (
+      {showActionsCol && actions && (
         <td className="px-6 py-4 whitespace-nowrap text-center">
           {actions}
         </td>

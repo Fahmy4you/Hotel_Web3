@@ -5,7 +5,7 @@ import { formatRupiah } from '@/utils/RupiahFormater';
 import { useManageKamar } from '@/hooks/useManageKamar';
 import { useHooksUser } from '@/hooks/useHooksUser';
 import { parseFeatures } from '@/utils/parseFeatures';
-import LoadingDetailKamar from '@/components/WhileLoading/LoadingDetailKamar';
+import LoadingDetailKamar from '@/components/LoadingSkeleton/LoadingDetailKamar';
 
 interface DetailKamarProps {
   title: string;

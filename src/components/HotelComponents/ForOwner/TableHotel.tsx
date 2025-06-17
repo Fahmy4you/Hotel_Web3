@@ -161,6 +161,7 @@ const TableHotel = () => {
             ) : (
               filteredData.map(hotel => (
                 <GenericRow
+                  showActionsCol={true}
                   key={hotel.id}
                   data={hotel}
                   columns={columns}

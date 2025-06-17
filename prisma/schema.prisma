@@ -116,8 +116,8 @@ model Rating {
 model Verified_Account {
   id               Int    @id @default(autoincrement())
   user_id          Int    @unique
-  isEmail_verified Boolean
-  isNoWa_verified  Boolean
+  Email_verified String
+  NoWa_verified  String
 
   user_verified User @relation("UserToVerified", fields: [user_id], references: [id], onDelete: Cascade)
 }

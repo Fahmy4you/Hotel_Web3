@@ -146,7 +146,7 @@ const Modalsetting = ({ isOpen, onClose }: ModalProps) => {
                       <Tooltip key={item.id} content={item.label} showArrow={true}>
                         <button
                           key={item.id}
-                          className={`p-2 rounded-md text-xl ${activeMenu === item.id ? 'bg-gray-900 shadow-sm  text-white dark:bg-blue-900' : 'hover:bg-gray-200 dark:hover:bg-gray-800'
+                          className={`p-2 cursor-pointer   rounded-md text-xl ${activeMenu === item.id ? 'bg-gray-900 shadow-sm  dark:text-black-50 dark:bg-white-50 text-white-50' : 'hover:bg-gray-200 dark:hover:bg-neutral-800'
                             }`}
                           onClick={() => handleMenuChange(item.id)}
                         >
@@ -161,8 +161,8 @@ const Modalsetting = ({ isOpen, onClose }: ModalProps) => {
                       <button
                         key={item.id}
                         className={`flex items-center p-2 rounded-lg w-full ${activeMenu === item.id
-                            ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200'
-                            : 'hover:bg-gray-200 dark:hover:bg-gray-800'
+                            ? 'bg-blue-100 dark:bg-white-50 text-white-50 dark:text-black-50'
+                            : 'hover:bg-gray-200 dark:hover:bg-neutral-800'
                           }`}
                         onClick={() => handleMenuChange(item.id)}
                       >

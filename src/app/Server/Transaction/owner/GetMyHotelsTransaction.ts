@@ -1,6 +1,4 @@
 "use server";
-import { cookies } from "next/headers";
-import { verifyRefreshToken } from "@/utils/jwt";
 import { prisma } from "@/utils/prisma";
 import { formatDate } from "@/utils/Helper";
 
@@ -8,6 +6,7 @@ interface props {
   search?: string;
   page?: number;
 }
+
 export async function getMyHotelsTransaction(userId: number) {
   try {
     const hotels = await prisma.hotel.findMany({
@@ -33,12 +32,29 @@ export async function getMyHotelsTransaction(userId: number) {
     }
 
     const hotelIds = hotels.map((hotel) => hotel.id);
-
+    const now = new Date();
+    const todayUTC = new Date(Date.UTC(
+      now.getUTCFullYear(), 
+      now.getUTCMonth(), 
+      now.getUTCDate(), 
+      0, 0, 0, 0
+    ));
+    const tomorrowUTC = new Date(Date.UTC(
+      now.getUTCFullYear(), 
+      now.getUTCMonth(), 
+      now.getUTCDate() + 1, 
+      0, 0, 0, 0
+    ));
+    
     const bookings = await prisma.booking.findMany({
       where: {
         hotel_id: {
           in: hotelIds,
         },
+        createdAt: {
+          gte: todayUTC,
+          lt: tomorrowUTC
+        }
       },
       include: {
         kamar: {
@@ -76,15 +92,11 @@ export async function getMyHotelsTransaction(userId: number) {
       tanggal_pesan: formatDate(booking.createdAt),
     }));
 
-    return { data: formattedBookings };
+    return { success: true, data: formattedBookings };
   } catch (error) {
     console.error("Error in getMyHotelsTransaction:", error);
-    return {
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Failed to fetch hotel transactions",
-    };
+    return { success: false, message: "Error in getMyHotelsTransaction" };
+  } finally {
+    prisma.$disconnect();
   }
 }

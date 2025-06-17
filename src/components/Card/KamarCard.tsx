@@ -38,21 +38,21 @@ export default function KamarCard({ kamar, onRefresh }: KamarCardProps) {
 
   const handleOpenDetail = () => {
     setSelectedKamar(kamar.id ?? null);
-    dispatch(openModals('detail'));
+    dispatch(openModals('detailKamar'));
   };
 
   const handleCloseDetail = () => {
-    dispatch(closeModals('detail'));
+    dispatch(closeModals('detailKamar'));
   };
 
   const handleDeleteInit = (id: number) => {
     setSelectedKamar(id);
-    dispatch(openModals('delete'));
+    dispatch(openModals('deleteKamar'));
   };
 
   const handleEdit = () => {
     setSelectedKamar(kamar.id ?? null);
-    dispatch(openModals('edit'));
+    dispatch(openModals('editKamar'));
   }
 
   const confirmDeleteKamar = async () => {
@@ -79,7 +79,7 @@ export default function KamarCard({ kamar, onRefresh }: KamarCardProps) {
           color: 'danger',
         });
     } finally {
-        dispatch(closeModals('delete'));
+        dispatch(closeModals('deleteKamar'));
     }
   };
 
@@ -203,17 +203,17 @@ export default function KamarCard({ kamar, onRefresh }: KamarCardProps) {
 
       {/* Modals */}
       <DetailKamarModals 
-        isOpen={modal.detail} 
+        isOpen={modal.detailKamar} 
         onClose={handleCloseDetail} 
         title="Detail Kamar"
         selectedIdKamar={selectedKamar}
       />
 
       <ConfirmModal
-        isOpen={modal.delete}
+        isOpen={modal.deleteKamar}
         onClose={() => {
           setSelectedKamar(null);
-          dispatch(closeModals('delete'));
+          dispatch(closeModals('deleteKamar'));
         }}
         onConfirm={confirmDeleteKamar}
         ID={selectedKamar}
@@ -224,9 +224,9 @@ export default function KamarCard({ kamar, onRefresh }: KamarCardProps) {
 
       <EditKamarModal
         selectedIdKamar={selectedKamar}
-        isOpen={modal.edit}
+        isOpen={modal.editKamar}
         onClose={() => {
-          dispatch(closeModals('edit'));
+          dispatch(closeModals('editKamar'));
           handleSuccess();
         }}
         onEditKamar={handleEditSuccess}
@@ -236,7 +236,6 @@ export default function KamarCard({ kamar, onRefresh }: KamarCardProps) {
   );
 }
 
-// Helper function with improved type safety
 function getImageUrl(kamar: KamarData, index: number): string {
   if (!kamar.images?.length) return '/default-room-image.jpg';
 

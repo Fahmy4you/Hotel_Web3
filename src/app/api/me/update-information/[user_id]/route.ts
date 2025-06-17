@@ -1,15 +1,9 @@
 import {prisma} from "@/utils/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-type Params = {
-    params: {
-        user_id: string;
-    };
-}
-
-export async function PUT(req: Request, { params }: Params) {
+export async function PUT(req: Request, { params }: { params: { user_id: string } }) {
     try {
-    const userId = await params.user_id;
+    const userId = params.user_id;
     const formdata = await req.formData();
     const nama_user = formdata.get('nama_user') as string;
     const email = formdata.get('email') as string;
