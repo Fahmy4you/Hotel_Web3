@@ -110,7 +110,7 @@ const TableHotel = () => {
     <WrapperTable>
       <TableHeader
         placeholder="Cari Hotel..."
-        title="Hotel Management"
+        title="Kelola Hotel"
         onSearch={setQuery}
         addButtonText="Tambah"
         onAddButtonClick={handleOpenAddModal}

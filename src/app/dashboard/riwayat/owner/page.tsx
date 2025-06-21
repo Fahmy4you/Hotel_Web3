@@ -1,5 +1,5 @@
 'use client'
-import RiwayatTable from "@/components/HotelComponents/ForOwner/RiwayatTable"
+import RiwayatTable from "@/components/HotelComponents/ForOwner/TableRiwayat"
 const page = () => {
   return (
     <div>

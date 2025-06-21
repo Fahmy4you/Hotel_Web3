@@ -1,13 +1,12 @@
 'use client'
-import MyCategoriTable from '@/components/HotelComponents/ForOwner/MyCategoriTable'
-import TableHeader from '@/components/TableAtom/TableHeader'
+import TableKategori from '@/components/HotelComponents/ForOwner/TableKategori'
 import React from 'react'
 
 const page = () => {
   return (
     <div>
-        <MyCategoriTable/>
-        </div>
+      <TableKategori/>
+    </div>
   )
 }
 

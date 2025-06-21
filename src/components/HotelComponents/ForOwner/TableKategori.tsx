@@ -15,7 +15,7 @@ import WrapperTable from '@/components/root/WrapperTable';
 import BadgeUI from '@/components/AtomsComponent/BadgeUI';
 import { Skeleton } from '@heroui/react';
 
-const MyCategoriTable = () => {
+const TableKategori = () => {
   const dispatch = useDispatch();
   const userId = useSelector((state: RootState) => state.users.id)?.toString() || '';
   const modalsState = useSelector((state: RootState) => state.modals);
@@ -108,7 +108,7 @@ const MyCategoriTable = () => {
     <WrapperTable>
       <TableHeader
         placeholder="Cari Kategori..."
-        title="Manage Kategori"
+        title="Kelola Kategori"
         onSearch={setQuery}
         onAddButtonClick={handleOpenAddModal}
       />
@@ -214,4 +214,4 @@ const MyCategoriTable = () => {
   );
 };
 
-export default MyCategoriTable;
+export default TableKategori;
