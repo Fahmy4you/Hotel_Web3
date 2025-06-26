@@ -21,7 +21,7 @@ const ActionButton = ({ onEdit, onDelete, showDetailButton = false, onDetail }: 
                         isIconOnly
                         size="sm"
                         className=" text-blue-500 bg-blue-900/10 border border-blue-500/50 hover:bg-blue-900/20 hover:shadow-[0_0_5px_rgba(59, 130, 246, 0.6)] transition-all duration-200 text-xs"
-                        onPress={onEdit}
+                        onPress={onDetail}
                     >
                         <FaRegEye className="h-5 w-5" />
                     </Button>

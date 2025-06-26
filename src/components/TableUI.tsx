@@ -12,7 +12,7 @@ import UserModal from './Modals/Users/UsersMoadal';
 
 import { UserData } from '../types/userData';
 import SuccessAlert from './Alert/SuccessAllert';
-import ConfirmModal from './Modals/DeleteModalDialog';
+import ConfirmModal from './Modals/sharedModals/DeleteModal';
 import { deleteUser } from '@/app/Server/Users/DeleteUser';
 
 interface ModernTableUIProps {

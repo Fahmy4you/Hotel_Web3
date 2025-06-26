@@ -7,7 +7,7 @@ import {
     Button,
 } from "@heroui/react";
 
-interface ConfirmModalProps {
+interface DeleteModalProps {
     isOpen: boolean;
     onClose: () => void;
     onConfirm: (id: number) => Promise<void>;
@@ -19,7 +19,7 @@ interface ConfirmModalProps {
     isLoading?: boolean;
 }
 
-export default function ConfirmModal({
+export default function DeleteModal({
     isOpen,
     onClose,
     onConfirm,
@@ -29,7 +29,7 @@ export default function ConfirmModal({
     confirmText = "Ya, Hapus",
     cancelText = "Batal",
     isLoading = false,
-}: ConfirmModalProps) {
+}: DeleteModalProps) {
     const handleConfirm = async () => {
          if (ID === null) return; 
         try {

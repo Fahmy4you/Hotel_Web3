@@ -1,18 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Skeleton,
-} from '@heroui/react';
+'use client'
+import React, { useEffect, useState, useCallback } from 'react';
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Skeleton } from '@heroui/react';
 import { LuBedDouble } from 'react-icons/lu';
 import { useHooksUser } from '@/hooks/useHooksUser';
 import { useManageKamar } from '@/hooks/useManageKamar';
 import { KamarData, detailDataKamar } from '@/types/kamarData';
-import EditKamarForm from '@/components/Form/Kamar/EditKamarForm';
+import EditKamarForm from '@/components/Form/Kamar/KamarForm';
 import { StatusKamar } from '@prisma/client';
 import { addToast } from '@heroui/react';
 
@@ -20,11 +13,9 @@ interface EditKamarProps {
   selectedIdKamar?: number | null;
   isOpen: boolean;
   onClose: () => void;
-  onEditKamar?: (data: KamarData) => void;
-  onSuccess?: () => void;
 }
 
-const initialFormData: Required<KamarData> = {
+const initialFormData: KamarData = {
   id: 0,
   nama_kamar: '',
   desk: '',
@@ -40,37 +31,20 @@ const initialFormData: Required<KamarData> = {
   nama_hotel: '',
 };
 
-const EditKamarModal: React.FC<EditKamarProps> = ({
-  isOpen,
-  onClose,
-  selectedIdKamar,
-  onEditKamar,
-  onSuccess,
-}) => {
+const EditKamarModal = ({ isOpen, onClose, selectedIdKamar }: EditKamarProps) => {
   const { user } = useHooksUser();
   const {
     getDetailKamar,
     submitKamar,
     detailDataKamar,
     isLoading,
-    fetchKamars,
-  } = useManageKamar(user?.id || 0, undefined, (data: KamarData) => {
-    if (onEditKamar) onEditKamar(data);
-    fetchKamars();
-    onClose();
-    if (onSuccess) onSuccess();
-  });
+    fetchKamars
+  } = useManageKamar(user?.id || 0);
 
   const [formData, setFormData] = useState<KamarData>(initialFormData);
-  const [edit, setEdit] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
-  useEffect(() => {
-    if (isOpen && selectedIdKamar) {
-      getDetailKamar(selectedIdKamar);
-    }
-  }, [isOpen, selectedIdKamar, getDetailKamar]);
-
-  useEffect(() => {
+  const resetFormData = useCallback(() => {
     if (detailDataKamar) {
       setFormData({
         id: detailDataKamar.id,
@@ -90,18 +64,22 @@ const EditKamarModal: React.FC<EditKamarProps> = ({
     }
   }, [detailDataKamar]);
 
-  const handleSave = async (formData: KamarData) => {
+  useEffect(() => {
+    if (isOpen && selectedIdKamar) {
+      getDetailKamar(selectedIdKamar);
+      setEditMode(false);
+    }
+  }, [isOpen, selectedIdKamar, getDetailKamar]);
+
+  useEffect(() => {
+    resetFormData();
+  }, [resetFormData]);
+
+  const handleSave = async (data: KamarData) => {
     try {
-      const mappedDetailData = detailDataKamar ? {
-        ...detailDataKamar,
-        desk: detailDataKamar.deskripsi,
-        price: detailDataKamar.harga_kamar,
-        is_kyc: false
-      } : null;
-      await submitKamar(formData, true, mappedDetailData, onClose);
-      setEdit(false);
-    } catch (error: any) {
-      console.error('Error saving kamar:', error);
+      await submitKamar(data, true, formData, onClose);
+      setEditMode(false);
+    } catch (error) {
       addToast({
         title: 'Error',
         description: 'Gagal menyimpan data kamar',
@@ -111,27 +89,11 @@ const EditKamarModal: React.FC<EditKamarProps> = ({
     }
   };
 
-  const toggleEdit = () => {
-    setEdit(prev => {
-      if (prev && detailDataKamar) {
-        setFormData({
-          id: detailDataKamar.id,
-          nama_kamar: detailDataKamar.nama_kamar,
-          desk: detailDataKamar.deskripsi,
-          hotel_id: detailDataKamar.hotel_id,
-          kategori_id: detailDataKamar.kategori_id,
-          is_active: detailDataKamar.is_active,
-          price: detailDataKamar.harga_kamar,
-          is_kyc: false,
-          status: detailDataKamar.status as StatusKamar,
-          features: [...(detailDataKamar.features || [])],
-          images: [...(detailDataKamar.images || [])],
-          kategori: detailDataKamar.kategori,
-          nama_hotel: detailDataKamar.hotel,
-        });
-      }
-      return !prev;
-    });
+  const toggleEditMode = () => {
+    if (editMode) {
+      resetFormData();
+    }
+    setEditMode(!editMode);
   };
 
   return (
@@ -161,7 +123,7 @@ const EditKamarModal: React.FC<EditKamarProps> = ({
             </div>
           ) : (
             <EditKamarForm
-              edit={edit}
+              edit={editMode}
               formData={formData}
               setFormData={setFormData}
               onSave={handleSave}
@@ -172,8 +134,8 @@ const EditKamarModal: React.FC<EditKamarProps> = ({
 
         <ModalFooter className="border-t pt-3 flex justify-between">
           <div>
-            {!edit ? (
-              <Button color="primary" variant="solid" onPress={toggleEdit}>
+            {!editMode ? (
+              <Button color="primary" variant="solid" onPress={toggleEditMode}>
                 Edit
               </Button>
             ) : (
@@ -186,7 +148,7 @@ const EditKamarModal: React.FC<EditKamarProps> = ({
                 >
                   Simpan
                 </Button>
-                <Button color="danger" variant="flat" onPress={toggleEdit}>
+                <Button color="danger" variant="flat" onPress={toggleEditMode}>
                   Batal
                 </Button>
               </div>

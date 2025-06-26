@@ -94,8 +94,8 @@ const MenuSidebar = ({ active, href, name, iconActive, iconInActive }: MenuSideb
       content={name}
       placement="right"
       isDisabled={isCollapsed}
-      color="secondary"
-      className={`${isDarkMode ? 'bg-white-50 text-black-50' : 'bg-neutral-800 text-white'}`}
+      showArrow
+      classNames={{content: 'text-xs'}}
     >
       <div
         ref={menuRef}

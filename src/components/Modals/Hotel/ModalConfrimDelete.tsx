@@ -1,4 +1,3 @@
-// components/modals/ConfirmDeleteHotelModal.tsx
 import {
     Modal,
     ModalContent,

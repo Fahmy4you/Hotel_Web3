@@ -12,7 +12,7 @@ export async function getMyHotelKamars({
   page = 1,
   userId,
 }: GetMyHotelKamarParams) {
-  const pageSize = 15;
+  const pageSize = 10;
   const skip = (page - 1) * pageSize;
 
   try {

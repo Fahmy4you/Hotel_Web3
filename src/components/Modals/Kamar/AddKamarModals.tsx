@@ -38,6 +38,8 @@ const initialFormData: Required<KamarData> = {
   nama_hotel: ''
 };
 
+
+
 const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
   const userId = useSelector((state: RootState) => state.users.id) || 0;
   const { submitKamar } = useManageKamar(userId);
@@ -54,8 +56,8 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
         if (selectedHotelId) {
           const res = await getKategoriByHotelID(selectedHotelId);
           setTypeRooms(res || []);
-          setFormData(prev => ({ 
-            ...prev, 
+          setFormData(prev => ({
+            ...prev,
             hotel_id: Number(selectedHotelId),
             kategori_id: 0
           }));
@@ -84,10 +86,10 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
   const handleHotelSelection = (keys: any) => {
     const hotelId = Array.from(keys).length > 0 ? Array.from(keys)[0] as string : null;
     setSelectedHotelId(hotelId);
-    
+
     if (hotelId) {
-      setFormData(prev => ({ 
-        ...prev, 
+      setFormData(prev => ({
+        ...prev,
         hotel_id: Number(hotelId),
         kategori_id: 0
       }));
@@ -121,7 +123,7 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
 
     setIsSubmitting(true);
     try {
-      await submitKamar(formData, false, null, onClose);
+      await submitKamar(formData, false, null, handleCloseModals);
     } catch (error) {
       console.error("Error submitting kamar:", error);
     } finally {
@@ -136,13 +138,22 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
     }));
   };
 
+
+  const handleCloseModals = () => {
+    setFormData(initialFormData);
+    setSelectedHotelId(null);
+    setTypeRooms([]);
+    setCurrentFasilitas('');
+    onClose();
+  };
+
   return (
-    <Modal 
-      placement='bottom' 
-      isOpen={isOpen} 
-      backdrop='blur' 
-      onClose={onClose} 
-      size='2xl' 
+    <Modal
+      placement='bottom'
+      isOpen={isOpen}
+      backdrop='blur'
+      onClose={handleCloseModals}
+      size='2xl'
       scrollBehavior='inside'
     >
       <ModalContent>
@@ -153,14 +164,14 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
           Tambah Kamar Baru
         </ModalHeader>
         <ModalBody>
-          <FormUploadwImage 
-            type='multiple' 
+          <FormUploadwImage
+            type='multiple'
             onImagesChange={handleFilesChange}
           >
-            <Select 
-              labelPlacement='outside' 
-              label="Pilih Hotel" 
-              placeholder="Pilih Hotel" 
+            <Select
+              labelPlacement='outside'
+              label="Pilih Hotel"
+              placeholder="Pilih Hotel"
               isRequired
               selectedKeys={selectedHotelId ? new Set([selectedHotelId]) : new Set([])}
               onSelectionChange={handleHotelSelection}
@@ -172,16 +183,16 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
                 </SelectItem>
               ))}
             </Select>
-            
-            <Input 
-              value={formData.nama_kamar} 
-              onChange={(e) => setFormData({ ...formData, nama_kamar: e.target.value })} 
-              labelPlacement='outside' 
-              label="Nama Kamar" 
-              placeholder="Masukkan Nama Kamar" 
-              isRequired 
+
+            <Input
+              value={formData.nama_kamar}
+              onChange={(e) => setFormData({ ...formData, nama_kamar: e.target.value })}
+              labelPlacement='outside'
+              label="Nama Kamar"
+              placeholder="Masukkan Nama Kamar"
+              isRequired
             />
-            
+
             <div className='space-y-2'>
               <div className='flex justify-center items-center gap-3'>
                 <Input
@@ -192,20 +203,20 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
                   label="Fasilitas"
                   placeholder="Masukkan fasilitas (contoh: AC, WiFi)"
                 />
-                <Button 
+                <Button
                   color='primary'
-                  className='mt-5' 
+                  className='mt-5'
                   onPress={handleAddFasilitas}
                   isDisabled={!currentFasilitas.trim()}
                 >
                   Tambah
                 </Button>
               </div>
-              
+
               <div className='flex flex-wrap gap-2 mt-2'>
                 {(formData.features ?? []).map((item, index) => (
-                  <Chip 
-                    key={index} 
+                  <Chip
+                    key={index}
                     onClose={() => handleRemoveFasilitas(index)}
                     variant="flat"
                     color="primary"
@@ -215,38 +226,38 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
                 ))}
               </div>
             </div>
-            
-            <Input 
+
+            <Input
               value={formData.price.toString()}
-              onChange={(e) => setFormData({ 
-                ...formData, 
-                price: Number(e.target.value) || 0 
+              onChange={(e) => setFormData({
+                ...formData,
+                price: Number(e.target.value) || 0
               })}
-              labelPlacement='outside' 
-              label="Harga" 
-              type="number" 
-              placeholder="Masukkan Harga Kamar per malam" 
-              isRequired 
+              labelPlacement='outside'
+              label="Harga"
+              type="number"
+              placeholder="Masukkan Harga Kamar per malam"
+              isRequired
               min="0"
             />
-            
-            <Select 
+
+            <Select
               isDisabled={!selectedHotelId || typeRooms.length === 0}
-              labelPlacement="outside" 
-              label="Tipe Kamar" 
+              labelPlacement="outside"
+              label="Tipe Kamar"
               placeholder={
-                !selectedHotelId 
-                  ? "Pilih hotel terlebih dahulu" 
-                  : typeRooms.length === 0 
-                    ? "Tidak ada tipe kamar tersedia" 
+                !selectedHotelId
+                  ? "Pilih hotel terlebih dahulu"
+                  : typeRooms.length === 0
+                    ? "Tidak ada tipe kamar tersedia"
                     : "Pilih Tipe Kamar"
               }
               selectedKeys={formData.kategori_id ? new Set([formData.kategori_id.toString()]) : new Set([])}
               onSelectionChange={(keys) => {
                 const keyArray = Array.from(keys);
                 const kategoriId = keyArray.length > 0 ? Number(keyArray[0]) : 0;
-                setFormData({ 
-                  ...formData, 
+                setFormData({
+                  ...formData,
                   kategori_id: kategoriId
                 });
               }}
@@ -258,14 +269,14 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
                 </SelectItem>
               ))}
             </Select>
-            
-            <RadioGroup 
-              label="Status Kamar" 
+
+            <RadioGroup
+              label="Status Kamar"
               orientation="horizontal"
               value={formData.status}
-              onChange={(e) => setFormData({ 
-                ...formData, 
-                status: e.target.value as StatusKamar 
+              onChange={(e) => setFormData({
+                ...formData,
+                status: e.target.value as StatusKamar
               })}
             >
               {roomStatusOptions.map((status) => (
@@ -274,25 +285,25 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
                 </Radio>
               ))}
             </RadioGroup>
-            
-            <RadioGroup 
-              label="Know your customers?" 
+
+            <RadioGroup
+              label="Know your customers?"
               orientation="horizontal"
               value={formData.is_kyc ? 'true' : 'false'}
-              onChange={(e) => setFormData({ 
-                ...formData, 
-                is_kyc: e.target.value === 'true' 
+              onChange={(e) => setFormData({
+                ...formData,
+                is_kyc: e.target.value === 'true'
               })}
             >
               <Radio value="true">Iya</Radio>
               <Radio value="false">Tidak</Radio>
             </RadioGroup>
-            
+
             <Textarea
               value={formData.desk}
-              onChange={(e) => setFormData({ 
-                ...formData, 
-                desk: e.target.value 
+              onChange={(e) => setFormData({
+                ...formData,
+                desk: e.target.value
               })}
               isRequired
               label="Deskripsi"
@@ -303,11 +314,11 @@ const AddKamarModals = ({ isOpen, onClose }: AddKamarModalsProps) => {
           </FormUploadwImage>
         </ModalBody>
         <ModalFooter>
-          <Button color="danger" variant="light" onPress={onClose}>
+          <Button color="danger" variant="light" onPress={handleCloseModals}>
             Batal
           </Button>
-          <Button 
-            color="primary" 
+          <Button
+            color="primary"
             onPress={handleSubmit}
             isLoading={isSubmitting}
             isDisabled={!formData.hotel_id || !formData.kategori_id}

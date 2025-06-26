@@ -6,25 +6,27 @@ import { getMyHotelKamars } from "@/app/Server/Kamar/GetMyKamarHotel";
 import { deleteMyKamarHotels } from "@/app/Server/Kamar/DeleteMyKamarHotels";
 import { getKamarById } from "@/app/Server/Kamar/GetKamarByID";
 import { z } from "zod";
-import { useDebounce } from 'use-debounce'
+import { useDebounce } from 'use-debounce';
 import { StatusKamar } from "@prisma/client";
-import { KamarFormValues } from "@/utils/zod";
-import { kamarSchema } from "@/utils/zod";
+import { KamarFormValues, kamarSchema } from "@/utils/zod";
 
 export const useManageKamar = (
-  UserId: number,
-  onAddKamar?: (kamar: KamarData) => void,
+  userId: number,
   onEditKamar?: (kamar: KamarData) => void,
+  onAddKamar?: (kamar: KamarData) => void
 ) => {
   const [kamars, setKamars] = useState<KamarData[]>([]);
-  const [totalKamar, setTotalKamar] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [query, setQuery] = useState("");
-  const [DebounceQuery] = useDebounce(query, 500)
   const [detailDataKamar, setDetailDataKamar] = useState<detailDataKamar | null>(null);
+  const [query, setQuery] = useState("");
+  const [debouncedQuery] = useDebounce(query, 500);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const itemsPerPage = 10;
 
-  const validateKamar = (formData: KamarData) => {
+  const validateKamar = useCallback((formData: KamarData) => {
     try {
       const dataToValidate: KamarFormValues = {
         ...formData,
@@ -33,9 +35,7 @@ export const useManageKamar = (
         price: formData.price || 0,
         images: formData.images || [],
         features: Array.isArray(formData.features)
-          ? formData.features.map(f => typeof f === 'string'
-            ? { nama_fasilitas: f }
-            : f)
+          ? formData.features.map(f => typeof f === 'string' ? { nama_fasilitas: f } : f)
           : [],
         is_kyc: formData.is_kyc || false,
         status: (formData.status as StatusKamar) || StatusKamar.TERSEDIA
@@ -53,48 +53,69 @@ export const useManageKamar = (
             color: 'danger',
           });
         });
-        return { success: false, errors: error.errors };
       }
-      addToast({
-        title: 'Error',
-        description: 'Terjadi kesalahan validasi',
-        variant: 'flat',
-        color: 'danger',
-      });
-      return { success: false, errors: [] };
+      return { success: false };
     }
-  };
+  }, []);
 
   const fetchKamars = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await getMyHotelKamars({
-        search: DebounceQuery,
-        page: 1,
-        userId: UserId
+        search: debouncedQuery,
+        page: currentPage,
+        userId
       });
+
       const formattedKamars = (res.formatedResponse || []).map(kamar => ({
         ...kamar,
         kategori: kamar.kategori ?? undefined,
         nama_hotel: kamar.nama_hotel ?? undefined
       }));
+
       setKamars(formattedKamars);
-      setTotalKamar(res.totalKamars);
+      setTotalPages(res.totalPages || 1);
+      setTotalItems(res.totalKamars || 0);
     } catch (error) {
       console.error("Error fetching kamar:", error);
+      addToast({
+        title: 'Error',
+        description: 'Gagal memuat data kamar',
+        variant: 'flat',
+        color: 'danger',
+      });
     } finally {
       setIsLoading(false);
     }
-  }, [UserId, DebounceQuery]);
+  }, [debouncedQuery, currentPage, userId]);
 
   useEffect(() => {
-    fetchKamars();
-  }, [fetchKamars]);
+    if (userId) {
+      fetchKamars();
+    }
+  }, [fetchKamars, userId]);
 
+  const getDetailKamar = useCallback(async (kamarId: number) => {
+    setIsLoading(true);
+    setDetailDataKamar(null);
+    try {
+      const res = await getKamarById(kamarId);
+      setDetailDataKamar(res as detailDataKamar);
+    } catch (error) {
+      console.error("Error get detail kamar:", error);
+      addToast({
+        title: 'Error',
+        description: 'Gagal memuat detail kamar',
+        variant: 'flat',
+        color: 'danger',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const deleteKamar = async (kamarId: number) => {
     setDeleting(true);
-    setIsLoading(true);
     try {
       await deleteMyKamarHotels(kamarId);
       await fetchKamars();
@@ -113,43 +134,16 @@ export const useManageKamar = (
       });
     } finally {
       setDeleting(false);
-      setIsLoading(false);
     }
   };
-
-  const getDetailKamar = useCallback(async (kamarId: number) => {
-    setIsLoading(true);
-    try {
-      setDetailDataKamar(null);
-      const res = await getKamarById(kamarId);
-      if (res) {
-        setDetailDataKamar(res as detailDataKamar);
-      } else {
-        setDetailDataKamar(null);
-      }
-    } catch (error) {
-      console.error("Error get detail kamar:", error);
-      addToast({
-        title: 'Error',
-        description: 'Gagal memuat detail kamar',
-        variant: 'flat',
-        color: 'danger',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
 
   const submitKamar = async (
     formData: KamarData,
     isEditMode: boolean,
     currentData: KamarData | null,
-    closeModal: () => void
+    closeModal?: () => void
   ) => {
-    const validation = validateKamar(formData);
-    if (!validation.success) {
-      return;
-    }
+    if (!validateKamar(formData).success) return;
 
     setIsLoading(true);
     try {
@@ -161,7 +155,7 @@ export const useManageKamar = (
       formDataToSend.append("price", String(formData.price));
       formDataToSend.append("is_kyc", String(formData.is_kyc));
       formDataToSend.append("status", formData.status);
-      formDataToSend.append("features", JSON.stringify(formData.features || []));
+      formDataToSend.append("fasilitas", JSON.stringify(formData.features || []));
 
       const existingImages = formData.images?.filter(img => typeof img === 'string') || [];
       const newFiles = formData.images?.filter(img => img instanceof File) as File[] || [];
@@ -174,27 +168,20 @@ export const useManageKamar = (
         formDataToSend.append("files", file);
       });
 
-      const allFasilitas = formData.features || [];
-      formDataToSend.append("fasilitas", JSON.stringify(allFasilitas));
-
       const endpoint = isEditMode && currentData?.id
         ? `/api/kamar/${currentData.id}`
         : "/api/kamar";
 
-      const method = isEditMode ? "PUT" : "POST";
-
       const response = await fetch(endpoint, {
-        method,
+        method: isEditMode ? "PUT" : "POST",
         body: formDataToSend,
       });
-
+      
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || 'Request failed');
+        throw new Error(await response.text());
       }
 
       const responseData = await response.json();
-
       addToast({
         title: 'Berhasil',
         description: isEditMode ? 'Kamar berhasil diperbarui!' : 'Kamar berhasil ditambahkan!',
@@ -202,14 +189,14 @@ export const useManageKamar = (
         color: 'success',
       });
 
-      if (isEditMode && currentData?.id && onEditKamar) {
-        onEditKamar({ ...responseData, id: currentData.id });
-      } else if (onAddKamar) {
-        onAddKamar(responseData);
+      if (isEditMode && currentData?.id) {
+        onEditKamar?.({ ...formData, id: currentData.id, images: responseData.kamar.images });
+      } else {
+        onAddKamar?.({ ...formData, images: responseData.kamar.images });
       }
 
       await fetchKamars();
-      closeModal();
+      closeModal?.();
     } catch (error) {
       console.error("Error submitting kamar:", error);
       addToast({
@@ -227,13 +214,17 @@ export const useManageKamar = (
     kamars,
     isLoading,
     deleting,
+    detailDataKamar,
     query,
     setQuery,
     fetchKamars,
     deleteKamar,
     submitKamar,
     getDetailKamar,
-    totalKamar,
-    detailDataKamar
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage,
   };
 };

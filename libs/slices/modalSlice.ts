@@ -7,6 +7,7 @@ interface ModalState {
 const initialState: ModalState = {
    filter : false,
    addKategori : false,
+   addKamar : false,
    editKategori : false,
    detail : false,
    deleteKategori : false,

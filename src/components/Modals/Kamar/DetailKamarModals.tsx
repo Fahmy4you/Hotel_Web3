@@ -8,13 +8,12 @@ import { parseFeatures } from '@/utils/parseFeatures';
 import LoadingDetailKamar from '@/components/LoadingSkeleton/LoadingDetailKamar';
 
 interface DetailKamarProps {
-  title: string;
   isOpen: boolean;
   onClose: () => void;
   selectedIdKamar?: number | null;
 }
 
-const DetailKamarModals = ({ title, isOpen, onClose, selectedIdKamar }: DetailKamarProps) => {
+const DetailKamarModals = ({ isOpen, onClose, selectedIdKamar }: DetailKamarProps) => {
   const { user } = useHooksUser();
   const { getDetailKamar, detailDataKamar, isLoading } = useManageKamar(user?.id || 0);
   const roomImages = detailDataKamar?.images?.length
@@ -36,7 +35,7 @@ const DetailKamarModals = ({ title, isOpen, onClose, selectedIdKamar }: DetailKa
         <ModalContent className="overflow-hidden">
           <ModalHeader className="border-b pb-3 border-neutral-700">
             <div className="flex justify-between gap-3 items-center">
-              <h2 className="text-xl font-bold">{detailDataKamar?.nama_kamar || title}</h2>
+              <h2 className="text-xl font-bold">{detailDataKamar?.nama_kamar}</h2>
               <Chip color="primary" variant="flat">
                 {detailDataKamar?.status || 'Available'}
               </Chip>
@@ -44,7 +43,6 @@ const DetailKamarModals = ({ title, isOpen, onClose, selectedIdKamar }: DetailKa
           </ModalHeader>
 
           <ModalBody className="px-0 pt-0">
-            {/* Image Section */}
             <div className="relative w-full mb-4">
               {roomImages.length > 1 ? (
                 <CarouselUI images={roomImages} />
@@ -52,7 +50,7 @@ const DetailKamarModals = ({ title, isOpen, onClose, selectedIdKamar }: DetailKa
                 <div className="w-full h-64 sm:h-80">
                   <img
                     src={roomImages[0]}
-                    alt={`${detailDataKamar?.nama_kamar || title} view`}
+                    alt={`${detailDataKamar?.nama_kamar} view`}
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.currentTarget.src = '/image/empty-image.png';
@@ -137,11 +135,11 @@ const DetailKamarModals = ({ title, isOpen, onClose, selectedIdKamar }: DetailKa
 
           <ModalFooter className="border-t border-neutral-700">
             <Button
-              className="dark:bg-white w-24 text-medium font-semibold bg-neutral-900 text-white dark:text-neutral-900"
+              className="dark:bg-white w-24 text-sm font-semibold bg-neutral-900 text-white dark:text-neutral-900"
               variant="solid"
               onPress={onClose}
             >
-              Close
+              Tutup
             </Button>
           </ModalFooter>
         </ModalContent>

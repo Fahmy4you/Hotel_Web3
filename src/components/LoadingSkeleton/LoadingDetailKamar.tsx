@@ -9,7 +9,7 @@ const LoadingDetailKamar = () => {
       
       <ModalBody className="px-0 pt-0">
         <div className="w-full h-64 sm:h-80">
-          <Skeleton className="w-full h-full" />
+          <Skeleton className="w-full h-full rounded-lg" />
         </div>
         
         <div className="px-6 space-y-6">
